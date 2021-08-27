@@ -75,10 +75,11 @@ def save_graph_PTA(graph, df, ear):
 
     row = df.index[0]
 
-    sub_long = df["Participant_ID"][row]
-    sub_short = sub_long.lstrip("Sub")
+    sub = df["Participant_ID"][row]
+    sub_short = sub.lstrip("Sub")
+    sub_long = "sub-" + sub_short
 
-    folder = "../results/" + sub_long + "/"
+    folder = "../results/graphs/" + sub_long + "/"
     path_header = folder + "Sub-" + sub_short + "_" + test + "_"
 
     if ear == "All_runs":
@@ -112,10 +113,11 @@ def save_graph_MTX(graph, df, language_ID):
 
     row = df.index[0]
 
-    sub_long = df["Participant_ID"][row]
-    sub_short = sub_long.lstrip("Sub")
+    sub = df["Participant_ID"][row]
+    sub_short = sub.lstrip("Sub")
+    sub_long = "sub-" + sub_short
 
-    folder = "../results/" + sub_long + "/"
+    folder = "../results/graphs/" + sub_long + "/"
     path_header = folder + "Sub-" + sub_short + "_" + test + "_"
 
     if language_ID.endswith("_All_runs") is True:
