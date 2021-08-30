@@ -118,6 +118,8 @@ Three different combinations of those tests were then designed as experimental c
 The specific dataset used for this project includes results from the tympanometry, the stapedial reflex test, the pure-tone audiometry and the Matrix speech-in-noise perception test.
 
 ---
+***
+---
 
 ## Results
 
