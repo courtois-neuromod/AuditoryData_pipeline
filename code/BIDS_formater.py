@@ -9,7 +9,7 @@ url_csv = url_share.replace("/edit#gid=", "/export?format=csv&gid=")
 df = pd.read_csv(url_csv, sep=',', na_filter=True)
 
 # Manage the empty boxes
-df.fillna(value='None', inplace=True)
+df.fillna(value='n/a', inplace=True)
 
 # Create a list of the subjects and a reference path for the results
 subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
@@ -72,7 +72,7 @@ x_reflex = [500, 1000, 2000, 4000, 'NOISE']
 x_PTA = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000,
          9000, 10000, 11200, 12500, 14000, 16000, 18000, 20000]
 x_MTX = ['LANGUAGE', "Practice", "Sp_Bin_No_Bin",
-         "Sp_L_No_Bin", "Sp_R_No_Bin", "Sp_L_No_L",  "Sp_R_No_R"]
+         "Sp_L_No_Bin", "Sp_R_No_Bin", "Sp_L_No_L", "Sp_R_No_R"]
 
 
 # Single participant sub-df extraction
