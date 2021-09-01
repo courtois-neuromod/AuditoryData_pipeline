@@ -2,6 +2,13 @@ import pandas as pd
 # import numpy as np
 import os
 
+
+# url_share = "https://docs.google.com/spreadsheets/d/1UQsU6FNr7ovVjLRIMIt"\
+#             "gtYWr1zN7UHpMjfHtdGa1myc/edit#gid=0"
+# url_csv = url_share.replace("/edit#gid=", "/export?format=csv&gid=")
+# df = pd.read_csv(url_csv, sep=',', na_filter=True)
+
+
 path_origine = "../../OAEs/"
 path_results = "../results/OAEs/"
 subjects = ["sub-01", "sub-02", "sub-03", "sub-04", "sub-05", "sub-06"]
