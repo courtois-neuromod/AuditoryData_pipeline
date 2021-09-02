@@ -82,6 +82,11 @@ Gorgolewski, K. J., Auer, T., Calhoun, V. D., Craddock, R. C., Das, S., Duff, E.
 
 [![Illustration of a BIDS structured dataset](images/BIDS_structure.png)](https://www.nature.com/articles/sdata201644)
 
+### Screen capture of a section of the results obtained with this pipeline
+
+![fortier_project_BIDS_structure.png](images/fortier_project_BIDS_structure.png)
+
+
 ## Graph generation (Pure-tone audiometry, Matrix speech-in-noise perception test)
 
 For some of these tests, such as the pure-tone audiometry test, the data is more easily interpreted when rendered into graphic displays.
@@ -117,92 +122,35 @@ Baselines were acquired for each of these tests.
 Three different combinations of those tests were then designed as experimental conditions and randomly assigned to each of the participant in a way that they will all do each of those conditions four times over the course of a twelve months protocol.
 The specific dataset used for this project includes results from the tympanometry, the stapedial reflex test, the pure-tone audiometry and the Matrix speech-in-noise perception test.
 
----
-***
----
+In the current state of this repository, it is possible to find a serie of Python 3 scripts:
+ - add_SNR_OAEs.py: an early draft of a script to reformat and add missing informations in the OAE tests .csv files.
+ - BIDS_formater.py: takes as input a spreadsheet containing the tests data and returns .tsv files for each of the tests in a file structure compatible with the BIDS standards.
+ - json_sidecar_generator.py: an early draft of a .json file generator for the BIDS format's metadata files.
+ - graph_generator.py: a first iteration of a master script to process data and generate interactive graphs (single test and test overview).
+ - other_functions.py: a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.
 
-## Results
-
-### Lili El Khalil's progress review
-
-A script that helped in building a BIDS format for organizing our data. As I divided my data into subject, which are the participants. 
-Then for each subject the number of sessions they participated and in each session we have the four tests done. The four tests are : Tymp, Reflex, PTA and MTX. 
-At the lower level, in each test folders, you can find the results obtained for each run of the test. 
-
-#### Tools and skills that were developped during this project
-
-Many of these contribute in my part of the project:
-
-- <b>Jupyter Notebook</b>: an environment used to write the code
-- <b>Windows Subsystem for Linux/Bash</b>: Edit text files such as this README.md
-- <b>Python Libraries</b>: os, numpy and pandas
-- <b>Git</b>: Track file changes
-- <b>GitHub</b>: Organize team project
-
-#### Deliverables
-
-<b>Jupyter Notebook</b>
-
-The notebook contains the code used in order to be able to create BIDS compatible files from our data.
-
-![fortier_project_BIDS_structure.png](images/fortier_project_BIDS_structure.png)
-
-<b>README.md</b>
-
-This README.md file contains all the project details done by each one of us 
-
-### Mr. Fortier's progress overview
-
-A first iteration of functional python scripts to generation single test graphs and test overview graphs for each of the Projet Courtois NeuroMod participants is now available in the code folder of this repository.
-These scripts were also linted using flake8 and passed all the generic requirements of this linter.
-Unfortunately, it was not possible to create a machine learning task script on top of the graph generation scripts due to time constraint and restrictions linked to the collaborative nature of this project.
-
-#### Tools/skills that were developped during this project (and challenges encountered...)
-
-- **Python scripts**: It was a first attempt to code in python using scripts instead of the Jupyter Notebook controlled environment.
-- **Python scripts**: It was also a first attempt at using multiple scripts for a single task and importing functions across them.
-- **Git and Github**: This project is the first attempt at building a complete project from the start, using Git's functions and a Github repository.
-- **Plot.ly's `graph_objects` tools**: This project was a first on many front regarding Plot.ly.
-    - It was a first attempt at doing interactive figures/graphs.
-    - It was a first contact with Plot.ly's library.
-    - It was a challenge to be able to build graphs that fully represent the particularities of the two different types of figure produced in this project: `plotly.express` might have been easier to use than `plotly.graph_objects`, but it was not as capable to fully build the vision planned for this project.
-    - It was an important challenge to navigate in the impressive documentation of the `plotly.graph_objects` library. It is a powerful, extensively customizable tool, but it is also very complex.
-- **flake8 linter**: It was the first use of a linter to proof read the scripts' code format.
-- **Binder**: It has been a difficult journey to try to figure out a way to make available here examples of the interactive figures generated by this project. Unfortunately, Github doesn't allow for html figures to be embeded into markdown files to be displayed. Binder was a way to go around it.
-- **Jupyter Notebook**: In order to display the interactive figures through the use of Binder, two notebooks were created and adapted from the original graph_generator.py code.
-
-#### Deliverables
-
-- First, this README.md file describes multiple aspects of the project.
-- Second, the Github repository where this README.md file sits allows people to consult the evolution of the project.
-    - Two python scripts generating the graphs needed for this project are available in the `code/` folder.
-    - Two Binder based Jupyter Notebooks allow people to consult an interactive sample graph for each of the types of graph generated by the scripts.
-      The links to access them are in this README.md file.
-    - A requirements.txt file allows the Binder platform to properly run the graph generating Jupyter Notebooks.
+Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
 
 ### Exemple of interactive HTML audiogram
-
-![Sub-01_PTA_All_runs.html](results/Sub01/Sub-01_PTA_All_runs.html)
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FPTA_sample_figure_generator.ipynb)
 
 ### Exemple of Matrix test interactive HTML graph
 
-![Sub-01_MTX_L1_French_All_runs.html](results/Sub01/Sub-01_MTX_L1_French_All_runs.html)
-
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FMTX_sample_figure_generator.ipynb)
 
 ## Conclusion
 
-In conclusion, most of the goals of this project were reached: only the machine learning task was left behind.
 This project includes:
 - a README.md file presenting the project
 - a LICENSE file
 - a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks
 - two python scripts to generate interactive graph figures
 - two Jupyter Notebooks to be loaded using a Binder platform
-- one Jupyter Notebook to create and format a BIDS compatible dataset from the original dataset's spreadsheet format
+- a python to create and format a BIDS compatible dataset from the original dataset's spreadsheet format
+- a python script to edit and save OAE tests .csv files
+- a python script to create .json metadata files
 - images and html sample figures to be displayed by the README.md file
 
 We would like to thank the BrainHack School 2021 team of mentors for their availability and their help on this journey.
-
+We would also like to thank the Projet Courtois NeuroMod participants for their time.
