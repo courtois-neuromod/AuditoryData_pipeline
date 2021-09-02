@@ -92,13 +92,21 @@ Gorgolewski, K. J., Auer, T., Calhoun, V. D., Craddock, R. C., Das, S., Duff, E.
 For some of these tests, such as the pure-tone audiometry test, the data is more easily interpreted when rendered into graphic displays.
 The second task to be done is to build python scripts to generate the interactive html graphs using the Plot.ly library.
 
-### Exemple of audiogram
+### Exemple of audiogram (manually obtained)
 
 ![P01-Baseline 2, Bilateral.png](images/P01-Baseline_2_Bilateral.png)
 
-### Exemple of Matrix test results graph
+### Exemple of interactive HTML audiogram (obtained with this pipeline)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FPTA_sample_figure_generator.ipynb)
+
+### Exemple of Matrix test results graph (manually obtained)
 
 ![P01-Matrix test FR, Condition 2 (may_2021).png](images/P01-Matrix_test_FR_Condition_2_(may_2021).png)
+
+### Exemple of Matrix test interactive HTML graph (obtained with this pipeline)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FMTX_sample_figure_generator.ipynb)
 
 ## Data
 
@@ -130,14 +138,6 @@ In the current state of this repository, it is possible to find a serie of Pytho
  - other_functions.py: a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.
 
 Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
-
-### Exemple of interactive HTML audiogram
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FPTA_sample_figure_generator.ipynb)
-
-### Exemple of Matrix test interactive HTML graph
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FMTX_sample_figure_generator.ipynb)
 
 ## Conclusion
 
