@@ -5,7 +5,6 @@ ls_task = ["Tymp", "Reflex", "PTA",
            "MTX", "TEOAE", "DPOAE",
            "Growth_2000", "Growth_4000", "Growth_6000"]
 
-
 keys_tymp = ["Type", "TPP", "ECV", "SC", "TW"]
 # value unit for "Type" = ""
 # other values' unit = "?"
@@ -44,7 +43,7 @@ columns = ["test", "key", "description", "unit", "levels"]
 index_pta = np.arange(0, len(keys_pta)).tolist()
 # print(index_pta)
 df_pta = pd.DataFrame(index=index_pta, columns=columns)
-print(df_pta)
+# print(df_pta)
 
 for i in range(0, len(df_pta)):
     df_pta.at[i, "test"] = "PTA"
@@ -59,7 +58,7 @@ print(df_pta)
 index_mtx = np.arange(0, len(keys_mtx)).tolist()
 # print(index_mtx)
 df_mtx = pd.DataFrame(index=index_mtx, columns=columns)
-print(df_mtx)
+# print(df_mtx)
 dict_keys_mtx = {"LANGUAGE": "Language used for this run of the Matrix speech-in-noise perception test.",
                  "Practice": "First sequence of the run, used as a practice sequence. Speech presentation: Binaural/Noise presentation: Binaural",
                  "Sp_Bin_No_Bin": "Second sequence of the run. Speech presentation: Binaural/Noise presentation: Binaural",
@@ -81,3 +80,38 @@ for j in range(0, len(df_mtx)):
         df_mtx.at[j, "levels"] = "n/a"
 
 print(df_mtx)
+
+index_tymp = np.arange(0, len(keys_tymp)).tolist()
+print(index_tymp)
+df_tymp = pd.DataFrame(index=index_tymp, columns=columns)
+# print(df_tymp)
+
+for k in range(0, len(df_tymp)):
+    df_tymp.at[k, "test"] = "Tymp"
+    df_tymp.at[k, "key"] = keys_tymp[k]
+    keys_word_tymp = keys_tymp[k]
+
+    if k == 0:
+        df_tymp.at[k, "description"] = f"Value representing the shape type of the tympanometry response."
+        df_tymp.at[k, "unit"] = "n/a"
+        df_tymp.at[k, "levels"] = {"A": "Response within normal range", "As": "-", "Ad": "-"}
+    else:
+        df_tymp.at[k, "description"] = f"Value obtained for the parameter {keys_word_tymp}."
+        df_tymp.at[k, "unit"] = "TBD"
+        df_tymp.at[k, "levels"] = "n/a"
+
+print(df_tymp)
+
+index_reflex = np.arange(0, len(keys_reflex)).tolist()
+# print(index_reflex)
+df_reflex = pd.DataFrame(index=index_reflex, columns=columns)
+# print(df_reflex)
+
+for m in range(0, len(df_reflex)):
+    df_reflex.at[m, "test"] = "Reflex"
+    df_reflex.at[m, "key"] = keys_reflex[m]
+    keys_word_reflex = keys_reflex[m].replace("_", " ")
+    df_reflex.at[m, "description"] = f"Intensity level to obtain the stapedial reflex at/with {keys_word_reflex}."
+    df_reflex.at[m, "unit"] = "dB"
+
+print(df_reflex)
