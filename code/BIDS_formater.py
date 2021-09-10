@@ -135,7 +135,7 @@ def save_df(data_tosave_df, single_test_df, index, test, run):
 
     path = parent_path + 'sub-' + sub + '/' + 'ses-' + ses + '/'
     file_name = ('sub-' + sub + '_ses-' + ses + '_task-' + test + '_run-'
-                 + run + ext)
+                 + run + "_beh" + ext)
 
     data_tosave_df.to_csv(path + file_name, sep='\t')
 
