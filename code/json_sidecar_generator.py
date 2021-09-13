@@ -8,6 +8,8 @@ ls_task = ["Tymp", "Reflex", "PTA",
            "MTX", "TEOAE", "DPOAE",
            "Growth_2000", "Growth_4000", "Growth_6000"]
 
+index = ["LongName", "Description", "Levels", "Units"]
+
 keys_tymp = ["order", "side", "Type", "TPP", "ECV", "SC", "TW"]
 # value unit for "Type" = ""
 # other values' unit = "?"
@@ -41,22 +43,21 @@ keys_growth = ["Freq", "F1", "F2", "DP", "Noise+2sd", "SNR"]
 # value unit for "Noise+2sd" = "dB"
 
 # columns = ["test", "key", "description", "unit", "levels"]
-index_pta = ["LongName", "Description", "Levels", "Units"]
 # print(columns)
 # print(index_pta)
 
-df_pta = pd.DataFrame(index=index_pta, columns=keys_pta)
+df_pta = pd.DataFrame(index=index, columns=keys_pta)
 # print(df_pta)
 
 for a in keys_pta:
     if a == "order":
         df_pta.at["LongName", a] = "Order of acquisition"
-        df_pta.at["Levels", a] = {"1":"First sequence acquired",
-                                  "2":"Second sequence acquired"}
+        df_pta.at["Levels", a] = {"1": "First sequence acquired",
+                                  "2": "Second sequence acquired"}
     elif a == "side":
         df_pta.at["LongName", a] = "Side of ear tested"
-        df_pta.at["Levels", a] = {"R":"Right ear",
-                                  "L":"Left ear"}
+        df_pta.at["Levels", a] = {"R": "Right ear",
+                                  "L": "Left ear"}
     else:
         keys_word_pta = a.replace("_", " ")
         df_pta.at["LongName", a] = f"Threshold at {keys_word_pta}"
@@ -83,101 +84,61 @@ Path("../results/BIDS_sidecars_originals/pta_run_level.json").write_text(json.du
                                                                                     ensure_ascii=False),
                                                                          encoding="UTF-8-SIG")
 
-
-
-
-
-
-
-test_pta = pd.DataFrame({"order": {"LongName": "Order of acquisition",
-                                   "Levels": {"1": "First sequence acquired",
-                                              "2": "Second sequence acquired"}},
-                         "Side": {"LongName": "Side of ear tested",
-                                  "Levels": {"R": "Right ear",
-                                             "L": "Left ear"}},
-                         "250_Hz": {"LongName": "Threshold at 250 Hz",
-                                    "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 250 Hz.",
-                                    "Unit": "dB HL"},
-                         "500_Hz": {"LongName": "Threshold at 500 Hz",
-                                    "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 500 Hz.",
-                                    "Unit": "dB HL"},
-                         "1000_Hz": {"LongName": "Threshold at 1 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 1 kHz.",
-                                     "Unit": "dB HL"},
-                         "2000_Hz": {"LongName": "Threshold at 2 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 2 kHz.",
-                                     "Unit": "dB HL"},
-                         "3000_Hz": {"LongName": "Threshold at 3 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 3 kHz.",
-                                     "Unit": "dB HL"},
-                         "4000_Hz": {"LongName": "Threshold at 4 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 4 kHz.",
-                                     "Unit": "dB HL"},
-                         "6000_Hz": {"LongName": "Threshold at 6 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 6 kHz.",
-                                     "Unit": "dB HL"},
-                         "8000_Hz": {"LongName": "Threshold at 8 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 8 kHz.",
-                                     "Unit": "dB HL"},
-                         "9000_Hz": {"LongName": "Threshold at 9 kHz",
-                                     "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 9 kHz.",
-                                     "Unit": "dB HL"},
-                         "10000_Hz": {"LongName": "Threshold at 10 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 10 kHz.",
-                                      "Unit": "dB HL"},
-                         "11200_Hz": {"LongName": "Threshold at 11.2 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 11.2 kHz.",
-                                      "Unit": "dB HL"},
-                         "12500_Hz": {"LongName": "Threshold at 12.5 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 12.5 kHz.",
-                                      "Unit": "dB HL"},
-                         "14000_Hz": {"LongName": "Threshold at 14 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 14 kHz.",
-                                      "Unit": "dB HL"},
-                         "16000_Hz": {"LongName": "Threshold at 16 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 16 kHz.",
-                                      "Unit": "dB HL"},
-                         "18000_Hz": {"LongName": "Threshold at 18 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 18 kHz.",
-                                      "Unit": "dB HL"},
-                         "20000_Hz": {"LongName": "Threshold at 20 kHz",
-                                      "Description": "The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at 20 kHz.",
-                                      "Unit": "dB HL"}})
-
-# print(test_pta)
-
-# test_pta.to_json("../results/BIDS_sidecars_originals/test_pta.json", indent=2)
-
-
-
-
-
-
-index_mtx = np.arange(0, len(keys_mtx)).tolist()
+# index_mtx = np.arange(0, len(keys_mtx)).tolist()
 # print(index_mtx)
-df_mtx = pd.DataFrame(index=index_mtx, columns=columns)
-# print(df_mtx)
-dict_keys_mtx = {"LANGUAGE": "Language used for this run of the Matrix speech-in-noise perception test.",
-                 "Practice": "First sequence of the run, used as a practice sequence. Speech presentation: Binaural/Noise presentation: Binaural",
-                 "Sp_Bin_No_Bin": "Second sequence of the run. Speech presentation: Binaural/Noise presentation: Binaural",
-                 "Sp_L_No_Bin": "Third sequence of the run. Speech presentation: Left ear/Noise presentation: Binaural",
-                 "Sp_R_No_Bin": "Fourth sequence of the run. Speech presentation: Right ear/Noise presentation: Binaural",
-                 "Sp_L_No_L": "Fifth sequence of the run. Speech presentation: Left ear/Noise presentation: Left ear",
-                 "Sp_R_No_R": "Sixth sequence of the run. Speech presentation: Right ear/Noise presentation: Right ear"}
+df_mtx = pd.DataFrame(index=index, columns=keys_mtx)
+print(df_mtx)
+dict_LongName_mtx = {"Practice": "First condition of the sequence (see Description).",
+                     "Sp_Bin_No_Bin": "Second condition of the sequence (see Description).",
+                     "Sp_L_No_Bin": "Third condition of the sequence (see Description).",
+                     "Sp_R_No_Bin": "Fourth condition of the sequence (see Description).",
+                     "Sp_L_No_L": "Fifth condition of the sequence (see Description).",
+                     "Sp_R_No_R": "Sixth condition of the sequence (see Description)."}
 
-for j in range(0, len(df_mtx)):
-    df_mtx.at[j, "test"] = "MTX"
-    df_mtx.at[j, "key"] = keys_mtx[j]
-    df_mtx.at[j, "description"] = dict_keys_mtx[keys_mtx[j]]
+dict_Desc_mtx = {"Practice": "Speech presentation = Binaural/Noise presentation = Binaural. This condition is used as a practice/warm-up condition",
+                 "Sp_Bin_No_Bin": "Speech presentation = Binaural/Noise presentation = Binaural",
+                 "Sp_L_No_Bin": "Speech presentation = Left ear/Noise presentation = Binaural",
+                 "Sp_R_No_Bin": "Speech presentation = Right ear/Noise presentation = Binaural",
+                 "Sp_L_No_L": "Speech presentation = Left ear/Noise presentation = Left ear",
+                 "Sp_R_No_R": "Speech presentation = Right ear/Noise presentation = Right ear"}
 
-    if j == 0:
-        df_mtx.at[j, "unit"] = "n/a"
-        df_mtx.at[j, "levels"] = {"French": "French", "English": "English"}
+for d in keys_mtx:
+    if d == "order":
+        df_mtx.at["LongName", d] = "Order of acquisition"
+        df_mtx.at["Levels", d] = {"1": "First sequence acquired",
+                                  "2": "Second sequence acquired"}
+    elif d == "LANGUAGE":
+        df_mtx.at["LongName", d] = "Language used for this sequence of acquisition"
+        df_mtx.at["Levels", d] = {"French": "French",
+                                  "English": "English"}
     else:
-        df_mtx.at[j, "unit"] = "dB"
-        df_mtx.at[j, "levels"] = "n/a"
+        # keys_word_pta = a.replace("_", " ")
+        df_mtx.at["LongName", d] = dict_LongName_mtx[d]
+        df_mtx.at["Description", d] = f"The participants are asked to repeat out loud the sentences that are presented to them. This value represents the hearing threshold for a 50% rate of correct answers with these conditions: {dict_Desc_mtx[d]}."
+        df_mtx.at["Units", d] = "dB"
 
-#print(df_mtx)
+print(df_mtx)
+
+df_mtx.to_json("../results/BIDS_sidecars_originals/mtx_run_level.json", indent=2)
+
+with open("../results/BIDS_sidecars_originals/mtx_run_level.json", "r") as origin:
+    json_mtx = json.load(origin)
+origin.close()
+
+print(json_mtx)
+
+for e in list(json_mtx.keys()):
+    for f in list(json_mtx[e].keys()):
+        if json_mtx[e][f] == None:
+            del json_mtx[e][f]
+
+print(json_pta)
+
+Path("../results/BIDS_sidecars_originals/mtx_run_level.json").write_text(json.dumps(json_mtx,
+                                                                                    indent=2,
+                                                                                    ensure_ascii=False),
+                                                                         encoding="UTF-8-SIG")
+
 
 index_tymp = np.arange(0, len(keys_tymp)).tolist()
 #print(index_tymp)
