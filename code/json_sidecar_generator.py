@@ -10,22 +10,22 @@ ls_task = ["Tymp", "Reflex", "PTA",
 
 index = ["LongName", "Description", "Levels", "Units"]
 
-keys_tymp = ["order", "side", "Type", "TPP", "ECV", "SC", "TW"]
+keys_tymp = ["order", "side", "type", "tpp", "ecv", "sc", "tw"]
 # value unit for "Type" = ""
 # other values' unit = "?"
 
-keys_reflex = ["order", "side", "500_Hz", "1000_Hz", "2000_Hz", "4000_Hz", 'NOISE']
+keys_reflex = ["order", "side", "500_hz", "1000_hz", "2000_hz", "4000_hz", 'noise']
 # values' unit = "dB" for all
 
-keys_pta = ["order", "side", "250_Hz", "500_Hz", "1000_Hz",
-            "2000_Hz", "3000_Hz", "4000_Hz", "6000_Hz", "8000_Hz",
-            "9000_Hz", "10000_Hz", "11200_Hz", "12500_Hz",
-            "14000_Hz", "16000_Hz", "18000_Hz", "20000_Hz"]
+keys_pta = ["order", "side", "250_hz", "500_hz", "1000_hz",
+            "2000_hz", "3000_hz", "4000_hz", "6000_hz", "8000_hz",
+            "9000_hz", "10000_hz", "11200_hz", "12500_hz",
+            "14000_hz", "16000_hz", "18000_hz", "20000_hz"]
 
-keys_mtx = ["order", "LANGUAGE", "Practice", "Sp_Bin_No_Bin",
-            "Sp_L_No_Bin", "Sp_R_No_Bin", "Sp_L_No_L", "Sp_R_No_R"]
+keys_mtx = ["order", "language", "practice", "sp_bin_no_bin",
+            "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
 
-keys_teoae = ["Freq", "OAE", "Noise", "SNR", "Confidence"]
+keys_teoae = ["freq", "oae", "noise", "snr", "confidence"]
 # value unit for "Freq" = "Hz"
 # value unit for "OAE" = "dB"
 # value unit for "Noise" = "dB"
@@ -35,7 +35,7 @@ keys_teoae = ["Freq", "OAE", "Noise", "SNR", "Confidence"]
 keys_dpoae = []
 
 
-keys_growth = ["Freq", "F1", "F2", "DP", "Noise+2sd", "SNR"]
+keys_growth = ["freq", "f1", "f2", "dp", "noise+2sd", "snr"]
 # value unit for "Freq" = "Hz"
 # value unit for "F1" = "dB"
 # value unit for "F2" = "dB"
@@ -45,6 +45,54 @@ keys_growth = ["Freq", "F1", "F2", "DP", "Noise+2sd", "SNR"]
 # columns = ["test", "key", "description", "unit", "levels"]
 # print(columns)
 # print(index_pta)
+
+df_tymp = pd.DataFrame(index=index, columns=keys_tymp)
+print(df_tymp)
+
+for a in keys_tymp:
+    if a == "order":
+        df_tymp.at["LongName", a] = "Order of acquisition"
+        df_tymp.at["Levels", a] = {"1": "First sequence acquired",
+                                   "2": "Second sequence acquired"}
+    elif a == "side":
+        df_tymp.at["LongName", a] = "Side of ear tested"
+        df_tymp.at["Levels", a] = {"R": "Right ear",
+                                   "L": "Left ear"}
+    else:
+        keys_word_pta = a.replace("_", " ")
+        df_pta.at["LongName", a] = f"Threshold at {keys_word_pta}"
+        df_pta.at["Description", a] = f"The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at {keys_word_pta}."
+        df_pta.at["Units", a] = "dB HL"
+
+df_pta.to_json("../results/BIDS_sidecars_originals/pta_run_level.json", indent=2)
+
+with open("../results/BIDS_sidecars_originals/pta_run_level.json", "r") as origin:
+    json_pta = json.load(origin)
+origin.close()
+
+# print(json_pta)
+
+for b in list(json_pta.keys()):
+    for c in list(json_pta[b].keys()):
+        if json_pta[b][c] == None:
+            del json_pta[b][c]
+
+#print(json_pta)
+
+Path("../results/BIDS_sidecars_originals/pta_run_level.json").write_text(json.dumps(json_pta,
+                                                                                    indent=2,
+                                                                                    ensure_ascii=False),
+                                                                         encoding="UTF-8-SIG")
+
+
+
+
+
+
+
+
+
+
 
 df_pta = pd.DataFrame(index=index, columns=keys_pta)
 # print(df_pta)
