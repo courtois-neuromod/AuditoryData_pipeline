@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from shutil import copyfile
 # import glob
 
 # Retrieve the database
@@ -13,7 +14,7 @@ df.fillna(value='n/a', inplace=True)
 
 # Create a list of the subjects and a reference path for the results
 subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
-parent_path = '../results/BIDS_data/'
+parent_path = os.path.join("..", "results", "BIDS_data")
 
 # Specify the columns to be used for each test
 # Subject and session settings data
@@ -67,12 +68,14 @@ for i in df.columns:
         columns_MTX_L2.append(i)
 
 # Generate the column titles to be used in the tsv files
-x_tymp = ['Type', 'TPP', 'ECV', 'SC', 'TW']
-x_reflex = [500, 1000, 2000, 4000, 'NOISE']
-x_PTA = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000,
-         9000, 10000, 11200, 12500, 14000, 16000, 18000, 20000]
-x_MTX = ['LANGUAGE', "Practice", "Sp_Bin_No_Bin",
-         "Sp_L_No_Bin", "Sp_R_No_Bin", "Sp_L_No_L", "Sp_R_No_R"]
+x_tymp = ["order", "side", 'type', 'tpp', 'ecv', 'sc', 'tw']
+x_reflex = ["order", "side", "500_hz", "1000_hz", "2000_hz", "4000_hz", 'noise']
+x_PTA = ["order", "side", "250_hz", "500_hz", "1000_hz",
+         "2000_hz", "3000_hz", "4000_hz", "6000_hz", "8000_hz",
+         "9000_hz", "10000_hz", "11200_hz", "12500_hz",
+         "14000_hz", "16000_hz", "18000_hz", "20000_hz"]
+x_MTX = ["order", "language", "practice", "sp_bin_no_bin",
+         "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
 
 
 # Single participant sub-df extraction
@@ -101,27 +104,27 @@ def create_folder_subjects(subject, parent_path):
     if dir_content.count(f"sub-{sub_ID}") == 1:
         pass
     else:
-        os.mkdir(f"{parent_path}sub-{sub_ID}")
+        os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
 
 
 # Check if the session-level folders exist for each participant
 # If not, create them
 def create_folder_session(subject, session_count):
     sub_ID = subject.lstrip("Sub")
-    children_path = f"{parent_path}sub-{sub_ID}/"
+    children_path = os.path.join(parent_path, f"sub-{sub_ID}")
     dir_content = os.listdir(children_path)
 
     for j in range(1, session_count + 1):
         if dir_content.count(f"ses-{j:02d}") == 1:
             pass
         else:
-            os.mkdir(f"{children_path}ses-{j:02d}")
+            os.mkdir(os.path.join(children_path, f"ses-{j:02d}"))
 
 
-# Function used to save the tsv files
+# Function used to save the tsv files and json sidecars
 # This function is called by the following functions and saves the data they
 # provide with the specified path
-def save_df(data_tosave_df, single_test_df, index, test, run):
+def save_df(data_tosave_df, single_test_df, index, test, run="01"):
     sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
 
     if (index + 1) < 10:
@@ -133,158 +136,192 @@ def save_df(data_tosave_df, single_test_df, index, test, run):
     # The last code section must then be activated
     ext = '.tsv'
 
-    path = parent_path + 'sub-' + sub + '/' + 'ses-' + ses + '/'
-    file_name = ('sub-' + sub + '_ses-' + ses + '_task-' + test + '_run-'
-                 + run + "_beh" + ext)
+    path = os.path.join(parent_path, 'sub-' + sub, 'ses-' + ses)
+    file_name = os.path.join('sub-' + sub + '_ses-' + ses + '_task-' + test
+                             + '_run-' + run + "_beh")
 
-    data_tosave_df.to_csv(path + file_name, sep='\t')
+    data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')
+
+    json_origin = os.path.join("..", "results", "BIDS_sidecars_originals")
+
+    if test == "Tymp":
+        copyfile(os.path.join(json_origin, "tymp_run_level.json"), os.path.join(path, file_name + ".json"))
+    elif test == "Reflex":
+        copyfile(os.path.join(json_origin, "reflex_run_level.json"), os.path.join(path, file_name + ".json"))
+    elif test == "PTA":
+        copyfile(os.path.join(json_origin, "pta_run_level.json"), os.path.join(path, file_name + ".json"))
+    elif test == "MTX":
+        copyfile(os.path.join(json_origin, "mtx_run_level.json"), os.path.join(path, file_name + ".json"))
 
 
 # Extraction of every single tympanometry test
 # The results are then sent to the save_df function to be saved
-def extract_tymp(single_test_df, ls_columns):
+def extract_tymp(single_test_df, ls_columns_1, ls_columns_2):
     x = x_tymp
 
     for j in range(0, len(single_test_df)):
-        y = [[]]
+        y = [[], []]
 
-        for k in ls_columns:
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
             y[0].append(single_test_df[k][j])
 
-            if ls_columns == columns_tymp_R:
-                run = '01'
-            elif ls_columns == columns_tymp_L:
-                run = '02'
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
 
         mask = []
 
-        for m in range(0, len(y[0])):
-            if y[0][m] == 'None':
-                mask.append(True)
-            else:
-                mask.append(False)
+        for n in range(0, len(y)):
+            for p in range(2, len(y[n])):
+                if y[n][p] == 'n/a':
+                    mask.append(True)
+                else:
+                    mask.append(False)
 
-        z = pd.DataFrame(data=y, columns=x)
+        z = pd.DataFrame(data=y, columns=x).set_index("order")
 
         if False in mask:
-            save_df(z, single_test_df, j, 'Tymp', run)
+            save_df(z, single_test_df, j, 'Tymp')
         else:
             continue
 
 
 # Extraction of every single stapedial reflex test
 # The results are then sent to the save_df function to be saved
-def extract_reflex(single_test_df, ls_columns):
+def extract_reflex(single_test_df, ls_columns_1, ls_columns_2):
     x = x_reflex
 
     for j in range(0, len(single_test_df)):
-        y = [[]]
+        y = [[], []]
 
-        for k in ls_columns:
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
             y[0].append(single_test_df[k][j])
 
-            if ls_columns == columns_reflex_R:
-                run = '01'
-            elif ls_columns == columns_reflex_L:
-                run = '02'
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
 
         mask = []
 
-        for m in range(0, len(y[0])):
-            if y[0][m] == 'None':
-                mask.append(True)
-            else:
-                mask.append(False)
+        for n in range(0, len(y)):
+            for p in range(2, len(y[n])):
+                if y[n][p] == 'n/a':
+                    mask.append(True)
+                else:
+                    mask.append(False)
 
-        z = pd.DataFrame(data=y, columns=x)
+        z = pd.DataFrame(data=y, columns=x).set_index("order")
 
         if False in mask:
-            save_df(z, single_test_df, j, 'Reflex', run)
+            save_df(z, single_test_df, j, 'Reflex')
         else:
             continue
 
 
 # Extraction of every single pure-tone audiometry test
 # The results are then sent to the save_df function to be saved
-def extract_pta(single_test_df, ls_columns):
+def extract_pta(single_test_df, ls_columns_1, ls_columns_2):
     x = x_PTA
 
     for j in range(0, len(single_test_df)):
-        y = [[]]
+        y = [[], []]
 
-        for k in ls_columns:
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
             y[0].append(single_test_df[k][j])
 
-            if ls_columns == columns_PTA_R:
-                run = '01'
-            elif ls_columns == columns_PTA_L:
-                run = '02'
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
 
         mask = []
 
-        for m in range(0, len(y[0])):
-            if y[0][m] == 'None':
-                mask.append(True)
-            else:
-                mask.append(False)
+        for n in range(0, len(y)):
+            for p in range(2, len(y[n])):
+                if y[n][p] == 'n/a':
+                    mask.append(True)
+                else:
+                    mask.append(False)
 
-        z = pd.DataFrame(data=y, columns=x)
+        z = pd.DataFrame(data=y, columns=x).set_index("order")
 
         if False in mask:
-            z.replace(to_replace=130, value="None", inplace=True)
-            save_df(z, single_test_df, j, 'PTA', run)
+            z.replace(to_replace=130, value="n/a", inplace=True)
+            save_df(z, single_test_df, j, 'PTA')
         else:
             continue
 
 
 # Extraction of every single matrix speech-in-noise perception test
 # The results are then sent to the save_df function to be saved
-def extract_mtx(single_test_df, ls_columns):
+def extract_mtx(single_test_df, ls_columns_1, ls_columns_2):
     x = x_MTX
 
     for j in range(0, len(single_test_df)):
-        y = [[]]
+        y = [[], []]
 
-        for k in ls_columns:
+        y[0].append("1")
+
+        for k in ls_columns_1:
             y[0].append(single_test_df[k][j])
 
-            if ls_columns == columns_MTX_L1:
-                run = '01'
-            elif ls_columns == columns_MTX_L2:
-                run = '02'
+        y[1].append("2")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
 
         mask = []
 
-        for m in range(0, len(y[0])):
-            if y[0][m] == 'None':
-                mask.append(True)
-            else:
-                mask.append(False)
+        for n in range(0, len(y)):
+            for p in range(1, len(y[n])):
+                if y[n][p] == 'n/a':
+                    mask.append(True)
+                else:
+                    mask.append(False)
 
-        z = pd.DataFrame(data=y, columns=x)
+        z = pd.DataFrame(data=y, columns=x).set_index("order")
 
         if False in mask:
-            save_df(z, single_test_df, j, 'MTX', run)
+            save_df(z, single_test_df, j, 'MTX')
         else:
             continue
 
 
 for i in subjects:
+    # Creation of the subject folder
     create_folder_subjects(i, parent_path)
+
+    # Extraction of all the session for the subject
     data_sub = subject_extractor(df, i)
+
+    # Creation of a folder for each session
     create_folder_session(i, len(data_sub))
+
+    # Extraction of the test columns
     tymp = eliminate_columns(data_sub, columns_tymp)
     reflex = eliminate_columns(data_sub, columns_reflex)
     pta = eliminate_columns(data_sub, columns_PTA)
     mtx = eliminate_columns(data_sub, columns_MTX)
-    extract_tymp(tymp, columns_tymp_R)
-    extract_tymp(tymp, columns_tymp_L)
-    extract_reflex(reflex, columns_reflex_R)
-    extract_reflex(reflex, columns_reflex_L)
-    extract_pta(pta, columns_PTA_R)
-    extract_pta(pta, columns_PTA_L)
-    extract_mtx(mtx, columns_MTX_L1)
-    extract_mtx(mtx, columns_MTX_L2)
+
+    # Dataframe reconstruction
+    extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
+    extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
+    extract_pta(pta, columns_PTA_R, columns_PTA_L)
+    extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
 
 
 # This code section is present if, for any reason, the .tsv files are not
