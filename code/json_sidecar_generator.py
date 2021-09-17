@@ -1,8 +1,13 @@
 import pandas as pd
-import numpy as np
 import json
-import os
 from pathlib import Path
+
+utf = "UTF-8-SIG"
+parent_path = "../results/BIDS_sidecars_originals/"
+long_order = "Order of acquisition"
+long_side = "Side of ear tested"
+lvl_order = {"1": "First sequence acquired", "2": "Second sequence acquired"}
+lvl_side = {"R": "Right ear", "L": "Left ear"}
 
 ls_task = ["Tymp", "Reflex", "PTA",
            "MTX", "TEOAE", "DPOAE",
@@ -11,11 +16,8 @@ ls_task = ["Tymp", "Reflex", "PTA",
 index = ["LongName", "Description", "Levels", "Units"]
 
 keys_tymp = ["order", "side", "type", "tpp", "ecv", "sc", "tw"]
-# value unit for "Type" = ""
-# other values' unit = "?"
 
 keys_reflex = ["order", "side", "500_hz", "1000_hz", "2000_hz", "4000_hz", 'noise']
-# values' unit = "dB" for all
 
 keys_pta = ["order", "side", "250_hz", "500_hz", "1000_hz",
             "2000_hz", "3000_hz", "4000_hz", "6000_hz", "8000_hz",
@@ -42,192 +44,191 @@ keys_growth = ["freq", "f1", "f2", "dp", "noise+2sd", "snr"]
 # value unit for "DP" = "dB"
 # value unit for "Noise+2sd" = "dB"
 
-# columns = ["test", "key", "description", "unit", "levels"]
-# print(columns)
-# print(index_pta)
 
+# .json sidecar for the tympanometry
 df_tymp = pd.DataFrame(index=index, columns=keys_tymp)
-print(df_tymp)
 
-for a in keys_tymp:
-    if a == "order":
-        df_tymp.at["LongName", a] = "Order of acquisition"
-        df_tymp.at["Levels", a] = {"1": "First sequence acquired",
-                                   "2": "Second sequence acquired"}
-    elif a == "side":
-        df_tymp.at["LongName", a] = "Side of ear tested"
-        df_tymp.at["Levels", a] = {"R": "Right ear",
-                                   "L": "Left ear"}
+dict_longname_tymp = {keys_tymp[3]: "Tympanometric peak pressure/Middle ear pressure",
+                      keys_tymp[4]: "Equivalent ear canal volume",
+                      keys_tymp[5]: "Static admittance/Compliance",
+                      keys_tymp[6]: "Tympanometric width"}
+
+dict_desc_tymp = {keys_tymp[3]: "Maximal acoustic energy absorbance capacity of the tympanic membrane.",
+                  keys_tymp[4]: "Volume of the auditory canal between the probe and the tympanic membrane.",
+                  keys_tymp[5]: "Maximal acoustic energy absorbance capacity of the middle ear ossicles.",
+                  keys_tymp[6]: "Pressure level at 50% of the tympanogram's peak."}
+
+dict_units_tymp = {keys_tymp[3]: "daPa",
+                   keys_tymp[4]: "mL",
+                   keys_tymp[5]: "mL",
+                   keys_tymp[6]: "daPa"}
+
+for k_tymp in keys_tymp:
+    if k_tymp == keys_tymp[0]:
+        df_tymp.at[index[0], k_tymp] = long_order
+        df_tymp.at[index[2], k_tymp] = lvl_order
+
+    elif k_tymp == keys_tymp[1]:
+        df_tymp.at[index[0], k_tymp] = long_side
+        df_tymp.at[index[2], k_tymp] = lvl_side
+
+    elif k_tymp == keys_tymp[2]:
+        df_tymp.at[index[0], k_tymp] = "Type of curve"
+        df_tymp.at[index[1], k_tymp] = "The type parameter is a simplified representation of the actual tympanogram curve. It provides an indication on the shape of the response curve and a clinical judgement on the normality of the result."
+        df_tymp.at[index[2], k_tymp] = {"A": "Within normal mobility range",
+                                        "Ad": "Presents a higher than expected mobility of the tympanic membrane",
+                                        "As": "Presents a lower than expected mobility of the tympanic membrane",
+                                        "B": "Presents a very low mobility of the tympanic membrane",
+                                        "C": "Presents a lower fluid pressure in the middle ear than in the ear canal",
+                                        "D": " *** DESCRIPTION TO BE ADDED *** ",
+                                        "E": " *** DESCRIPTION TO BE ADDED *** "}
+
     else:
-        keys_word_pta = a.replace("_", " ")
-        df_pta.at["LongName", a] = f"Threshold at {keys_word_pta}"
-        df_pta.at["Description", a] = f"The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at {keys_word_pta}."
-        df_pta.at["Units", a] = "dB HL"
+        df_tymp.at[index[0], k_tymp] = dict_longname_tymp[k_tymp]
+        df_tymp.at[index[1], k_tymp] = dict_desc_tymp[k_tymp]
+        df_tymp.at[index[3], k_tymp] = dict_units_tymp[k_tymp]
 
-df_pta.to_json("../results/BIDS_sidecars_originals/pta_run_level.json", indent=2)
+df_tymp.to_json(parent_path + "tymp_run_level.json", indent=2)
 
-with open("../results/BIDS_sidecars_originals/pta_run_level.json", "r") as origin:
-    json_pta = json.load(origin)
+with open(parent_path + "tymp_run_level.json", "r") as origin:
+    json_tymp = json.load(origin)
 origin.close()
 
-# print(json_pta)
+for i in list(json_tymp.keys()):
+    for j in list(json_tymp[i].keys()):
+        if json_tymp[i][j] == None:
+            del json_tymp[i][j]
 
-for b in list(json_pta.keys()):
-    for c in list(json_pta[b].keys()):
-        if json_pta[b][c] == None:
-            del json_pta[b][c]
-
-#print(json_pta)
-
-Path("../results/BIDS_sidecars_originals/pta_run_level.json").write_text(json.dumps(json_pta,
-                                                                                    indent=2,
-                                                                                    ensure_ascii=False),
-                                                                         encoding="UTF-8-SIG")
+Path(parent_path + "tymp_run_level.json").write_text(json.dumps(json_tymp,
+                                                                indent=2,
+                                                                ensure_ascii=False),
+                                                     encoding=utf)
 
 
+# .json sidecar for the stapedial reflex
+df_reflex = pd.DataFrame(index=index, columns=keys_reflex)
+
+dict_desc_reflex = {"500_hz": "",
+                    "1000_hz": "",
+                    "2000_hz": "",
+                    "4000_hz": ""}
+
+for k_ref in keys_reflex:
+    if k_ref == keys_reflex[0]:
+        df_reflex.at[index[0], k_ref] = long_order
+        df_reflex.at[index[2], k_ref] = lvl_order
+
+    elif k_ref == keys_reflex[1]:
+        df_reflex.at[index[0], k_ref] = long_side
+        df_reflex.at[index[2], k_ref] = lvl_side
+
+    elif k_ref == keys_reflex[6]:
+        df_reflex.at[index[0], k_ref] = f"Stapedial reflex threshold for broadband {k_ref}"
+        df_reflex.at[index[1], k_ref] = ""
+        df_reflex.at[index[3], k_ref] = "dB HL"
+
+    else:
+        keys_word_reflex = k_ref.replace("_", " ").title()
+        df_reflex.at[index[0], k_ref] = f"Stapedial reflex threshold at {keys_word_reflex}"
+        df_reflex.at[index[1], k_ref] = dict_desc_reflex[k_ref]
+        df_reflex.at[index[3], k_ref] = "dB HL"
+
+df_reflex.to_json(parent_path + "reflex_run_level.json", indent=2)
+
+with open(parent_path + "reflex_run_level.json", "r") as origin:
+    json_reflex = json.load(origin)
+origin.close()
+
+for i in list(json_reflex.keys()):
+    for j in list(json_reflex[i].keys()):
+        if json_reflex[i][j] == None:
+            del json_reflex[i][j]
+
+Path(parent_path + "reflex_run_level.json").write_text(json.dumps(json_reflex,
+                                                                  indent=2,
+                                                                  ensure_ascii=False),
+                                                                            encoding=utf)
 
 
-
-
-
-
-
-
-
+# .json sidecar for the pure-tone audiometry
 df_pta = pd.DataFrame(index=index, columns=keys_pta)
-# print(df_pta)
 
-for a in keys_pta:
-    if a == "order":
-        df_pta.at["LongName", a] = "Order of acquisition"
-        df_pta.at["Levels", a] = {"1": "First sequence acquired",
-                                  "2": "Second sequence acquired"}
-    elif a == "side":
-        df_pta.at["LongName", a] = "Side of ear tested"
-        df_pta.at["Levels", a] = {"R": "Right ear",
-                                  "L": "Left ear"}
+for k_pta in keys_pta:
+    if k_pta == keys_pta[0]:
+        df_pta.at[index[0], k_pta] = long_order
+        df_pta.at[index[2], k_pta] = lvl_order
+
+    elif k_pta == keys_pta[1]:
+        df_pta.at[index[0], k_pta] = long_side
+        df_pta.at[index[2], k_pta] = lvl_side
+
     else:
-        keys_word_pta = a.replace("_", " ")
-        df_pta.at["LongName", a] = f"Threshold at {keys_word_pta}"
-        df_pta.at["Description", a] = f"The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at {keys_word_pta}."
-        df_pta.at["Units", a] = "dB HL"
+        keys_word_pta = k_pta.replace("_", " ").title()
+        df_pta.at[index[0], k_pta] = f"Threshold at {keys_word_pta}"
+        df_pta.at[index[1], k_pta] = f"The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at {keys_word_pta}."
+        df_pta.at[index[3], k_pta] = "dB HL"
 
-df_pta.to_json("../results/BIDS_sidecars_originals/pta_run_level.json", indent=2)
+df_pta.to_json(parent_path + "pta_run_level.json", indent=2)
 
-with open("../results/BIDS_sidecars_originals/pta_run_level.json", "r") as origin:
+with open(parent_path + "pta_run_level.json", "r") as origin:
     json_pta = json.load(origin)
 origin.close()
 
-# print(json_pta)
+for i in list(json_pta.keys()):
+    for j in list(json_pta[i].keys()):
+        if json_pta[i][j] == None:
+            del json_pta[i][j]
 
-for b in list(json_pta.keys()):
-    for c in list(json_pta[b].keys()):
-        if json_pta[b][c] == None:
-            del json_pta[b][c]
+Path(parent_path + "pta_run_level.json").write_text(json.dumps(json_pta,
+                                                               indent=2,
+                                                               ensure_ascii=False),
+                                                    encoding=utf)
 
-#print(json_pta)
 
-Path("../results/BIDS_sidecars_originals/pta_run_level.json").write_text(json.dumps(json_pta,
-                                                                                    indent=2,
-                                                                                    ensure_ascii=False),
-                                                                         encoding="UTF-8-SIG")
-
-# index_mtx = np.arange(0, len(keys_mtx)).tolist()
-# print(index_mtx)
+# .json sidecar for the matrix speech-in-noise perception test
 df_mtx = pd.DataFrame(index=index, columns=keys_mtx)
-print(df_mtx)
-dict_LongName_mtx = {"Practice": "First condition of the sequence (see Description).",
-                     "Sp_Bin_No_Bin": "Second condition of the sequence (see Description).",
-                     "Sp_L_No_Bin": "Third condition of the sequence (see Description).",
-                     "Sp_R_No_Bin": "Fourth condition of the sequence (see Description).",
-                     "Sp_L_No_L": "Fifth condition of the sequence (see Description).",
-                     "Sp_R_No_R": "Sixth condition of the sequence (see Description)."}
 
-dict_Desc_mtx = {"Practice": "Speech presentation = Binaural/Noise presentation = Binaural. This condition is used as a practice/warm-up condition",
-                 "Sp_Bin_No_Bin": "Speech presentation = Binaural/Noise presentation = Binaural",
-                 "Sp_L_No_Bin": "Speech presentation = Left ear/Noise presentation = Binaural",
-                 "Sp_R_No_Bin": "Speech presentation = Right ear/Noise presentation = Binaural",
-                 "Sp_L_No_L": "Speech presentation = Left ear/Noise presentation = Left ear",
-                 "Sp_R_No_R": "Speech presentation = Right ear/Noise presentation = Right ear"}
+dict_longname_mtx = {"practice": "First condition of the sequence (see Description).",
+                     "sp_bin_no_bin": "Second condition of the sequence (see Description).",
+                     "sp_l_no_bin": "Third condition of the sequence (see Description).",
+                     "sp_r_no_bin": "Fourth condition of the sequence (see Description).",
+                     "sp_l_no_l": "Fifth condition of the sequence (see Description).",
+                     "sp_r_no_r": "Sixth condition of the sequence (see Description)."}
 
-for d in keys_mtx:
-    if d == "order":
-        df_mtx.at["LongName", d] = "Order of acquisition"
-        df_mtx.at["Levels", d] = {"1": "First sequence acquired",
-                                  "2": "Second sequence acquired"}
-    elif d == "LANGUAGE":
-        df_mtx.at["LongName", d] = "Language used for this sequence of acquisition"
-        df_mtx.at["Levels", d] = {"French": "French",
-                                  "English": "English"}
+dict_desc_mtx = {"practice": "Speech presentation = Binaural/Noise presentation = Binaural. This condition is used as a practice/warm-up condition",
+                 "sp_bin_no_bin": "Speech presentation = Binaural/Noise presentation = Binaural",
+                 "sp_l_no_bin": "Speech presentation = Left ear/Noise presentation = Binaural",
+                 "sp_r_no_bin": "Speech presentation = Right ear/Noise presentation = Binaural",
+                 "sp_l_no_l": "Speech presentation = Left ear/Noise presentation = Left ear",
+                 "sp_r_no_r": "Speech presentation = Right ear/Noise presentation = Right ear"}
+
+for k_mtx in keys_mtx:
+    if k_mtx == keys_mtx[0]:
+        df_mtx.at[index[0], k_mtx] = long_order
+        df_mtx.at[index[2], k_mtx] = lvl_order
+
+    elif k_mtx == keys_mtx[1]:
+        df_mtx.at[index[0], k_mtx] = "Language used for this sequence of acquisition"
+        df_mtx.at[index[2], k_mtx] = {"French": "French",
+                                      "English": "English"}
+
     else:
-        # keys_word_pta = a.replace("_", " ")
-        df_mtx.at["LongName", d] = dict_LongName_mtx[d]
-        df_mtx.at["Description", d] = f"The participants are asked to repeat out loud the sentences that are presented to them. This value represents the hearing threshold for a 50% rate of correct answers with these conditions: {dict_Desc_mtx[d]}."
-        df_mtx.at["Units", d] = "dB"
+        df_mtx.at[index[0], k_mtx] = dict_longname_mtx[k_mtx]
+        df_mtx.at[index[1], k_mtx] = f"The participants are asked to repeat out loud the sentences that are presented to them. This value represents the hearing threshold for a 50% rate of correct answers with these conditions: {dict_desc_mtx[k_mtx]}."
+        df_mtx.at[index[3], k_mtx] = "dB"
 
-print(df_mtx)
+df_mtx.to_json(parent_path + "mtx_run_level.json", indent=2)
 
-df_mtx.to_json("../results/BIDS_sidecars_originals/mtx_run_level.json", indent=2)
-
-with open("../results/BIDS_sidecars_originals/mtx_run_level.json", "r") as origin:
+with open(parent_path + "mtx_run_level.json", "r") as origin:
     json_mtx = json.load(origin)
 origin.close()
 
-print(json_mtx)
+for i in list(json_mtx.keys()):
+    for j in list(json_mtx[i].keys()):
+        if json_mtx[i][j] == None:
+            del json_mtx[i][j]
 
-for e in list(json_mtx.keys()):
-    for f in list(json_mtx[e].keys()):
-        if json_mtx[e][f] == None:
-            del json_mtx[e][f]
-
-print(json_pta)
-
-Path("../results/BIDS_sidecars_originals/mtx_run_level.json").write_text(json.dumps(json_mtx,
-                                                                                    indent=2,
-                                                                                    ensure_ascii=False),
-                                                                         encoding="UTF-8-SIG")
-
-
-index_tymp = np.arange(0, len(keys_tymp)).tolist()
-#print(index_tymp)
-df_tymp = pd.DataFrame(index=index_tymp, columns=columns)
-# print(df_tymp)
-
-for k in range(0, len(df_tymp)):
-    df_tymp.at[k, "test"] = "Tymp"
-    df_tymp.at[k, "key"] = keys_tymp[k]
-    keys_word_tymp = keys_tymp[k]
-
-    if k == 0:
-        df_tymp.at[k, "description"] = f"Value representing the shape type of the tympanometry response."
-        df_tymp.at[k, "unit"] = "n/a"
-        df_tymp.at[k, "levels"] = {"A": "Response within normal range", "As": "-", "Ad": "-"}
-    else:
-        df_tymp.at[k, "description"] = f"Value obtained for the parameter {keys_word_tymp}."
-        df_tymp.at[k, "unit"] = "TBD"
-        df_tymp.at[k, "levels"] = "n/a"
-
-#print(df_tymp)
-
-index_reflex = np.arange(0, len(keys_reflex)).tolist()
-# print(index_reflex)
-df_reflex = pd.DataFrame(index=index_reflex, columns=columns)
-# print(df_reflex)
-
-for m in range(0, len(df_reflex)):
-    df_reflex.at[m, "test"] = "Reflex"
-    df_reflex.at[m, "key"] = keys_reflex[m]
-    keys_word_reflex = keys_reflex[m].replace("_", " ")
-    df_reflex.at[m, "description"] = f"Intensity level to obtain the stapedial reflex with {keys_word_reflex}."
-    df_reflex.at[m, "unit"] = "dB"
-
-#print(df_reflex)
-
-# df_tymp = df_tymp.T
-
-df_tymp.to_json("../results/BIDS_sidecars_originals/tymp_run_level.json", indent=2)
-df_reflex.to_json("../results/BIDS_sidecars_originals/reflex_run_level.json", indent=2)
-df_pta.to_json("../results/BIDS_sidecars_originals/pta_run_level.json", indent=2)
-df_mtx.to_json("../results/BIDS_sidecars_originals/mtx_run_level.json", indent=2)
-
-
+Path(parent_path + "mtx_run_level.json").write_text(json.dumps(json_mtx,
+                                                               indent=2,
+                                                               ensure_ascii=False),
+                                                    encoding=utf)
