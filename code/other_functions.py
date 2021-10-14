@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import plotly.graph_objects as go
 
@@ -79,8 +80,8 @@ def save_graph_PTA(graph, df, ear):
     sub_short = sub.lstrip("Sub")
     sub_long = "sub-" + sub_short
 
-    folder = "../results/graphs/" + sub_long + "/"
-    path_header = folder + "Sub-" + sub_short + "_" + test + "_"
+    folder = os.path.join("..", "results", "graphs", sub_long)
+    path_header = os.path.join(folder, ("Sub-" + sub_short + "_" + test + "_"))
 
     if ear == "All_runs":
         path = path_header + ear + ".html"
@@ -117,8 +118,8 @@ def save_graph_MTX(graph, df, language_ID):
     sub_short = sub.lstrip("Sub")
     sub_long = "sub-" + sub_short
 
-    folder = "../results/graphs/" + sub_long + "/"
-    path_header = folder + "Sub-" + sub_short + "_" + test + "_"
+    folder = os.path.join("..", "results", "graphs", sub_long)
+    path_header = os.path.join(folder, ("Sub-" + sub_short + "_" + test + "_"))
 
     if language_ID.endswith("_All_runs") is True:
         path = path_header + language_ID + ".html"
