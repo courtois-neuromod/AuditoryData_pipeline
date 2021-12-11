@@ -135,6 +135,24 @@ if __name__ == "__main__":
         else:
             save_error = save_error + 1
 
+    # PTA, Box plot graph, Right ear
+    for r in subjects:
+        one_subject = of.extract_subject(data_pta_R, r)
+        action_r = of.plot_boxplot_pta(one_subject, "Right ear")
+        if action_r is True:
+            counter = counter + 1
+        else:
+            save_error = save_error + 1
+
+    # PTA, Box plot graph, Left ear
+    for s in subjects:
+        one_subject = of.extract_subject(data_pta_L, s)
+        action_s = of.plot_boxplot_pta(one_subject, "Left ear")
+        if action_s is True:
+            counter = counter + 1
+        else:
+            save_error = save_error + 1
+
     # MTX, L1
     for m in range(0, len(data_mtx_L1)):
         action_m = of.plot_mtx(data_mtx_L1.loc[[m]], "L1")
