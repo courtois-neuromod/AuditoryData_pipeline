@@ -1,6 +1,8 @@
 import os
+import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import plotly.express as px
 
 
 def eliminate_row(df, column_to_search, value_to_search):
@@ -26,6 +28,29 @@ def eliminate_row(df, column_to_search, value_to_search):
 
     return df
 
+def eliminate_column(df, prefix_to_keep):
+    """
+    INPUTS
+    -df: pandas dataframe to modify
+    -prefix_to_keep: takes a column name's prefix for the columns to keep
+                     (will drop every column that doesn't start with it)
+    OUPUT
+    -returns a dataframe where the unnecessary columns have been eliminated
+    """
+
+    column_names = df.columns
+    to_drop = []
+
+    for i in column_names:
+        if i.startswith(prefix_to_keep):
+            continue
+        else:
+            to_drop.append(i)
+
+    df = df.drop(to_drop, axis=1)
+    #df = df.reset_index(drop=True)
+
+    return df
 
 def extract_subject(df, subject):
     """
@@ -86,6 +111,9 @@ def save_graph_PTA(graph, df, ear):
     if ear == "All_runs":
         path = path_header + ear + ".html"
 
+    elif ear.startswith("boxplot"):
+        path = path_header + ear + ".html"
+        
     else:
         session = df["DATE"][row]
         name = df["Protocol name"][row]
@@ -440,6 +468,115 @@ def plot_pta_subject(df, display=False):
         fig.show()
     else:
         completed = save_graph_PTA(fig, df, "All_runs")
+
+        if completed is True:
+            return True
+        else:
+            return False
+
+
+def plot_boxplot_pta(df, ear, display=False):
+    """
+    INPUTS
+    -df: pandas dataframe containing the data to plot
+    OUTPUTS
+    -saves pta graph in .html
+    """
+
+    if ear == "Right ear":
+        strip = "RE_"
+    elif ear == "Left ear":
+        strip = "LE_"
+
+    title_graph = generate_title_graph(df, "PTA")
+    labels = {"title": title_graph,
+              "x": "Frequency (Hz)",
+              "y": "Hearing Threshold (dB HL)"}
+
+    fig = go.Figure()
+
+    fig.update_layout(title=labels["title"],
+                      xaxis_title=labels["x"],
+                      yaxis_title=labels["y"],
+                      xaxis_type="log",
+                      xaxis_range=[np.log10(100), np.log10(20000)],
+                      yaxis_range=[80, -20],
+                      yaxis_dtick=10,
+                      xaxis_showline=True,
+                      xaxis_linecolor="black",
+                      yaxis_showline=True,
+                      yaxis_linecolor="black",
+                      yaxis_zeroline=True,
+                      yaxis_zerolinewidth=1,
+                      yaxis_zerolinecolor="black")
+
+    conditions = df["Protocol condition"]
+
+    df_toplot = eliminate_column(df, strip)
+    column_names = df_toplot.columns
+    column_names_int = []
+    
+    for a in range(0, len(column_names)):
+       column_names_int.append(int(column_names[a].lstrip(strip)))
+    
+    df_toplot.columns = column_names_int
+    
+    rows = []
+    
+    for d in range(0, len(df_toplot)):
+        for e in df_toplot.columns:
+            rows.append([e, df_toplot[e][d], conditions[d]])
+
+    new_df = pd.DataFrame(rows,
+                          columns=["Frequency (Hz)",
+                                   "Hearing Threshold (dB HL)",
+                                   "Protocol condition"])
+
+    new_df = eliminate_row(new_df, "Hearing Threshold (dB HL)", 130)
+    
+    baseline = ["Baseline",
+                "Supplementary PTA test (Baseline)"]    
+    pre = ["Condition 1A (right before the scan)",
+               "Suppl. PTA test (right before the scan)"]
+    post = ["Condition 1B (right after the scan)",
+                "Suppl. PTA test (right after the scan)"]
+    post48 = "Condition 2 (2-7 days post-scan)"
+
+    
+    new_df["Protocol condition"].replace(baseline, "Baseline", inplace=True)
+    new_df["Protocol condition"].replace(pre, "Prescan", inplace=True)
+    new_df["Protocol condition"].replace(post, "Postscan", inplace=True)
+    new_df["Protocol condition"].replace(post48, "48h+ Postscan", inplace=True)
+    
+    fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Baseline"],
+                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Baseline"],
+                             name="Baseline",
+                             legendgroup="Baseline"))
+                             
+    fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Prescan"],
+                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Prescan"],
+                             name="Prescan",
+                             legendgroup="Prescan"))
+                            
+    fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Postscan"],
+                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Postscan"],
+                             name="Postscan",
+                             legendgroup="Postscan"))
+                            
+    fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "48h+ Postscan"],
+                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "48h+ Postscan"],
+                             name="48h+ Postscan",
+                             legendgroup="48h+ Postscan"))
+
+    if ear == "Right ear":
+        save_parameter = "boxplot_R"
+    elif ear == "Left ear":
+        save_parameter = "boxplot_L"
+    
+    if display is True:
+        fig.show()
+    else:
+        completed = save_graph_PTA(fig, df, save_parameter)
 
         if completed is True:
             return True
