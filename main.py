@@ -44,6 +44,10 @@ while loop_value:
 ##########################
             else:
                 print("!= 5 == True")
+                if ls_fct[value - 1].count("graph") == 1:
+                    print("graph = True")
+                elif ls_fct[value - 1].count("BIDS") == 1:
+                    print("BIDS = True")
 ##########################
         else:
             #If it is not within range, restart the loop
