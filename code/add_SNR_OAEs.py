@@ -151,10 +151,10 @@ def manip_csv(loop_index, location, ls_csv):
        or ls_csv[loop_index].endswith("TE_R.csv") is True):
         return(SNR_TE(df))
 
-    elif (ls_csv[loop_index].endswith("DPOAE6655_L.csv") is True
-          or ls_csv[loop_index].endswith("DPOAE6655_R.csv") is True):
-        print("DPOAE6655: THIS TYPE OF FILE IS NOT SUPPORTED YET.")
-        return(pd.DataFrame(["DPOAE6655:",
+    elif (ls_csv[loop_index].endswith("DPOAE6555_L.csv") is True
+          or ls_csv[loop_index].endswith("DPOAE6555_R.csv") is True):
+        print("DPOAE6555: THIS TYPE OF FILE IS NOT SUPPORTED YET.")
+        return(pd.DataFrame(["DPOAE6555:",
                              "THIS TYPE OF FILE IS NOT SUPPORTED YET."]))
         # return(SNR_DPOAE(df))
 
