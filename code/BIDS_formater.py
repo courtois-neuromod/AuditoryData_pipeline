@@ -174,18 +174,49 @@ def extract_tymp(single_test_df, ls_columns_1, ls_columns_2):
         for m in ls_columns_2:
             y[1].append(single_test_df[m][j])
 
-        mask = []
+        mask_0 = []
+        mask_1 = []
 
-        for n in range(0, len(y)):
-            for p in range(2, len(y[n])):
-                if y[n][p] == 'n/a':
-                    mask.append(True)
-                else:
-                    mask.append(False)
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
 
-        z = pd.DataFrame(data=y, columns=x).set_index("order")
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
 
-        if False in mask:
+        print(single_test_df)
+        print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            print("Keep 2nd line", y)
+            pass
+        else:
+            print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            print("Keep 1st line", y)
+            pass
+        else:
+            print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'Tymp')
         else:
             continue
@@ -211,18 +242,49 @@ def extract_reflex(single_test_df, ls_columns_1, ls_columns_2):
         for m in ls_columns_2:
             y[1].append(single_test_df[m][j])
 
-        mask = []
+        mask_0 = []
+        mask_1 = []
 
-        for n in range(0, len(y)):
-            for p in range(2, len(y[n])):
-                if y[n][p] == 'n/a':
-                    mask.append(True)
-                else:
-                    mask.append(False)
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
 
-        z = pd.DataFrame(data=y, columns=x).set_index("order")
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
 
-        if False in mask:
+        print(single_test_df)
+        print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            print("Keep 2nd line", y)
+            pass
+        else:
+            print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            print("Keep 1st line", y)
+            pass
+        else:
+            print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'Reflex')
         else:
             continue
@@ -248,19 +310,49 @@ def extract_pta(single_test_df, ls_columns_1, ls_columns_2):
         for m in ls_columns_2:
             y[1].append(single_test_df[m][j])
 
-        mask = []
+        mask_0 = []
+        mask_1 = []
 
-        for n in range(0, len(y)):
-            for p in range(2, len(y[n])):
-                if y[n][p] == 'n/a':
-                    mask.append(True)
-                else:
-                    mask.append(False)
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
 
-        z = pd.DataFrame(data=y, columns=x).set_index("order")
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
 
-        if False in mask:
-            z.replace(to_replace=130, value="n/a", inplace=True)
+        print(single_test_df)
+        print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            print("Keep 2nd line", y)
+            pass
+        else:
+            print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            print("Keep 1st line", y)
+            pass
+        else:
+            print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'PTA')
         else:
             continue
@@ -284,19 +376,50 @@ def extract_mtx(single_test_df, ls_columns_1, ls_columns_2):
         for m in ls_columns_2:
             y[1].append(single_test_df[m][j])
 
-        mask = []
+        mask_0 = []
+        mask_1 = []
 
-        for n in range(0, len(y)):
-            for p in range(1, len(y[n])):
-                if y[n][p] == 'n/a':
-                    mask.append(True)
-                else:
-                    mask.append(False)
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
 
-        z = pd.DataFrame(data=y, columns=x).set_index("order")
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
 
-        if False in mask:
-            save_df(z, single_test_df, j, 'MTX')
+        print(single_test_df)
+        print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            print("Keep 2nd line", y)
+            pass
+        else:
+            print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            print("Keep 1st line", y)
+            pass
+        else:
+            print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
+            save_df(z, single_test_df, j, 'Tymp')
         else:
             continue
 
@@ -318,10 +441,10 @@ for i in subjects:
     mtx = eliminate_columns(data_sub, columns_MTX)
 
     # Dataframe reconstruction
-    extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
+    #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
     extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
-    extract_pta(pta, columns_PTA_R, columns_PTA_L)
-    extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
+    #extract_pta(pta, columns_PTA_R, columns_PTA_L)
+    #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
 
 
 # This code section is present if, for any reason, the .tsv files are not
