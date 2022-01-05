@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from shutil import copyfile
+import json_sidecar_generator as jsg
 # import glob
 
 # Retrieve the database
@@ -14,7 +15,36 @@ df.fillna(value='n/a', inplace=True)
 
 # Create a list of the subjects and a reference path for the results
 subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
-parent_path = os.path.join("..", "results", "BIDS_data")
+result_path = os.path.join("..", "results")
+
+# Results location existence verifications
+content_result_path = os.listdir(result_path)
+content_result_path.sort()
+
+# Verification of the existence of the "BIDS_data" folder
+if content_result_path.count("BIDS_data") == 1:
+    pass
+else:
+    os.mkdir(os.path.join(result_path, "BIDS_data"))
+
+parent_path = os.path.join(result_path, "BIDS_data")
+
+# Verification of the existence of the json sidecar originals
+if content_result_path.count("BIDS_sidecars_originals") == 1:
+    sidecar_folder = os.path.join(result_path, "BIDS_sidecars_originals")
+    sidecar_list = os.listdir(sidecar_folder)
+    sidecar_list.sort()
+    if (sidecar_list.count("tymp_run_level.json") == 1
+        and sidecar_list.count("reflex_run_level.json") == 1
+        and sidecar_list.count("pta_run_level.json") == 1
+        and sidecar_list.count("mtx_run_level.json") == 1):
+        pass
+    else:
+        # run json_sidecar_generator.py
+        jsg
+else:
+    # run json_sidecar_generator.py
+    jsg
 
 # Specify the columns to be used for each test
 # Subject and session settings data

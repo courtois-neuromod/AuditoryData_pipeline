@@ -1,9 +1,21 @@
+import os
 import pandas as pd
 import json
 from pathlib import Path
 
 utf = "UTF-8-SIG"
-parent_path = "../results/BIDS_sidecars_originals/"
+
+parent_path = os.path.join("..", "results")
+content_parent_path = os.listdir(parent_path)
+content_parent_path.sort()
+
+if content_parent_path.count("BIDS_sidecars_originals") == 1:
+    pass
+else:
+    os.mkdir(os.path.join(parent_path, "BIDS_sidecars_originals"))
+
+save_folder = os.path.join(parent_path, "BIDS_sidecars_originals")
+
 long_order = "Order of acquisition"
 long_side = "Side of ear tested"
 lvl_order = {"1": "First sequence acquired", "2": "Second sequence acquired"}
@@ -88,9 +100,9 @@ for k_tymp in keys_tymp:
         df_tymp.at[index[1], k_tymp] = dict_desc_tymp[k_tymp]
         df_tymp.at[index[3], k_tymp] = dict_units_tymp[k_tymp]
 
-df_tymp.to_json(parent_path + "tymp_run_level.json", indent=2)
+df_tymp.to_json(os.path.join(save_folder, "tymp_run_level.json"), indent=2)
 
-with open(parent_path + "tymp_run_level.json", "r") as origin:
+with open(os.path.join(save_folder, "tymp_run_level.json"), "r") as origin:
     json_tymp = json.load(origin)
 origin.close()
 
@@ -99,7 +111,7 @@ for i in list(json_tymp.keys()):
         if json_tymp[i][j] == None:
             del json_tymp[i][j]
 
-Path(parent_path + "tymp_run_level.json").write_text(json.dumps(json_tymp,
+Path(os.path.join(save_folder, "tymp_run_level.json")).write_text(json.dumps(json_tymp,
                                                                 indent=2,
                                                                 ensure_ascii=False),
                                                      encoding=utf)
@@ -133,9 +145,9 @@ for k_ref in keys_reflex:
         df_reflex.at[index[1], k_ref] = dict_desc_reflex[k_ref]
         df_reflex.at[index[3], k_ref] = "dB HL"
 
-df_reflex.to_json(parent_path + "reflex_run_level.json", indent=2)
+df_reflex.to_json(os.path.join(save_folder, "reflex_run_level.json"), indent=2)
 
-with open(parent_path + "reflex_run_level.json", "r") as origin:
+with open(os.path.join(save_folder, "reflex_run_level.json"), "r") as origin:
     json_reflex = json.load(origin)
 origin.close()
 
@@ -144,7 +156,7 @@ for i in list(json_reflex.keys()):
         if json_reflex[i][j] == None:
             del json_reflex[i][j]
 
-Path(parent_path + "reflex_run_level.json").write_text(json.dumps(json_reflex,
+Path(os.path.join(save_folder, "reflex_run_level.json")).write_text(json.dumps(json_reflex,
                                                                   indent=2,
                                                                   ensure_ascii=False),
                                                                             encoding=utf)
@@ -168,9 +180,9 @@ for k_pta in keys_pta:
         df_pta.at[index[1], k_pta] = f"The participants are asked to press a button when they hear a sound. This value represents the hearing threshold obtained with a pure-tone at {keys_word_pta}."
         df_pta.at[index[3], k_pta] = "dB HL"
 
-df_pta.to_json(parent_path + "pta_run_level.json", indent=2)
+df_pta.to_json(os.path.join(save_folder, "pta_run_level.json"), indent=2)
 
-with open(parent_path + "pta_run_level.json", "r") as origin:
+with open(os.path.join(save_folder, "pta_run_level.json"), "r") as origin:
     json_pta = json.load(origin)
 origin.close()
 
@@ -179,7 +191,7 @@ for i in list(json_pta.keys()):
         if json_pta[i][j] == None:
             del json_pta[i][j]
 
-Path(parent_path + "pta_run_level.json").write_text(json.dumps(json_pta,
+Path(os.path.join(save_folder, "pta_run_level.json")).write_text(json.dumps(json_pta,
                                                                indent=2,
                                                                ensure_ascii=False),
                                                     encoding=utf)
@@ -217,9 +229,9 @@ for k_mtx in keys_mtx:
         df_mtx.at[index[1], k_mtx] = f"The participants are asked to repeat out loud the sentences that are presented to them. This value represents the hearing threshold for a 50% rate of correct answers with these conditions: {dict_desc_mtx[k_mtx]}."
         df_mtx.at[index[3], k_mtx] = "dB"
 
-df_mtx.to_json(parent_path + "mtx_run_level.json", indent=2)
+df_mtx.to_json(os.path.join(save_folder, "mtx_run_level.json"), indent=2)
 
-with open(parent_path + "mtx_run_level.json", "r") as origin:
+with open(os.path.join(save_folder, "mtx_run_level.json"), "r") as origin:
     json_mtx = json.load(origin)
 origin.close()
 
@@ -228,7 +240,7 @@ for i in list(json_mtx.keys()):
         if json_mtx[i][j] == None:
             del json_mtx[i][j]
 
-Path(parent_path + "mtx_run_level.json").write_text(json.dumps(json_mtx,
+Path(os.path.join(save_folder, "mtx_run_level.json")).write_text(json.dumps(json_mtx,
                                                                indent=2,
                                                                ensure_ascii=False),
                                                     encoding=utf)
