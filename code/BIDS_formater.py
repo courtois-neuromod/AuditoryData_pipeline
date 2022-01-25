@@ -3,12 +3,10 @@ import os
 from shutil import copyfile
 import json_sidecar_generator as jsg
 # import glob
+import BIDS_utils as utils
 
 # Retrieve the database
-url_share = "https://docs.google.com/spreadsheets/d/1UQsU6FNr7ovVjLRIMIt"\
-            "gtYWr1zN7UHpMjfHtdGa1myc/edit#gid=0"
-url_csv = url_share.replace("/edit#gid=", "/export?format=csv&gid=")
-df = pd.read_csv(url_csv, sep=',', na_filter=True)
+df = utils.retrieve_db()
 
 # Manage the empty boxes
 df.fillna(value='n/a', inplace=True)
