@@ -1,5 +1,5 @@
 import pandas as pd
-import other_functions as of
+import graph_functions as gf
 
 if __name__ == "__main__":
     # url_share = input("Please input the URL of the Google "\
@@ -55,53 +55,53 @@ if __name__ == "__main__":
     # Elimination of the lines that are irrelevant to each of the tests:
     # Matrix speech perception test
     # L1
-    data_mtx_L1 = of.eliminate_row(data_mtx_L1,
+    data_mtx_L1 = gf.eliminate_row(data_mtx_L1,
                                    "Protocol name",
                                    "Baseline 1")
-    data_mtx_L1 = of.eliminate_row(data_mtx_L1,
+    data_mtx_L1 = gf.eliminate_row(data_mtx_L1,
                                    "Protocol condition",
                                    "Condition 3A (OAEs right before the scan)")
-    data_mtx_L1 = of.eliminate_row(data_mtx_L1,
+    data_mtx_L1 = gf.eliminate_row(data_mtx_L1,
                                    "Protocol condition",
                                    "Supplementary PTA test (Baseline)")
-    data_mtx_L1 = of.eliminate_row(data_mtx_L1,
+    data_mtx_L1 = gf.eliminate_row(data_mtx_L1,
                                    "Protocol condition",
                                    "Suppl. PTA test (right before the scan)")
-    data_mtx_L1 = of.eliminate_row(data_mtx_L1,
+    data_mtx_L1 = gf.eliminate_row(data_mtx_L1,
                                    "Protocol condition",
                                    "Suppl. PTA test (right after the scan)")
 
     # L2
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol name",
                                    "Baseline 1")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Condition 1A (right before the scan)")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Condition 1B (right after the scan)")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Condition 3A (OAEs right before the scan)")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Supplementary PTA test (Baseline)")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Suppl. PTA test (right before the scan)")
-    data_mtx_L2 = of.eliminate_row(data_mtx_L2,
+    data_mtx_L2 = gf.eliminate_row(data_mtx_L2,
                                    "Protocol condition",
                                    "Suppl. PTA test (right after the scan)")
 
     # Pure-tone audiometry
-    data_pta = of.eliminate_row(data_pta,
+    data_pta = gf.eliminate_row(data_pta,
                                 "Protocol condition",
                                 "Condition 3A (OAEs right before the scan)")
-    data_pta_L = of.eliminate_row(data_pta_L,
+    data_pta_L = gf.eliminate_row(data_pta_L,
                                   "Protocol condition",
                                   "Condition 3A (OAEs right before the scan)")
-    data_pta_R = of.eliminate_row(data_pta_R,
+    data_pta_R = gf.eliminate_row(data_pta_R,
                                   "Protocol condition",
                                   "Condition 3A (OAEs right before the scan)")
 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # Generation of the interactive graphs (.html file format)
     # PTA, Left ear
     for i in range(0, len(data_pta_L)):
-        action_i = of.plot_pta_L(data_pta_L.loc[[i]])
+        action_i = gf.plot_pta_L(data_pta_L.loc[[i]])
         if action_i is True:
             counter = counter + 1
         else:
@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     # PTA, Right ear
     for j in range(0, len(data_pta_R)):
-        action_j = of.plot_pta_R(data_pta_R.loc[[j]])
+        action_j = gf.plot_pta_R(data_pta_R.loc[[j]])
         if action_j is True:
             counter = counter + 1
         else:
@@ -128,8 +128,8 @@ if __name__ == "__main__":
 
     # PTA, All results for one participant in one graph
     for k in subjects:
-        one_subject = of.extract_subject(data_pta, k)
-        action_k = of.plot_pta_subject(one_subject)
+        one_subject = gf.extract_subject(data_pta, k)
+        action_k = gf.plot_pta_subject(one_subject)
         if action_k is True:
             counter = counter + 1
         else:
@@ -137,8 +137,8 @@ if __name__ == "__main__":
 
     # PTA, Box plot graph, Right ear
     for r in subjects:
-        one_subject = of.extract_subject(data_pta_R, r)
-        action_r = of.plot_boxplot_pta(one_subject, "Right ear")
+        one_subject = gf.extract_subject(data_pta_R, r)
+        action_r = gf.plot_boxplot_pta(one_subject, "Right ear")
         if action_r is True:
             counter = counter + 1
         else:
@@ -146,8 +146,8 @@ if __name__ == "__main__":
 
     # PTA, Box plot graph, Left ear
     for s in subjects:
-        one_subject = of.extract_subject(data_pta_L, s)
-        action_s = of.plot_boxplot_pta(one_subject, "Left ear")
+        one_subject = gf.extract_subject(data_pta_L, s)
+        action_s = gf.plot_boxplot_pta(one_subject, "Left ear")
         if action_s is True:
             counter = counter + 1
         else:
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     # MTX, L1
     for m in range(0, len(data_mtx_L1)):
-        action_m = of.plot_mtx(data_mtx_L1.loc[[m]], "L1")
+        action_m = gf.plot_mtx(data_mtx_L1.loc[[m]], "L1")
         if action_m is True:
             counter = counter + 1
         else:
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         if df_line["Participant_ID"][n] == "Sub06":
             continue
         else:
-            action_n = of.plot_mtx(data_mtx_L2.loc[[n]], "L2")
+            action_n = gf.plot_mtx(data_mtx_L2.loc[[n]], "L2")
             if action_n is True:
                 counter = counter + 1
             else:
@@ -175,8 +175,8 @@ if __name__ == "__main__":
 
     # MTX, L1, All results for one participant in one graph
     for p in subjects:
-        one_subject = of.extract_subject(data_mtx_L1, p)
-        action_p = of.plot_mtx_subject(one_subject, "L1")
+        one_subject = gf.extract_subject(data_mtx_L1, p)
+        action_p = gf.plot_mtx_subject(one_subject, "L1")
         if action_p is True:
             counter = counter + 1
         else:
@@ -187,8 +187,8 @@ if __name__ == "__main__":
         if q == "Sub06":
             continue
         else:
-            one_subject = of.extract_subject(data_mtx_L2, q)
-            action_q = of.plot_mtx_subject(one_subject, "L2")
+            one_subject = gf.extract_subject(data_mtx_L2, q)
+            action_q = gf.plot_mtx_subject(one_subject, "L2")
             if action_q is True:
                 counter = counter + 1
             else:
