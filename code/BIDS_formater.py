@@ -1,9 +1,18 @@
 import pandas as pd
 import os
 from shutil import copyfile
-import json_sidecar_generator as jsg
-# import glob
+import glob
 import BIDS_utils as utils
+
+if __name__ == "__main__":
+    master_path = ".."    
+    result_path = os.path.join(master_path, "results")
+
+else:
+    result_path = os.path.join("results")
+
+# Create a list of the subjects and a reference path for the results
+subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
 
 # Retrieve the database
 df = utils.retrieve_db()
@@ -11,38 +20,13 @@ df = utils.retrieve_db()
 # Manage the empty boxes
 df.fillna(value='n/a', inplace=True)
 
-# Create a list of the subjects and a reference path for the results
-subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
-result_path = os.path.join("..", "results")
+# Verifications:
+# - existence of the "BIDS_data" folder
+# - existence of the json sidecar originals (run-level: tymp, reflex, PTA, MTX)
+utils.result_location(result_path)
 
-# Results location existence verifications
-content_result_path = os.listdir(result_path)
-content_result_path.sort()
-
-# Verification of the existence of the "BIDS_data" folder
-if content_result_path.count("BIDS_data") == 1:
-    pass
-else:
-    os.mkdir(os.path.join(result_path, "BIDS_data"))
-
+# Folder where to put each participants' folder
 parent_path = os.path.join(result_path, "BIDS_data")
-
-# Verification of the existence of the json sidecar originals
-if content_result_path.count("BIDS_sidecars_originals") == 1:
-    sidecar_folder = os.path.join(result_path, "BIDS_sidecars_originals")
-    sidecar_list = os.listdir(sidecar_folder)
-    sidecar_list.sort()
-    if (sidecar_list.count("tymp_run_level.json") == 1
-        and sidecar_list.count("reflex_run_level.json") == 1
-        and sidecar_list.count("pta_run_level.json") == 1
-        and sidecar_list.count("mtx_run_level.json") == 1):
-        pass
-    else:
-        # run json_sidecar_generator.py
-        jsg
-else:
-    # run json_sidecar_generator.py
-    jsg
 
 # Specify the columns to be used for each test
 # Subject and session settings data
@@ -223,26 +207,26 @@ def extract_tymp(single_test_df, ls_columns_1, ls_columns_2):
                 #print(y[1][p], False)
                 mask_1.append(False)
 
-        print(single_test_df)
-        print(j, y)
+        #print(single_test_df)
+        #print(j, y)
         #print(mask_0, mask_1)
 
         if False in mask_1:
-            print("Keep 2nd line", y)
+            #print("Keep 2nd line", y)
             pass
         else:
-            print("Delete 2nd line", y)
+            #print("Delete 2nd line", y)
             del y[1]
 
         if False in mask_0:
-            print("Keep 1st line", y)
+            #print("Keep 1st line", y)
             pass
         else:
-            print("Delete 1st line", y)
+            #print("Delete 1st line", y)
             del y[0]
 
         #print(y.index)
-        print(len(y))
+        #print(len(y))
         if len(y) > 0:
             z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'Tymp')
@@ -291,26 +275,26 @@ def extract_reflex(single_test_df, ls_columns_1, ls_columns_2):
                 #print(y[1][p], False)
                 mask_1.append(False)
 
-        print(single_test_df)
-        print(j, y)
+        #print(single_test_df)
+        #print(j, y)
         #print(mask_0, mask_1)
 
         if False in mask_1:
-            print("Keep 2nd line", y)
+            #print("Keep 2nd line", y)
             pass
         else:
-            print("Delete 2nd line", y)
+            #print("Delete 2nd line", y)
             del y[1]
 
         if False in mask_0:
-            print("Keep 1st line", y)
+            #print("Keep 1st line", y)
             pass
         else:
-            print("Delete 1st line", y)
+            #print("Delete 1st line", y)
             del y[0]
 
         #print(y.index)
-        print(len(y))
+        #print(len(y))
         if len(y) > 0:
             z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'Reflex')
@@ -359,26 +343,26 @@ def extract_pta(single_test_df, ls_columns_1, ls_columns_2):
                 #print(y[1][p], False)
                 mask_1.append(False)
 
-        print(single_test_df)
-        print(j, y)
+        #print(single_test_df)
+        #print(j, y)
         #print(mask_0, mask_1)
 
         if False in mask_1:
-            print("Keep 2nd line", y)
+            #print("Keep 2nd line", y)
             pass
         else:
-            print("Delete 2nd line", y)
+            #print("Delete 2nd line", y)
             del y[1]
 
         if False in mask_0:
-            print("Keep 1st line", y)
+            #print("Keep 1st line", y)
             pass
         else:
-            print("Delete 1st line", y)
+            #print("Delete 1st line", y)
             del y[0]
 
         #print(y.index)
-        print(len(y))
+        #print(len(y))
         if len(y) > 0:
             z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'PTA')
@@ -425,64 +409,100 @@ def extract_mtx(single_test_df, ls_columns_1, ls_columns_2):
                 #print(y[1][p], False)
                 mask_1.append(False)
 
-        print(single_test_df)
-        print(j, y)
+        #print(single_test_df)
+        #print(j, y)
         #print(mask_0, mask_1)
 
         if False in mask_1:
-            print("Keep 2nd line", y)
+            #print("Keep 2nd line", y)
             pass
         else:
-            print("Delete 2nd line", y)
+            #print("Delete 2nd line", y)
             del y[1]
 
         if False in mask_0:
-            print("Keep 1st line", y)
+            #print("Keep 1st line", y)
             pass
         else:
-            print("Delete 1st line", y)
+            #print("Delete 1st line", y)
             del y[0]
 
         #print(y.index)
-        print(len(y))
+        #print(len(y))
         if len(y) > 0:
             z = pd.DataFrame(data=y, columns=x).set_index("order")
             save_df(z, single_test_df, j, 'Tymp')
         else:
             continue
 
+if __name__ == "__main__":
+    for i in subjects:
+        # Creation of the subject folder
+        create_folder_subjects(i, parent_path)
 
-for i in subjects:
-    # Creation of the subject folder
-    create_folder_subjects(i, parent_path)
+        # Extraction of all the session for the subject
+        data_sub = subject_extractor(df, i)
 
-    # Extraction of all the session for the subject
-    data_sub = subject_extractor(df, i)
+        # Creation of a folder for each session
+        create_folder_session(i, len(data_sub))
 
-    # Creation of a folder for each session
-    create_folder_session(i, len(data_sub))
+        # Extraction of the test columns
+        tymp = eliminate_columns(data_sub, columns_tymp)
+        reflex = eliminate_columns(data_sub, columns_reflex)
+        pta = eliminate_columns(data_sub, columns_PTA)
+        mtx = eliminate_columns(data_sub, columns_MTX)
 
-    # Extraction of the test columns
-    tymp = eliminate_columns(data_sub, columns_tymp)
-    reflex = eliminate_columns(data_sub, columns_reflex)
-    pta = eliminate_columns(data_sub, columns_PTA)
-    mtx = eliminate_columns(data_sub, columns_MTX)
-
-    # Dataframe reconstruction
-    #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
-    extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
-    #extract_pta(pta, columns_PTA_R, columns_PTA_L)
-    #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
+        # Dataframe reconstruction
+        #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
+        extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
+        #extract_pta(pta, columns_PTA_R, columns_PTA_L)
+        #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
 
 
-# This code section is present if, for any reason, the .tsv files are not
-# properly saved. You will first need to activate the "import glob" line
-# (line 2). It is then possible to replace the variable "ext"'s value in
-# the save_df function with ".csv" and rerun the script with this section
-# to rename all the files with the correct ".tsv" file extansion.
+    # This code section is present if, for any reason, the .tsv files are not
+    # properly saved. You will first need to activate the "import glob" line
+    # (line 2). It is then possible to replace the variable "ext"'s value in
+    # the save_df function with ".csv" and rerun the script with this section
+    # to rename all the files with the correct ".tsv" file extansion.
 
-# file_list = glob.glob("../results/BIDS_data/sub-*/ses-*/*.csv")
+    file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
 
-# for path in file_list:
-#     new_path = os.path.splitext(path)[0]+".tsv"
-#     os.system(f"mv {path} {new_path}")
+    # for path in file_list:
+    #     new_path = os.path.splitext(path)[0]+".tsv"
+    #     os.system(f"mv {path} {new_path}")
+
+else:
+    for i in subjects:
+        # Creation of the subject folder
+        create_folder_subjects(i, parent_path)
+
+        # Extraction of all the session for the subject
+        data_sub = subject_extractor(df, i)
+
+        # Creation of a folder for each session
+        create_folder_session(i, len(data_sub))
+
+        # Extraction of the test columns
+        tymp = eliminate_columns(data_sub, columns_tymp)
+        reflex = eliminate_columns(data_sub, columns_reflex)
+        pta = eliminate_columns(data_sub, columns_PTA)
+        mtx = eliminate_columns(data_sub, columns_MTX)
+
+        # Dataframe reconstruction
+        #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
+        extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
+        #extract_pta(pta, columns_PTA_R, columns_PTA_L)
+        #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
+
+
+    # This code section is present if, for any reason, the .tsv files are not
+    # properly saved. You will first need to activate the "import glob" line
+    # (line 2). It is then possible to replace the variable "ext"'s value in
+    # the save_df function with ".csv" and rerun the script with this section
+    # to rename all the files with the correct ".tsv" file extansion.
+
+    # file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
+
+    # for path in file_list:
+    #     new_path = os.path.splitext(path)[0]+".tsv"
+    #     os.system(f"mv {path} {new_path}")
