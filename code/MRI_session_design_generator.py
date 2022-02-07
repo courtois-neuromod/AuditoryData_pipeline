@@ -74,4 +74,5 @@ for i in subjects:
         ses_ID = str(j+1).zfill(3)
         filename = f"sub-{sub_number}_ses-{ses_ID}_task-puretones_events.tsv"
         
-        df.to_csv(os.path.join(data_path, "stimuli", filename), sep="\t")
+        df.to_csv(os.path.join(data_path, "stimuli", filename),
+                  sep="\t", index_column=False)
