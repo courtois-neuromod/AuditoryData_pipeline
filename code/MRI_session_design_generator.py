@@ -19,7 +19,8 @@ ISI = 5
 duration = 3
 
 # Column names to be used in the .tsv event file
-tsv_columns = ["trial_type", "onset", "duration"]
+tsv_columns = ["onset", "duration", "frequency",
+               "volume", "ear", "trial_type"]
 
 # Session design file generation loop for each subject
 for i in subjects:
@@ -57,9 +58,17 @@ for i in subjects:
                           index=np.arange(0, len(random_stimuli_ls)))
         
         for m in range(0, len(df)):
-            df["trial_type"][m] = random_stimuli_ls[m]
+            ls_info_filename = random_stimuli_ls[m].split("_")
+            frequency = ls_info_filename[0].rstrip("hz")
+            level = "-" + ls_info_filename[2].rstrip("dBFS")
+            ear = ls_info_filename[3].rstrip(".wav")
+
             df["onset"][m] = m * duration + m * ISI
             df["duration"][m] = duration
+            df["frequency"][m] = frequency
+            df["volume"][m] = level
+            df["ear"][m] = ear
+            df["trial_type"][m] = "pure_tone"
 
         # Save the dataframe to .tsv
         ses_ID = str(j+1).zfill(3)
