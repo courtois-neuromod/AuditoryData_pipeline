@@ -75,4 +75,4 @@ for i in subjects:
         filename = f"sub-{sub_number}_ses-{ses_ID}_task-puretones_events.tsv"
         
         df.to_csv(os.path.join(data_path, "stimuli", filename),
-                  sep="\t", index_column=False)
+                  sep="\t", index=False)
