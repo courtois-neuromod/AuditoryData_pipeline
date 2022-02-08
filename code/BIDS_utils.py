@@ -12,11 +12,12 @@ def retrieve_db():
     OUTPUTS:
     -returns the database in a pandas dataframe
     """
-    
+
     url_share = input("Enter the Google Spreadsheet URL: ")
     url_csv = url_share.replace("/edit#gid=", "/export?format=csv&gid=")
     df = pd.read_csv(url_csv, sep=',', na_filter=True)
     return(df)
+
 
 def result_location(result_path):
     """
@@ -67,3 +68,57 @@ def result_location(result_path):
         print("The run-level json sidecars for tymp, reflex, PTA and MTX were "\
               "created in the results/BIDS_sidecars_originals folder.")
 
+
+# Single test sub-df extraction from each participant's sub-df
+def eliminate_columns(sub_df, columns_conditions, test_columns):
+    to_keep = columns_conditions + test_columns
+    df_test = sub_df[to_keep]
+
+    return df_test
+
+
+def save_df(data_tosave_df, single_test_df, index, test, run="01"):
+    """
+    This function is used to save the tsv files and json sidecars.
+    INPUTS:
+    -df to be saved in the tsv file
+    -df containing the test columns for a single participant
+    -the line index (in single_test_df) linked with the data to save
+     (data_tosave_df)
+    -the selected test marker
+    OUTPUTS:
+    -saved tsv file
+    -NO specific return to the script
+    """
+    
+    sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
+
+    if (index + 1) < 10:
+        ses = '0' + str(index + 1)
+    else:
+        ses = str(index + 1)
+
+    # The next variable ("ext") can take the value ".csv".
+    # The last code section must then be activated
+    ext = '.tsv'
+
+    path = os.path.join(parent_path, 'sub-' + sub, 'ses-' + ses)
+    file_name = os.path.join('sub-' + sub + '_ses-' + ses + '_task-' + test
+                             + '_run-' + run + "_beh")
+
+    data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')
+
+    json_origin = os.path.join("..", "results", "BIDS_sidecars_originals")
+
+    if test == "Tymp":
+        copyfile(os.path.join(json_origin, "tymp_run_level.json"),
+                 os.path.join(path, file_name + ".json"))
+    elif test == "Reflex":
+        copyfile(os.path.join(json_origin, "reflex_run_level.json"),
+                 os.path.join(path, file_name + ".json"))
+    elif test == "PTA":
+        copyfile(os.path.join(json_origin, "pta_run_level.json"),
+                 os.path.join(path, file_name + ".json"))
+    elif test == "MTX":
+        copyfile(os.path.join(json_origin, "mtx_run_level.json"),
+                 os.path.join(path, file_name + ".json"))

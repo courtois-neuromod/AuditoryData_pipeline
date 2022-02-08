@@ -3,6 +3,10 @@ import os
 from shutil import copyfile
 import glob
 import BIDS_utils as utils
+import tymp_BIDS
+import reflex_BIDS
+import PTA_BIDS
+import MTX_BIDS
 
 if __name__ == "__main__":
     master_path = ".."    
@@ -98,14 +102,6 @@ def subject_extractor(df, subject_ID):
     return sub_df
 
 
-# Single test sub-df extraction from each participant's sub-df
-def eliminate_columns(sub_df, test_columns):
-    to_keep = columns_conditions + test_columns
-    df_test = sub_df[to_keep]
-
-    return df_test
-
-
 # Check if the subject-level folders exist
 # If not, create them
 def create_folder_subjects(subject, parent_path):
@@ -133,308 +129,6 @@ def create_folder_session(subject, session_count):
             os.mkdir(os.path.join(children_path, f"ses-{j:02d}"))
 
 
-# Function used to save the tsv files and json sidecars
-# This function is called by the following functions and saves the data they
-# provide with the specified path
-def save_df(data_tosave_df, single_test_df, index, test, run="01"):
-    sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
-
-    if (index + 1) < 10:
-        ses = '0' + str(index + 1)
-    else:
-        ses = str(index + 1)
-
-    # The next variable ("ext") can take the value ".csv".
-    # The last code section must then be activated
-    ext = '.tsv'
-
-    path = os.path.join(parent_path, 'sub-' + sub, 'ses-' + ses)
-    file_name = os.path.join('sub-' + sub + '_ses-' + ses + '_task-' + test
-                             + '_run-' + run + "_beh")
-
-    data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')
-
-    json_origin = os.path.join("..", "results", "BIDS_sidecars_originals")
-
-    if test == "Tymp":
-        copyfile(os.path.join(json_origin, "tymp_run_level.json"), os.path.join(path, file_name + ".json"))
-    elif test == "Reflex":
-        copyfile(os.path.join(json_origin, "reflex_run_level.json"), os.path.join(path, file_name + ".json"))
-    elif test == "PTA":
-        copyfile(os.path.join(json_origin, "pta_run_level.json"), os.path.join(path, file_name + ".json"))
-    elif test == "MTX":
-        copyfile(os.path.join(json_origin, "mtx_run_level.json"), os.path.join(path, file_name + ".json"))
-
-
-# Extraction of every single tympanometry test
-# The results are then sent to the save_df function to be saved
-def extract_tymp(single_test_df, ls_columns_1, ls_columns_2):
-    x = x_tymp
-
-    for j in range(0, len(single_test_df)):
-        y = [[], []]
-
-        y[0].append("1")
-        y[0].append("R")
-
-        for k in ls_columns_1:
-            y[0].append(single_test_df[k][j])
-
-        y[1].append("2")
-        y[1].append("L")
-
-        for m in ls_columns_2:
-            y[1].append(single_test_df[m][j])
-
-        mask_0 = []
-        mask_1 = []
-
-        #print(y[0])
-        for n in range(2, len(y[0])):
-            if y[0][n] == 'n/a':
-                #print(y[0][n], True)
-                mask_0.append(True)
-            else:
-                #print(y[0][n], False)
-                mask_0.append(False)
-
-        #print(y[1])
-        for p in range(2, len(y[1])):
-            if y[1][p] == 'n/a':
-                #print(y[1][p], True)
-                mask_1.append(True)
-            else:
-                #print(y[1][p], False)
-                mask_1.append(False)
-
-        #print(single_test_df)
-        #print(j, y)
-        #print(mask_0, mask_1)
-
-        if False in mask_1:
-            #print("Keep 2nd line", y)
-            pass
-        else:
-            #print("Delete 2nd line", y)
-            del y[1]
-
-        if False in mask_0:
-            #print("Keep 1st line", y)
-            pass
-        else:
-            #print("Delete 1st line", y)
-            del y[0]
-
-        #print(y.index)
-        #print(len(y))
-        if len(y) > 0:
-            z = pd.DataFrame(data=y, columns=x).set_index("order")
-            save_df(z, single_test_df, j, 'Tymp')
-        else:
-            continue
-
-
-# Extraction of every single stapedial reflex test
-# The results are then sent to the save_df function to be saved
-def extract_reflex(single_test_df, ls_columns_1, ls_columns_2):
-    x = x_reflex
-
-    for j in range(0, len(single_test_df)):
-        y = [[], []]
-
-        y[0].append("1")
-        y[0].append("R")
-
-        for k in ls_columns_1:
-            y[0].append(single_test_df[k][j])
-
-        y[1].append("2")
-        y[1].append("L")
-
-        for m in ls_columns_2:
-            y[1].append(single_test_df[m][j])
-
-        mask_0 = []
-        mask_1 = []
-
-        #print(y[0])
-        for n in range(2, len(y[0])):
-            if y[0][n] == 'n/a':
-                #print(y[0][n], True)
-                mask_0.append(True)
-            else:
-                #print(y[0][n], False)
-                mask_0.append(False)
-
-        #print(y[1])
-        for p in range(2, len(y[1])):
-            if y[1][p] == 'n/a':
-                #print(y[1][p], True)
-                mask_1.append(True)
-            else:
-                #print(y[1][p], False)
-                mask_1.append(False)
-
-        #print(single_test_df)
-        #print(j, y)
-        #print(mask_0, mask_1)
-
-        if False in mask_1:
-            #print("Keep 2nd line", y)
-            pass
-        else:
-            #print("Delete 2nd line", y)
-            del y[1]
-
-        if False in mask_0:
-            #print("Keep 1st line", y)
-            pass
-        else:
-            #print("Delete 1st line", y)
-            del y[0]
-
-        #print(y.index)
-        #print(len(y))
-        if len(y) > 0:
-            z = pd.DataFrame(data=y, columns=x).set_index("order")
-            save_df(z, single_test_df, j, 'Reflex')
-        else:
-            continue
-
-
-# Extraction of every single pure-tone audiometry test
-# The results are then sent to the save_df function to be saved
-def extract_pta(single_test_df, ls_columns_1, ls_columns_2):
-    x = x_PTA
-
-    for j in range(0, len(single_test_df)):
-        y = [[], []]
-
-        y[0].append("1")
-        y[0].append("R")
-
-        for k in ls_columns_1:
-            y[0].append(single_test_df[k][j])
-
-        y[1].append("2")
-        y[1].append("L")
-
-        for m in ls_columns_2:
-            y[1].append(single_test_df[m][j])
-
-        mask_0 = []
-        mask_1 = []
-
-        #print(y[0])
-        for n in range(2, len(y[0])):
-            if y[0][n] == 'n/a':
-                #print(y[0][n], True)
-                mask_0.append(True)
-            else:
-                #print(y[0][n], False)
-                mask_0.append(False)
-
-        #print(y[1])
-        for p in range(2, len(y[1])):
-            if y[1][p] == 'n/a':
-                #print(y[1][p], True)
-                mask_1.append(True)
-            else:
-                #print(y[1][p], False)
-                mask_1.append(False)
-
-        #print(single_test_df)
-        #print(j, y)
-        #print(mask_0, mask_1)
-
-        if False in mask_1:
-            #print("Keep 2nd line", y)
-            pass
-        else:
-            #print("Delete 2nd line", y)
-            del y[1]
-
-        if False in mask_0:
-            #print("Keep 1st line", y)
-            pass
-        else:
-            #print("Delete 1st line", y)
-            del y[0]
-
-        #print(y.index)
-        #print(len(y))
-        if len(y) > 0:
-            z = pd.DataFrame(data=y, columns=x).set_index("order")
-            save_df(z, single_test_df, j, 'PTA')
-        else:
-            continue
-
-
-# Extraction of every single matrix speech-in-noise perception test
-# The results are then sent to the save_df function to be saved
-def extract_mtx(single_test_df, ls_columns_1, ls_columns_2):
-    x = x_MTX
-
-    for j in range(0, len(single_test_df)):
-        y = [[], []]
-
-        y[0].append("1")
-
-        for k in ls_columns_1:
-            y[0].append(single_test_df[k][j])
-
-        y[1].append("2")
-
-        for m in ls_columns_2:
-            y[1].append(single_test_df[m][j])
-
-        mask_0 = []
-        mask_1 = []
-
-        #print(y[0])
-        for n in range(2, len(y[0])):
-            if y[0][n] == 'n/a':
-                #print(y[0][n], True)
-                mask_0.append(True)
-            else:
-                #print(y[0][n], False)
-                mask_0.append(False)
-
-        #print(y[1])
-        for p in range(2, len(y[1])):
-            if y[1][p] == 'n/a':
-                #print(y[1][p], True)
-                mask_1.append(True)
-            else:
-                #print(y[1][p], False)
-                mask_1.append(False)
-
-        #print(single_test_df)
-        #print(j, y)
-        #print(mask_0, mask_1)
-
-        if False in mask_1:
-            #print("Keep 2nd line", y)
-            pass
-        else:
-            #print("Delete 2nd line", y)
-            del y[1]
-
-        if False in mask_0:
-            #print("Keep 1st line", y)
-            pass
-        else:
-            #print("Delete 1st line", y)
-            del y[0]
-
-        #print(y.index)
-        #print(len(y))
-        if len(y) > 0:
-            z = pd.DataFrame(data=y, columns=x).set_index("order")
-            save_df(z, single_test_df, j, 'Tymp')
-        else:
-            continue
-
 if __name__ == "__main__":
     for i in subjects:
         # Creation of the subject folder
@@ -447,16 +141,28 @@ if __name__ == "__main__":
         create_folder_session(i, len(data_sub))
 
         # Extraction of the test columns
-        tymp = eliminate_columns(data_sub, columns_tymp)
-        reflex = eliminate_columns(data_sub, columns_reflex)
-        pta = eliminate_columns(data_sub, columns_PTA)
-        mtx = eliminate_columns(data_sub, columns_MTX)
+        tymp = utils.eliminate_columns(data_sub,
+                                       columns_conditions,
+                                       columns_tymp)
+        reflex = utils.eliminate_columns(data_sub,
+                                         columns_conditions,
+                                         columns_reflex)
+        pta = utils.eliminate_columns(data_sub,
+                                      columns_conditions,
+                                      columns_PTA)
+        mtx = utils.eliminate_columns(data_sub,
+                                      columns_conditions,
+                                      columns_MTX)
 
         # Dataframe reconstruction
-        #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
-        extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
-        #extract_pta(pta, columns_PTA_R, columns_PTA_L)
-        #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
+        tymp_BIDS.extract_tymp(tymp, columns_tymp_R,
+                               columns_tymp_L, x_tymp)
+        reflex_BIDS.extract_reflex(reflex, columns_reflex_R,
+                                   columns_reflex_L, x_reflex)
+        PTA_BIDS.extract_pta(pta, columns_PTA_R,
+                             columns_PTA_L, x_PTA)
+        MTX_BIDS.extract_mtx(mtx, columns_MTX_L1,
+                             columns_MTX_L2, x_MTX)
 
 
     # This code section is present if, for any reason, the .tsv files are not
@@ -465,7 +171,7 @@ if __name__ == "__main__":
     # the save_df function with ".csv" and rerun the script with this section
     # to rename all the files with the correct ".tsv" file extansion.
 
-    file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
+    # file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
 
     # for path in file_list:
     #     new_path = os.path.splitext(path)[0]+".tsv"
@@ -483,16 +189,28 @@ else:
         create_folder_session(i, len(data_sub))
 
         # Extraction of the test columns
-        tymp = eliminate_columns(data_sub, columns_tymp)
-        reflex = eliminate_columns(data_sub, columns_reflex)
-        pta = eliminate_columns(data_sub, columns_PTA)
-        mtx = eliminate_columns(data_sub, columns_MTX)
+        tymp = utils.eliminate_columns(data_sub,
+                                       columns_conditions,
+                                       columns_tymp)
+        reflex = utils.eliminate_columns(data_sub,
+                                         columns_conditions,
+                                         columns_reflex)
+        pta = utils.eliminate_columns(data_sub,
+                                      columns_conditions,
+                                      columns_PTA)
+        mtx = utils.eliminate_columns(data_sub,
+                                      columns_conditions,
+                                      columns_MTX)
 
         # Dataframe reconstruction
-        #extract_tymp(tymp, columns_tymp_R, columns_tymp_L)
-        extract_reflex(reflex, columns_reflex_R, columns_reflex_L)
-        #extract_pta(pta, columns_PTA_R, columns_PTA_L)
-        #extract_mtx(mtx, columns_MTX_L1, columns_MTX_L2)
+        tymp_BIDS.extract_tymp(tymp, columns_tymp_R,
+                               columns_tymp_L, x_tymp)
+        reflex_BIDS.extract_reflex(reflex, columns_reflex_R,
+                                   columns_reflex_L, x_reflex)
+        PTA_BIDS.extract_pta(pta, columns_PTA_R,
+                             columns_PTA_L, x_PTA)
+        MTX_BIDS.extract_mtx(mtx, columns_MTX_L1,
+                             columns_MTX_L2, x_MTX)
 
 
     # This code section is present if, for any reason, the .tsv files are not
