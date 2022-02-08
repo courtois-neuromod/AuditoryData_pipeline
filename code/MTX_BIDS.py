@@ -4,21 +4,19 @@ from shutil import copyfile
 import glob
 import BIDS_utils as utils
 
-# Extraction of every single tympanometry test
+# Extraction of every single matrix speech-in-noise perception test
 # The results are then sent to the save_df function to be saved
-def extract_tymp(single_test_df, ls_columns_1, ls_columns_2, x):
+def extract_mtx(single_test_df, ls_columns_1, ls_columns_2, x):
 
     for j in range(0, len(single_test_df)):
         y = [[], []]
 
         y[0].append("1")
-        y[0].append("R")
 
         for k in ls_columns_1:
             y[0].append(single_test_df[k][j])
 
         y[1].append("2")
-        y[1].append("L")
 
         for m in ls_columns_2:
             y[1].append(single_test_df[m][j])
@@ -44,7 +42,7 @@ def extract_tymp(single_test_df, ls_columns_1, ls_columns_2, x):
                 #print(y[1][p], False)
                 mask_1.append(False)
 
-        #print(single_test_df)
+        print(single_test_df)
         #print(j, y)
         #print(mask_0, mask_1)
 
