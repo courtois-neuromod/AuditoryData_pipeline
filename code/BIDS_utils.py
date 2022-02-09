@@ -22,6 +22,7 @@ def retrieve_db():
 def result_location(result_path):
     """
     This function makes sure that the destination for the formated file exists.
+    If it doesn't, this function creates it.
     INPUTS:
     -result_path: path of the results folder
     OUTPUTS: none
@@ -33,7 +34,9 @@ def result_location(result_path):
     content_result_path.sort()
     #print(content_result_path)
     
-    # Verification of the existence of the "BIDS_data" folder
+    # Verification of the existence of the "BIDS_data" folder 
+    # -> destination of the processed data from the database:
+    #    "repository_root/results/BIDS_data/"
     if content_result_path.count("BIDS_data") == 1:
         print("The results/BIDS_data folder is present.")
         pass
@@ -43,18 +46,23 @@ def result_location(result_path):
 
     parent_path = os.path.join(result_path, "BIDS_data")
 
-    # Verification of the existence of the json sidecar originals
+    # Verification of the existence of the "BIDS_sidecars_originals" folder
+    # -> origin of the json files to be copied/pasted along with the processed
+    #    data files: repository_root/results/BIDS_sidecars_originals/
     if content_result_path.count("BIDS_sidecars_originals") == 1:
         print("The results/BIDS_sidecars_originals folder is present.")
+    
+        # Verification of the existence of the json sidecar originals
         sidecar_folder = os.path.join(result_path, "BIDS_sidecars_originals")
         sidecar_list = os.listdir(sidecar_folder)
         sidecar_list.sort()
+        # Making sure that they are all present (tymp, reflex, PTA, MTX)
         if (sidecar_list.count("tymp_run_level.json") == 1
             and sidecar_list.count("reflex_run_level.json") == 1
             and sidecar_list.count("pta_run_level.json") == 1
             and sidecar_list.count("mtx_run_level.json") == 1):
             print("The run-level json sidecars for tymp, reflex, PTA and "\
-                  "MTX are presents.")
+                  "MTX are present.")
             pass
         else:
             # run json_sidecar_generator.py
@@ -77,7 +85,7 @@ def eliminate_columns(sub_df, columns_conditions, test_columns):
     return df_test
 
 
-def save_df(data_tosave_df, single_test_df, index, test, run="01"):
+def save_df(data_tosave_df, single_test_df, index, test, parent_path, run="01"):
     """
     This function is used to save the tsv files and json sidecars.
     INPUTS:
@@ -86,6 +94,7 @@ def save_df(data_tosave_df, single_test_df, index, test, run="01"):
     -the line index (in single_test_df) linked with the data to save
      (data_tosave_df)
     -the selected test marker
+    -path to BIDS_data (repository_root/results/BIDS_data/)
     OUTPUTS:
     -saved tsv file
     -NO specific return to the script
@@ -122,3 +131,266 @@ def save_df(data_tosave_df, single_test_df, index, test, run="01"):
     elif test == "MTX":
         copyfile(os.path.join(json_origin, "mtx_run_level.json"),
                  os.path.join(path, file_name + ".json"))
+
+# Extraction of every single tympanometry test
+# The results are then sent to the save_df function to be saved
+def extract_tymp(single_test_df, ls_columns_1, ls_columns_2, x, path):
+
+    for j in range(0, len(single_test_df)):
+        y = [[], []]
+
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
+            y[0].append(single_test_df[k][j])
+
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
+
+        mask_0 = []
+        mask_1 = []
+
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
+
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
+
+        #print(single_test_df)
+        #print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            #print("Keep 2nd line", y)
+            pass
+        else:
+            #print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            #print("Keep 1st line", y)
+            pass
+        else:
+            #print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        #print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
+            save_df(z, single_test_df, j, 'Tymp', path)
+        else:
+            continue
+
+# Extraction of every single stapedial reflex test
+# The results are then sent to the save_df function to be saved
+def extract_reflex(single_test_df, ls_columns_1, ls_columns_2, x, path):
+
+    for j in range(0, len(single_test_df)):
+        y = [[], []]
+
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
+            y[0].append(single_test_df[k][j])
+
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
+
+        mask_0 = []
+        mask_1 = []
+
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
+
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
+
+        #print(single_test_df)
+        #print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            #print("Keep 2nd line", y)
+            pass
+        else:
+            #print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            #print("Keep 1st line", y)
+            pass
+        else:
+            #print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        #print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
+            save_df(z, single_test_df, j, 'Reflex', path)
+        else:
+            continue
+
+# Extraction of every single pure-tone audiometry test
+# The results are then sent to the save_df function to be saved
+def extract_pta(single_test_df, ls_columns_1, ls_columns_2, x, path):
+
+    for j in range(0, len(single_test_df)):
+        y = [[], []]
+
+        y[0].append("1")
+        y[0].append("R")
+
+        for k in ls_columns_1:
+            y[0].append(single_test_df[k][j])
+
+        y[1].append("2")
+        y[1].append("L")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
+
+        mask_0 = []
+        mask_1 = []
+
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
+
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
+
+        #print(single_test_df)
+        #print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            #print("Keep 2nd line", y)
+            pass
+        else:
+            #print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            #print("Keep 1st line", y)
+            pass
+        else:
+            #print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        #print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
+            save_df(z, single_test_df, j, 'PTA', path)
+        else:
+            continue
+
+  # Extraction of every single matrix speech-in-noise perception test
+# The results are then sent to the save_df function to be saved
+def extract_mtx(single_test_df, ls_columns_1, ls_columns_2, x, path):
+
+    for j in range(0, len(single_test_df)):
+        y = [[], []]
+
+        y[0].append("1")
+
+        for k in ls_columns_1:
+            y[0].append(single_test_df[k][j])
+
+        y[1].append("2")
+
+        for m in ls_columns_2:
+            y[1].append(single_test_df[m][j])
+
+        mask_0 = []
+        mask_1 = []
+
+        #print(y[0])
+        for n in range(2, len(y[0])):
+            if y[0][n] == 'n/a':
+                #print(y[0][n], True)
+                mask_0.append(True)
+            else:
+                #print(y[0][n], False)
+                mask_0.append(False)
+
+        #print(y[1])
+        for p in range(2, len(y[1])):
+            if y[1][p] == 'n/a':
+                #print(y[1][p], True)
+                mask_1.append(True)
+            else:
+                #print(y[1][p], False)
+                mask_1.append(False)
+
+        #print(single_test_df)
+        #print(j, y)
+        #print(mask_0, mask_1)
+
+        if False in mask_1:
+            #print("Keep 2nd line", y)
+            pass
+        else:
+            #print("Delete 2nd line", y)
+            del y[1]
+
+        if False in mask_0:
+            #print("Keep 1st line", y)
+            pass
+        else:
+            #print("Delete 1st line", y)
+            del y[0]
+
+        #print(y.index)
+        #print(len(y))
+        if len(y) > 0:
+            z = pd.DataFrame(data=y, columns=x).set_index("order")
+            save_df(z, single_test_df, j, 'MTX', path)
+        else:
+            continue
+
