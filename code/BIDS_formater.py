@@ -348,13 +348,17 @@ if __name__ == "__main__":
 
         # Dataframe reconstruction
         utils.extract_tymp(tymp, columns_tymp_R,
-                               columns_tymp_L, x_tymp)
+                           columns_tymp_L, x_tymp,
+                           parent_path)
         utils.extract_reflex(reflex, columns_reflex_R,
-                                   columns_reflex_L, x_reflex)
+                             columns_reflex_L, x_reflex,
+                             parent_path)
         utils.extract_pta(pta, columns_PTA_R,
-                             columns_PTA_L, x_PTA)
+                          columns_PTA_L, x_PTA,
+                          parent_path)
         utils.extract_mtx(mtx, columns_MTX_L1,
-                             columns_MTX_L2, x_MTX)
+                          columns_MTX_L2, x_MTX,
+                          parent_path)
 
 
     # This code section is present if, for any reason, the .tsv files are not
