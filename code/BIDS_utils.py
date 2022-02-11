@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from shutil import copyfile
-import json_sidecar_generator as jsg
+from . import json_sidecar_generator as jsg
 # import glob
 
 def retrieve_db():

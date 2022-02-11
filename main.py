@@ -1,10 +1,11 @@
 import os
+import code.BIDS_formater as formater
 
 
 # Available functions list
 ls_fct = ["Pure-Tone Audiometry graph generator",
           "Matrix Speech-in-Noise Test graph generator",
-          "BIDS format's json sidecars (test level)",
+          "BIDS format's json sidecars (test level) creation",
           "BIDS format's auditory data exporter"]
 
 # Prompt text generation          
@@ -47,7 +48,11 @@ while loop_value:
                 if ls_fct[value - 1].count("graph") == 1:
                     print("graph = True")
                 elif ls_fct[value - 1].count("BIDS") == 1:
-                    print("BIDS = True")
+                    print("BIDS = True", ls_fct[value - 1])
+                    if ls_fct[value - 1] == "BIDS format's auditory "\
+                                            "data exporter":
+                        formater
+                    
 ##########################
         else:
             #If it is not within range, restart the loop
