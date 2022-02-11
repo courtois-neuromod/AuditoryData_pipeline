@@ -2,7 +2,14 @@ import pandas as pd
 import os
 from shutil import copyfile
 import glob
-from . import BIDS_utils as utils
+
+
+if __name__ == "__main__":
+    import BIDS_utils as utils
+
+else:
+    from . import BIDS_utils as utils
+
 
 # Create a list of the subjects and a reference path for the results
 subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
