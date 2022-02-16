@@ -30,31 +30,103 @@ keys_pta = ["order", "side", "250_hz", "500_hz", "1000_hz",
 keys_mtx = ["order", "language", "practice", "sp_bin_no_bin",
             "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
 
-keys_teoae = ["freq", "oae", "noise", "snr", "confidence"]
-# value unit for "Freq" = "Hz"
-# value unit for "OAE" = "dB"
-# value unit for "Noise" = "dB"
-# value unit for "SNR" = "dB"
-# value unit for "Confidence" = "%"
+keys_teoae = ["order", "side", "freq1", "freq2",
+              "oae", "noise", "snr", "confidence"]
+# value unit for "freq1" and "freq2" = "Hz"
+# value unit for "oae" = "dB"
+# value unit for "noise" = "dB"
+# value unit for "snr" = "dB"
+# value unit for "confidence" = "%"
 
-keys_dpoae = []
+keys_dpoae = ["order", "side", "freq1", "freq2", "l1",
+              "l2", "dp", "snr", "noise+2sd", "noise+1sd",
+              "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
+# value unit for "freq1" and "freq2" = "Hz"
+# value unit for "l1" and "l2" = "dB SPL"
+# value unit for "dp" = "dB"
+# value unit for "noise+2sd", "noise+1sd" = "dB"
+# value unit for "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2" = "dB"
 
-keys_growth = ["freq", "f1", "f2", "dp", "noise+2sd", "snr"]
-# value unit for "Freq" = "Hz"
-# value unit for "F1" = "dB"
-# value unit for "F2" = "dB"
-# value unit for "DP" = "dB"
-# value unit for "Noise+2sd" = "dB"
+keys_growth = ["order", "side", "freq1", "freq2", "l1",
+               "l2", "dp", "snr", "noise+2sd", "noise+1sd",
+               "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
+# value unit for "freq1" and "freq2" = "Hz"
+# value unit for "l1" and "l2" = "dB SPL"
+# value unit for "dp" = "dB"
+# value unit for "noise+2sd", "noise+1sd" = "dB"
+# value unit for "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2" = "dB"
 
+###############################################################################
 
-# .json sidecar for the tympanometry
+# .json sidecar for the transient-evoked otoacoustic emissions test (TEOAE)
+df_teoae = pd.DataFrame(index=index, columns=keys_teoae)
+print("df_teoae\n", df_teoae)
+
+dict_longname_teoae = {keys_teoae[2]: "Frequency #1",
+                       keys_teoae[3]: "Frequency #2",
+                       keys_teoae[4]: "Otoacoustic emissions response",
+                       keys_teoae[5]: "Noise relative strength",
+                       keys_teoae[6]: "Signal-to-noise ratio",
+                       keys_teoae[7]: "Confidence level"}
+#print("dict_longname_teoae\n", dict_longname_teoae)
+
+dict_desc_teoae = {keys_teoae[2]: "Lower frequency (F1) used to produce "\
+                                  "transient-evoked otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_teoae[3]: "Higher frequency (F2) used to produce "\
+                                  "transient-evoked otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_teoae[4]: "Measured level of the transient-evoked "\
+                                  "otoacoustic emissions.",
+                   keys_teoae[5]: "Measured level of the noise relative "\
+                                  "strength.",
+                   keys_teoae[6]: "Difference between the measured level of "\
+                                  "the transient-level otoacoustic emissions "\
+                                  "and the noise relative strength "\
+                                  "(TEOAE level - Noise level).",
+                   keys_teoae[7]: "Level of confidence linked to the "\
+                                  "obtained signal-to-noise ratio."}
+#print("dict_desc_teoae\n", dict_desc_teoae)
+
+dict_units_teoae = {keys_teoae[2]: "Hz",
+                    keys_teoae[3]: "Hz",
+                    keys_teoae[4]: "dB SPL",
+                    keys_teoae[5]: "dB",
+                    keys_teoae[6]: "dB",
+                    keys_teoae[7]: "%"}
+#print("dict_units_teoae\n", dict_units_teoae)
+
+for k_teoae in keys_teoae:
+    if k_teoae == keys_teoae[0]:
+        df_teoae.at[index[0],
+                    k_teoae] = long_order
+        df_teoae.at[index[2],
+                    k_teoae] = lvl_order
+
+    elif k_teoae == keys_teoae[1]:
+        df_teoae.at[index[0],
+                    k_teoae] = long_side
+        df_teoae.at[index[2],
+                    k_teoae] = lvl_side
+
+    else:
+        df_teoae.at[index[0], k_teoae] = dict_longname_teoae[k_teoae]
+        df_teoae.at[index[1], k_teoae] = dict_desc_teoae[k_teoae]
+        df_teoae.at[index[3], k_teoae] = dict_units_teoae[k_teoae]
+print("df_teoae filled\n", df_teoae)
+
+###############################################################################
+
+# .json sidecar for the tympanometry test (Tymp)
 df_tymp = pd.DataFrame(index=index, columns=keys_tymp)
+print("df_tymp\n", df_tymp)
 
 dict_longname_tymp = {keys_tymp[3]: "Tympanometric peak pressure/"\
                                     "Middle ear pressure",
                       keys_tymp[4]: "Equivalent ear canal volume",
                       keys_tymp[5]: "Static admittance/Compliance",
                       keys_tymp[6]: "Tympanometric width"}
+#print("dict_longname_tymp\n", dict_longname_tymp)
 
 dict_desc_tymp = {keys_tymp[3]: "Maximal acoustic energy absorbance "\
                                 "capacity of the tympanic membrane.",
@@ -64,11 +136,13 @@ dict_desc_tymp = {keys_tymp[3]: "Maximal acoustic energy absorbance "\
                                 "capacity of the middle ear ossicles.",
                   keys_tymp[6]: "Pressure level at 50% of the "\
                                 "tympanogram's peak."}
+#print("dict_desc_tymp\n", dict_desc_tymp)
 
 dict_units_tymp = {keys_tymp[3]: "daPa",
                    keys_tymp[4]: "mL",
                    keys_tymp[5]: "mL",
                    keys_tymp[6]: "daPa"}
+#print("dict_units_tymp\n", dict_units_tymp)
 
 for k_tymp in keys_tymp:
     if k_tymp == keys_tymp[0]:
@@ -109,9 +183,10 @@ for k_tymp in keys_tymp:
         df_tymp.at[index[0], k_tymp] = dict_longname_tymp[k_tymp]
         df_tymp.at[index[1], k_tymp] = dict_desc_tymp[k_tymp]
         df_tymp.at[index[3], k_tymp] = dict_units_tymp[k_tymp]
+print("df_tymp filled\n", df_tymp)
 
 
-# .json sidecar for the stapedial reflex
+# .json sidecar for the stapedial reflex test (Reflex)
 df_reflex = pd.DataFrame(index=index, columns=keys_reflex)
 
 dict_desc_reflex = {"500_hz": "",
@@ -142,7 +217,7 @@ for k_ref in keys_reflex:
         df_reflex.at[index[3], k_ref] = "dB HL"
 
 
-# .json sidecar for the pure-tone audiometry
+# .json sidecar for the pure-tone audiometry test (PTA)
 df_pta = pd.DataFrame(index=index, columns=keys_pta)
 
 for k_pta in keys_pta:
@@ -164,7 +239,8 @@ for k_pta in keys_pta:
                            f"with a pure-tone at {keys_word_pta}."
         df_pta.at[index[3], k_pta] = "dB HL"
 
-# .json sidecar for the matrix speech-in-noise perception test
+
+# .json sidecar for the matrix speech-in-noise perception test (MTX)
 df_mtx = pd.DataFrame(index=index, columns=keys_mtx)
 
 dict_longname_mtx = {"practice": "First condition of the sequence "\
@@ -230,6 +306,30 @@ if __name__ == "__main__":
         os.mkdir(os.path.join(parent_path, "BIDS_sidecars_originals"))
 
     save_folder = os.path.join(parent_path, "BIDS_sidecars_originals")
+
+###############################################################################
+
+    # Save the TEOAE .json sidecar
+    df_teoae.to_json(os.path.join(save_folder, "teoae_run_level.json"),
+                     indent=2)
+
+    with open(os.path.join(save_folder, "teoae_run_level.json"),
+              "r") as origin:
+        json_teoae = json.load(origin)
+    origin.close()
+
+    for i in list(json_teoae.keys()):
+        for j in list(json_teoae[i].keys()):
+            if json_teoae[i][j] == None:
+                del json_teoae[i][j]
+
+    to_write = Path(os.path.join(save_folder, "teoae_run_level.json"))
+    to_write.write_text(json.dumps(json_teoae,
+                                   indent=2,
+                                   ensure_ascii=False),
+                        encoding=utf)
+
+###############################################################################
 
     # Save the tympanometry .json sidecar
     df_tymp.to_json(os.path.join(save_folder, "tymp_run_level.json"), indent=2)
