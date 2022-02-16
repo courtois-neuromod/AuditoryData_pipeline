@@ -32,20 +32,10 @@ keys_mtx = ["order", "language", "practice", "sp_bin_no_bin",
 
 keys_teoae = ["order", "side", "freq1", "freq2",
               "oae", "noise", "snr", "confidence"]
-# value unit for "freq1" and "freq2" = "Hz"
-# value unit for "oae" = "dB"
-# value unit for "noise" = "dB"
-# value unit for "snr" = "dB"
-# value unit for "confidence" = "%"
 
 keys_dpoae = ["order", "side", "freq1", "freq2", "l1",
               "l2", "dp", "snr", "noise+2sd", "noise+1sd",
               "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
-# value unit for "freq1" and "freq2" = "Hz"
-# value unit for "l1" and "l2" = "dB SPL"
-# value unit for "dp" = "dB"
-# value unit for "noise+2sd", "noise+1sd" = "dB"
-# value unit for "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2" = "dB"
 
 keys_growth = ["order", "side", "freq1", "freq2", "l1",
                "l2", "dp", "snr", "noise+2sd", "noise+1sd",
@@ -58,62 +48,93 @@ keys_growth = ["order", "side", "freq1", "freq2", "l1",
 
 ###############################################################################
 
-# .json sidecar for the transient-evoked otoacoustic emissions test (TEOAE)
-df_teoae = pd.DataFrame(index=index, columns=keys_teoae)
-print("df_teoae\n", df_teoae)
+# .json sidecar for the distortion product otoacoustic emissions test (DPOAE)
+#df_dpoae = pd.DataFrame(index=index, columns=keys_dpoae)
+#print("df_dpoae\n", df_dpoae)
 
-dict_longname_teoae = {keys_teoae[2]: "Frequency #1",
-                       keys_teoae[3]: "Frequency #2",
-                       keys_teoae[4]: "Otoacoustic emissions response",
-                       keys_teoae[5]: "Noise relative strength",
-                       keys_teoae[6]: "Signal-to-noise ratio",
-                       keys_teoae[7]: "Confidence level"}
-#print("dict_longname_teoae\n", dict_longname_teoae)
+#dict_longname_dpoae = {keys_dpoae[2]: "Frequency #1",
+#                       keys_dpoae[3]: "Frequency #2",
+#                       keys_dpoae[4]: "Level for frequency #1",
+#                       keys_dpoae[5]: "Level for frequency #2",
+#                       keys_dpoae[6]: "Distortion product",
+#                       keys_dpoae[7]: "Signal-to-noise ratio",
+#                       keys_dpoae[8]: "Noise level plus two standard "\
+#                                      "deviations",
+#                       keys_dpoae[9]: "Noise level plus standard deviation",
+#                       keys_dpoae[10]: "Frequency #2 times two minus "\
+#                                       "frequency #1",
+#                       keys_dpoae[11]: "Frequency #1 times three minus "\
+#                                       "frequency #2 times two",
+#                       keys_dpoae[12]: "Frequency #2 times three minus "\
+#                                       "frequency #1 times two",
+#                       keys_dpoae[13]: "Frequency #1 times four minus "\
+#                                       "frequency #2 times three"}
+#print("dict_longname_dpoae\n", dict_longname_dpoae)
 
-dict_desc_teoae = {keys_teoae[2]: "Lower frequency (F1) used to produce "\
-                                  "transient-evoked otoacoustic emissions. "\
-                                  "The F2/F1 ratio = 1,22.",
-                   keys_teoae[3]: "Higher frequency (F2) used to produce "\
-                                  "transient-evoked otoacoustic emissions. "\
-                                  "The F2/F1 ratio = 1,22.",
-                   keys_teoae[4]: "Measured level of the transient-evoked "\
-                                  "otoacoustic emissions.",
-                   keys_teoae[5]: "Measured level of the noise relative "\
-                                  "strength.",
-                   keys_teoae[6]: "Difference between the measured level of "\
-                                  "the transient-level otoacoustic emissions "\
-                                  "and the noise relative strength "\
-                                  "(TEOAE level - Noise level).",
-                   keys_teoae[7]: "Level of confidence linked to the "\
-                                  "obtained signal-to-noise ratio."}
-#print("dict_desc_teoae\n", dict_desc_teoae)
+#dict_desc_dpoae = {keys_dpoae[2]: "Lower frequency (F1) used to produce "\
+#                                  "distortion product otoacoustic emissions. "\
+#                                  "The F2/F1 ratio = 1,22.",
+#                   keys_dpoae[3]: "Higher frequency (F2) used to produce "\
+#                                  "distortion product otoacoustic emissions. "\
+#                                  "The F2/F1 ratio = 1,22.",
+#                   keys_dpoae[4]: "Frequency #1's presentation level.",
+#                   keys_dpoae[5]: "Frequency #2's presentation level.",
+#                   keys_dpoae[6]: "Measured level of the distortion product "\
+#                                  "otoacoustic emissions.",
+#                   keys_dpoae[7]: "Difference between the measured level of "\
+#                                  "the distortion product otoacoustic "\
+#                                  "emissions and the measured noise relative "\
+#                                  "strength plus two standard deviations "\
+#                                  "(TEOAE level - (Noise level + 2 * SD)).",
+#                   keys_dpoae[8]: "Measured noise relative strength level "\
+#                                  "plus two standard deviations.",
+#                   keys_dpoae[9]: "Measured noise relative strength level "\
+#                                  "plus one standard deviation.",
+#                   keys_dpoae[10]: "Frequency #2 intensity times two minus "\
+#                                   "frequency #1 intensity (2 * F2 - F1).",
+#                   keys_dpoae[11]: "Frequency #1 intensity times three "\
+#                                   "minus frequency #2 times two "\
+#                                   "(3 * F1 - 2 * F2).",
+#                   keys_dpoae[12]: "Frequency #2 intensity times three "\
+#                                   "minus frequency #1 times two "\
+#                                   "(3 * F2 - 2 * F1).",
+#                   keys_dpoae[13]: "Frequency #1 intensity times four "\
+#                                   "minus frequency #2 times three "\
+#                                   "(4 * F1 - 3 * F2)."}
+#print("dict_desc_dpoae\n", dict_desc_dpoae)
 
-dict_units_teoae = {keys_teoae[2]: "Hz",
-                    keys_teoae[3]: "Hz",
-                    keys_teoae[4]: "dB SPL",
-                    keys_teoae[5]: "dB",
-                    keys_teoae[6]: "dB",
-                    keys_teoae[7]: "%"}
-#print("dict_units_teoae\n", dict_units_teoae)
+#dict_units_dpoae = {keys_dpoae[2]: "Hz",
+#                    keys_dpoae[3]: "Hz",
+#                    keys_dpoae[4]: "dB SPL",
+#                    keys_dpoae[5]: "dB sPL",
+#                    keys_dpoae[6]: "dB",
+#                    keys_dpoae[7]: "dB",
+#                    keys_dpoae[8]: "dB",
+#                    keys_dpoae[9]: "dB",
+#                    keys_dpoae[10]: "dB",
+#                    keys_dpoae[11]: "dB",
+#                    keys_dpoae[12]: "dB",
+#                    keys_dpoae[13]: "dB"}
+#print("dict_units_dpoae\n", dict_units_dpoae)
 
-for k_teoae in keys_teoae:
-    if k_teoae == keys_teoae[0]:
-        df_teoae.at[index[0],
-                    k_teoae] = long_order
-        df_teoae.at[index[2],
-                    k_teoae] = lvl_order
+#for k_dpoae in keys_dpoae:
+#    if k_dpoae == keys_dpoae[0]:
+#        df_dpoae.at[index[0],
+#                    k_dpoae] = long_order
+#        df_dpoae.at[index[2],
+#                    k_dpoae] = lvl_order
 
-    elif k_teoae == keys_teoae[1]:
-        df_teoae.at[index[0],
-                    k_teoae] = long_side
-        df_teoae.at[index[2],
-                    k_teoae] = lvl_side
+#    elif k_dpoae == keys_dpoae[1]:
+#        df_dpoae.at[index[0],
+#                    k_dpoae] = long_side
+#        df_dpoae.at[index[2],
+#                    k_dpoae] = lvl_side
 
-    else:
-        df_teoae.at[index[0], k_teoae] = dict_longname_teoae[k_teoae]
-        df_teoae.at[index[1], k_teoae] = dict_desc_teoae[k_teoae]
-        df_teoae.at[index[3], k_teoae] = dict_units_teoae[k_teoae]
-print("df_teoae filled\n", df_teoae)
+#    else:
+#        df_dpoae.at[index[0], k_dpoae] = dict_longname_dpoae[k_dpoae]
+#        df_dpoae.at[index[1], k_dpoae] = dict_desc_dpoae[k_dpoae]
+#        df_dpoae.at[index[3], k_dpoae] = dict_units_dpoae[k_dpoae]
+#print("df_dpoae filled\n", df_dpoae)
 
 ###############################################################################
 
@@ -183,7 +204,7 @@ for k_tymp in keys_tymp:
         df_tymp.at[index[0], k_tymp] = dict_longname_tymp[k_tymp]
         df_tymp.at[index[1], k_tymp] = dict_desc_tymp[k_tymp]
         df_tymp.at[index[3], k_tymp] = dict_units_tymp[k_tymp]
-print("df_tymp filled\n", df_tymp)
+#print("df_tymp filled\n", df_tymp)
 
 
 # .json sidecar for the stapedial reflex test (Reflex)
@@ -294,6 +315,143 @@ for k_mtx in keys_mtx:
         df_mtx.at[index[3], k_mtx] = "dB"
 
 
+# .json sidecar for the transient-evoked otoacoustic emissions test (TEOAE)
+df_teoae = pd.DataFrame(index=index, columns=keys_teoae)
+
+dict_longname_teoae = {keys_teoae[2]: "Frequency #1",
+                       keys_teoae[3]: "Frequency #2",
+                       keys_teoae[4]: "Otoacoustic emissions response",
+                       keys_teoae[5]: "Noise relative strength",
+                       keys_teoae[6]: "Signal-to-noise ratio",
+                       keys_teoae[7]: "Confidence level"}
+
+dict_desc_teoae = {keys_teoae[2]: "Lower frequency (F1) used to produce "\
+                                  "transient-evoked otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_teoae[3]: "Higher frequency (F2) used to produce "\
+                                  "transient-evoked otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_teoae[4]: "Measured level of the transient-evoked "\
+                                  "otoacoustic emissions.",
+                   keys_teoae[5]: "Measured level of the noise relative "\
+                                  "strength.",
+                   keys_teoae[6]: "Difference between the measured level of "\
+                                  "the transient-level otoacoustic emissions "\
+                                  "and the measured noise relative strength "\
+                                  "(TEOAE level - Noise level).",
+                   keys_teoae[7]: "Level of confidence linked to the "\
+                                  "obtained signal-to-noise ratio."}
+
+dict_units_teoae = {keys_teoae[2]: "Hz",
+                    keys_teoae[3]: "Hz",
+                    keys_teoae[4]: "dB SPL",
+                    keys_teoae[5]: "dB",
+                    keys_teoae[6]: "dB",
+                    keys_teoae[7]: "%"}
+
+for k_teoae in keys_teoae:
+    if k_teoae == keys_teoae[0]:
+        df_teoae.at[index[0],
+                    k_teoae] = long_order
+        df_teoae.at[index[2],
+                    k_teoae] = lvl_order
+
+    elif k_teoae == keys_teoae[1]:
+        df_teoae.at[index[0],
+                    k_teoae] = long_side
+        df_teoae.at[index[2],
+                    k_teoae] = lvl_side
+
+    else:
+        df_teoae.at[index[0], k_teoae] = dict_longname_teoae[k_teoae]
+        df_teoae.at[index[1], k_teoae] = dict_desc_teoae[k_teoae]
+        df_teoae.at[index[3], k_teoae] = dict_units_teoae[k_teoae]
+
+
+# .json sidecar for the distortion product otoacoustic emissions test (DPOAE)
+df_dpoae = pd.DataFrame(index=index, columns=keys_dpoae)
+
+dict_longname_dpoae = {keys_dpoae[2]: "Frequency #1",
+                       keys_dpoae[3]: "Frequency #2",
+                       keys_dpoae[4]: "Level for frequency #1",
+                       keys_dpoae[5]: "Level for frequency #2",
+                       keys_dpoae[6]: "Distortion product",
+                       keys_dpoae[7]: "Signal-to-noise ratio",
+                       keys_dpoae[8]: "Noise level plus two standard "\
+                                      "deviations",
+                       keys_dpoae[9]: "Noise level plus standard deviation",
+                       keys_dpoae[10]: "Frequency #2 times two minus "\
+                                       "frequency #1",
+                       keys_dpoae[11]: "Frequency #1 times three minus "\
+                                       "frequency #2 times two",
+                       keys_dpoae[12]: "Frequency #2 times three minus "\
+                                       "frequency #1 times two",
+                       keys_dpoae[13]: "Frequency #1 times four minus "\
+                                       "frequency #2 times three"}
+
+dict_desc_dpoae = {keys_dpoae[2]: "Lower frequency (F1) used to produce "\
+                                  "distortion product otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_dpoae[3]: "Higher frequency (F2) used to produce "\
+                                  "distortion product otoacoustic emissions. "\
+                                  "The F2/F1 ratio = 1,22.",
+                   keys_dpoae[4]: "Frequency #1's presentation level.",
+                   keys_dpoae[5]: "Frequency #2's presentation level.",
+                   keys_dpoae[6]: "Measured level of the distortion product "\
+                                  "otoacoustic emissions.",
+                   keys_dpoae[7]: "Difference between the measured level of "\
+                                  "the distortion product otoacoustic "\
+                                  "emissions and the measured noise relative "\
+                                  "strength plus two standard deviations "\
+                                  "(TEOAE level - (Noise level + 2 * SD)).",
+                   keys_dpoae[8]: "Measured noise relative strength level "\
+                                  "plus two standard deviations.",
+                   keys_dpoae[9]: "Measured noise relative strength level "\
+                                  "plus one standard deviation.",
+                   keys_dpoae[10]: "Frequency #2 intensity times two minus "\
+                                   "frequency #1 intensity (2 * F2 - F1).",
+                   keys_dpoae[11]: "Frequency #1 intensity times three "\
+                                   "minus frequency #2 times two "\
+                                   "(3 * F1 - 2 * F2).",
+                   keys_dpoae[12]: "Frequency #2 intensity times three "\
+                                   "minus frequency #1 times two "\
+                                   "(3 * F2 - 2 * F1).",
+                   keys_dpoae[13]: "Frequency #1 intensity times four "\
+                                   "minus frequency #2 times three "\
+                                   "(4 * F1 - 3 * F2)."}
+
+dict_units_dpoae = {keys_dpoae[2]: "Hz",
+                    keys_dpoae[3]: "Hz",
+                    keys_dpoae[4]: "dB SPL",
+                    keys_dpoae[5]: "dB sPL",
+                    keys_dpoae[6]: "dB",
+                    keys_dpoae[7]: "dB",
+                    keys_dpoae[8]: "dB",
+                    keys_dpoae[9]: "dB",
+                    keys_dpoae[10]: "dB",
+                    keys_dpoae[11]: "dB",
+                    keys_dpoae[12]: "dB",
+                    keys_dpoae[13]: "dB"}
+
+for k_dpoae in keys_dpoae:
+    if k_dpoae == keys_dpoae[0]:
+        df_dpoae.at[index[0],
+                    k_dpoae] = long_order
+        df_dpoae.at[index[2],
+                    k_dpoae] = lvl_order
+
+    elif k_dpoae == keys_dpoae[1]:
+        df_dpoae.at[index[0],
+                    k_dpoae] = long_side
+        df_dpoae.at[index[2],
+                    k_dpoae] = lvl_side
+
+    else:
+        df_dpoae.at[index[0], k_dpoae] = dict_longname_dpoae[k_dpoae]
+        df_dpoae.at[index[1], k_dpoae] = dict_desc_dpoae[k_dpoae]
+        df_dpoae.at[index[3], k_dpoae] = dict_units_dpoae[k_dpoae]
+
+
 if __name__ == "__main__":
 
     parent_path = os.path.join("..", "results")
@@ -309,25 +467,25 @@ if __name__ == "__main__":
 
 ###############################################################################
 
-    # Save the TEOAE .json sidecar
-    df_teoae.to_json(os.path.join(save_folder, "teoae_run_level.json"),
-                     indent=2)
+    # Save the DPOAE .json sidecar
+#    df_dpoae.to_json(os.path.join(save_folder, "dpoae_run_level.json"),
+#                     indent=2)
 
-    with open(os.path.join(save_folder, "teoae_run_level.json"),
-              "r") as origin:
-        json_teoae = json.load(origin)
-    origin.close()
+#    with open(os.path.join(save_folder, "dpoae_run_level.json"),
+#              "r") as origin:
+#        json_dpoae = json.load(origin)
+#    origin.close()
 
-    for i in list(json_teoae.keys()):
-        for j in list(json_teoae[i].keys()):
-            if json_teoae[i][j] == None:
-                del json_teoae[i][j]
+#    for i in list(json_dpoae.keys()):
+#        for j in list(json_dpoae[i].keys()):
+#            if json_dpoae[i][j] == None:
+#                del json_dpoae[i][j]
 
-    to_write = Path(os.path.join(save_folder, "teoae_run_level.json"))
-    to_write.write_text(json.dumps(json_teoae,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
+#    to_write = Path(os.path.join(save_folder, "dpoae_run_level.json"))
+#    to_write.write_text(json.dumps(json_dpoae,
+#                                   indent=2,
+#                                   ensure_ascii=False),
+#                        encoding=utf)
 
 ###############################################################################
 
@@ -406,6 +564,45 @@ if __name__ == "__main__":
                                    ensure_ascii=False),
                         encoding=utf)
 
+    # Save the TEOAE .json sidecar
+    df_teoae.to_json(os.path.join(save_folder, "teoae_run_level.json"),
+                     indent=2)
+
+    with open(os.path.join(save_folder, "teoae_run_level.json"),
+              "r") as origin:
+        json_teoae = json.load(origin)
+    origin.close()
+
+    for i in list(json_teoae.keys()):
+        for j in list(json_teoae[i].keys()):
+            if json_teoae[i][j] == None:
+                del json_teoae[i][j]
+
+    to_write = Path(os.path.join(save_folder, "teoae_run_level.json"))
+    to_write.write_text(json.dumps(json_teoae,
+                                   indent=2,
+                                   ensure_ascii=False),
+                        encoding=utf)
+
+    # Save the DPOAE .json sidecar
+    df_dpoae.to_json(os.path.join(save_folder, "dpoae_run_level.json"),
+                     indent=2)
+
+    with open(os.path.join(save_folder, "dpoae_run_level.json"),
+              "r") as origin:
+        json_dpoae = json.load(origin)
+    origin.close()
+
+    for i in list(json_dpoae.keys()):
+        for j in list(json_dpoae[i].keys()):
+            if json_dpoae[i][j] == None:
+                del json_dpoae[i][j]
+
+    to_write = Path(os.path.join(save_folder, "dpoae_run_level.json"))
+    to_write.write_text(json.dumps(json_dpoae,
+                                   indent=2,
+                                   ensure_ascii=False),
+                        encoding=utf)
 
 else:
 
