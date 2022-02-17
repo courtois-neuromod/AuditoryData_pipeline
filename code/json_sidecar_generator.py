@@ -46,101 +46,10 @@ keys_growth = ["order", "side", "freq1", "freq2", "l1",
 # value unit for "noise+2sd", "noise+1sd" = "dB"
 # value unit for "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2" = "dB"
 
-###############################################################################
-
-# .json sidecar for the distortion product otoacoustic emissions test (DPOAE)
-#df_dpoae = pd.DataFrame(index=index, columns=keys_dpoae)
-#print("df_dpoae\n", df_dpoae)
-
-#dict_longname_dpoae = {keys_dpoae[2]: "Frequency #1",
-#                       keys_dpoae[3]: "Frequency #2",
-#                       keys_dpoae[4]: "Level for frequency #1",
-#                       keys_dpoae[5]: "Level for frequency #2",
-#                       keys_dpoae[6]: "Distortion product",
-#                       keys_dpoae[7]: "Signal-to-noise ratio",
-#                       keys_dpoae[8]: "Noise level plus two standard "\
-#                                      "deviations",
-#                       keys_dpoae[9]: "Noise level plus standard deviation",
-#                       keys_dpoae[10]: "Frequency #2 times two minus "\
-#                                       "frequency #1",
-#                       keys_dpoae[11]: "Frequency #1 times three minus "\
-#                                       "frequency #2 times two",
-#                       keys_dpoae[12]: "Frequency #2 times three minus "\
-#                                       "frequency #1 times two",
-#                       keys_dpoae[13]: "Frequency #1 times four minus "\
-#                                       "frequency #2 times three"}
-#print("dict_longname_dpoae\n", dict_longname_dpoae)
-
-#dict_desc_dpoae = {keys_dpoae[2]: "Lower frequency (F1) used to produce "\
-#                                  "distortion product otoacoustic emissions. "\
-#                                  "The F2/F1 ratio = 1,22.",
-#                   keys_dpoae[3]: "Higher frequency (F2) used to produce "\
-#                                  "distortion product otoacoustic emissions. "\
-#                                  "The F2/F1 ratio = 1,22.",
-#                   keys_dpoae[4]: "Frequency #1's presentation level.",
-#                   keys_dpoae[5]: "Frequency #2's presentation level.",
-#                   keys_dpoae[6]: "Measured level of the distortion product "\
-#                                  "otoacoustic emissions.",
-#                   keys_dpoae[7]: "Difference between the measured level of "\
-#                                  "the distortion product otoacoustic "\
-#                                  "emissions and the measured noise relative "\
-#                                  "strength plus two standard deviations "\
-#                                  "(TEOAE level - (Noise level + 2 * SD)).",
-#                   keys_dpoae[8]: "Measured noise relative strength level "\
-#                                  "plus two standard deviations.",
-#                   keys_dpoae[9]: "Measured noise relative strength level "\
-#                                  "plus one standard deviation.",
-#                   keys_dpoae[10]: "Frequency #2 intensity times two minus "\
-#                                   "frequency #1 intensity (2 * F2 - F1).",
-#                   keys_dpoae[11]: "Frequency #1 intensity times three "\
-#                                   "minus frequency #2 times two "\
-#                                   "(3 * F1 - 2 * F2).",
-#                   keys_dpoae[12]: "Frequency #2 intensity times three "\
-#                                   "minus frequency #1 times two "\
-#                                   "(3 * F2 - 2 * F1).",
-#                   keys_dpoae[13]: "Frequency #1 intensity times four "\
-#                                   "minus frequency #2 times three "\
-#                                   "(4 * F1 - 3 * F2)."}
-#print("dict_desc_dpoae\n", dict_desc_dpoae)
-
-#dict_units_dpoae = {keys_dpoae[2]: "Hz",
-#                    keys_dpoae[3]: "Hz",
-#                    keys_dpoae[4]: "dB SPL",
-#                    keys_dpoae[5]: "dB sPL",
-#                    keys_dpoae[6]: "dB",
-#                    keys_dpoae[7]: "dB",
-#                    keys_dpoae[8]: "dB",
-#                    keys_dpoae[9]: "dB",
-#                    keys_dpoae[10]: "dB",
-#                    keys_dpoae[11]: "dB",
-#                    keys_dpoae[12]: "dB",
-#                    keys_dpoae[13]: "dB"}
-#print("dict_units_dpoae\n", dict_units_dpoae)
-
-#for k_dpoae in keys_dpoae:
-#    if k_dpoae == keys_dpoae[0]:
-#        df_dpoae.at[index[0],
-#                    k_dpoae] = long_order
-#        df_dpoae.at[index[2],
-#                    k_dpoae] = lvl_order
-
-#    elif k_dpoae == keys_dpoae[1]:
-#        df_dpoae.at[index[0],
-#                    k_dpoae] = long_side
-#        df_dpoae.at[index[2],
-#                    k_dpoae] = lvl_side
-
-#    else:
-#        df_dpoae.at[index[0], k_dpoae] = dict_longname_dpoae[k_dpoae]
-#        df_dpoae.at[index[1], k_dpoae] = dict_desc_dpoae[k_dpoae]
-#        df_dpoae.at[index[3], k_dpoae] = dict_units_dpoae[k_dpoae]
-#print("df_dpoae filled\n", df_dpoae)
-
-###############################################################################
 
 # .json sidecar for the tympanometry test (Tymp)
 df_tymp = pd.DataFrame(index=index, columns=keys_tymp)
-print("df_tymp\n", df_tymp)
+#print("df_tymp\n", df_tymp)
 
 dict_longname_tymp = {keys_tymp[3]: "Tympanometric peak pressure/"\
                                     "Middle ear pressure",
@@ -452,6 +361,96 @@ for k_dpoae in keys_dpoae:
         df_dpoae.at[index[3], k_dpoae] = dict_units_dpoae[k_dpoae]
 
 
+# .json sidecar for the distortion product growth function test (DP-Growth)
+df_growth = pd.DataFrame(index=index, columns=keys_growth)
+#print("df_growth\n", df_growth)
+
+dict_longname_growth = {keys_growth[2]: "Frequency #1",
+                        keys_growth[3]: "Frequency #2",
+                        keys_growth[4]: "Level for frequency #1",
+                        keys_growth[5]: "Level for frequency #2",
+                        keys_growth[6]: "Distortion product",
+                        keys_growth[7]: "Signal-to-noise ratio",
+                        keys_growth[8]: "Noise level plus two standard "\
+                                        "deviations",
+                        keys_growth[9]: "Noise level plus standard deviation",
+                        keys_growth[10]: "Frequency #2 times two minus "\
+                                         "frequency #1",
+                        keys_growth[11]: "Frequency #1 times three minus "\
+                                         "frequency #2 times two",
+                        keys_growth[12]: "Frequency #2 times three minus "\
+                                         "frequency #1 times two",
+                        keys_growth[13]: "Frequency #1 times four minus "\
+                                         "frequency #2 times three"}
+#print("dict_longname_growth\n", dict_longname_growth)
+
+dict_desc_growth = {keys_growth[2]: "Lower frequency (F1) used to produce "\
+                                    "distortion product otoacoustic "\
+                                    "emissions. The F2/F1 ratio = 1,22.",
+                    keys_growth[3]: "Higher frequency (F2) used to produce "\
+                                    "distortion product otoacoustic "\
+                                    "emissions. The F2/F1 ratio = 1,22.",
+                    keys_growth[4]: "Frequency #1's presentation level.",
+                    keys_growth[5]: "Frequency #2's presentation level.",
+                    keys_growth[6]: "Measured level of the distortion "\
+                                    "product otoacoustic emissions.",
+                    keys_growth[7]: "Difference between the measured level "\
+                                    "of the distortion product otoacoustic "\
+                                    "emissions and the measured noise "\
+                                    "relative strength plus two standard "\
+                                    "deviations (TEOAE level - (Noise level "\
+                                    "+ 2 * SD)).",
+                    keys_growth[8]: "Measured noise relative strength level "\
+                                    "plus two standard deviations.",
+                    keys_growth[9]: "Measured noise relative strength level "\
+                                    "plus one standard deviation.",
+                    keys_growth[10]: "Frequency #2 intensity times two minus "\
+                                     "frequency #1 intensity (2 * F2 - F1).",
+                    keys_growth[11]: "Frequency #1 intensity times three "\
+                                     "minus frequency #2 times two "\
+                                     "(3 * F1 - 2 * F2).",
+                    keys_growth[12]: "Frequency #2 intensity times three "\
+                                     "minus frequency #1 times two "\
+                                     "(3 * F2 - 2 * F1).",
+                    keys_growth[13]: "Frequency #1 intensity times four "\
+                                     "minus frequency #2 times three "\
+                                     "(4 * F1 - 3 * F2)."}
+#print("dict_desc_growth\n", dict_desc_growth)
+
+dict_units_growth = {keys_growth[2]: "Hz",
+                     keys_growth[3]: "Hz",
+                     keys_growth[4]: "dB SPL",
+                     keys_growth[5]: "dB sPL",
+                     keys_growth[6]: "dB",
+                     keys_growth[7]: "dB",
+                     keys_growth[8]: "dB",
+                     keys_growth[9]: "dB",
+                     keys_growth[10]: "dB",
+                     keys_growth[11]: "dB",
+                     keys_growth[12]: "dB",
+                     keys_growth[13]: "dB"}
+#print("dict_units_growth\n", dict_units_growth)
+
+for k_growth in keys_growth:
+    if k_growth == keys_growth[0]:
+        df_growth.at[index[0],
+                     k_growth] = long_order
+        df_growth.at[index[2],
+                     k_growth] = lvl_order
+
+    elif k_growth == keys_growth[1]:
+        df_growth.at[index[0],
+                     k_growth] = long_side
+        df_growth.at[index[2],
+                     k_growth] = lvl_side
+
+    else:
+        df_growth.at[index[0], k_growth] = dict_longname_growth[k_growth]
+        df_growth.at[index[1], k_growth] = dict_desc_growth[k_growth]
+        df_growth.at[index[3], k_growth] = dict_units_growth[k_growth]
+#print("df_growth filled\n", df_growth)
+
+
 if __name__ == "__main__":
 
     parent_path = os.path.join("..", "results")
@@ -465,145 +464,7 @@ if __name__ == "__main__":
 
     save_folder = os.path.join(parent_path, "BIDS_sidecars_originals")
 
-###############################################################################
-
-    # Save the DPOAE .json sidecar
-#    df_dpoae.to_json(os.path.join(save_folder, "dpoae_run_level.json"),
-#                     indent=2)
-
-#    with open(os.path.join(save_folder, "dpoae_run_level.json"),
-#              "r") as origin:
-#        json_dpoae = json.load(origin)
-#    origin.close()
-
-#    for i in list(json_dpoae.keys()):
-#        for j in list(json_dpoae[i].keys()):
-#            if json_dpoae[i][j] == None:
-#                del json_dpoae[i][j]
-
-#    to_write = Path(os.path.join(save_folder, "dpoae_run_level.json"))
-#    to_write.write_text(json.dumps(json_dpoae,
-#                                   indent=2,
-#                                   ensure_ascii=False),
-#                        encoding=utf)
-
-###############################################################################
-
-    # Save the tympanometry .json sidecar
-    df_tymp.to_json(os.path.join(save_folder, "tymp_run_level.json"), indent=2)
-
-    with open(os.path.join(save_folder, "tymp_run_level.json"), "r") as origin:
-        json_tymp = json.load(origin)
-    origin.close()
-
-    for i in list(json_tymp.keys()):
-        for j in list(json_tymp[i].keys()):
-            if json_tymp[i][j] == None:
-                del json_tymp[i][j]
-
-    to_write = Path(os.path.join(save_folder, "tymp_run_level.json"))
-    to_write.write_text(json.dumps(json_tymp,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
-    # Save the stapedial reflex .json sidecar
-    df_reflex.to_json(os.path.join(save_folder,
-                                   "reflex_run_level.json"),
-                                   indent=2)
-
-    with open(os.path.join(save_folder, "reflex_run_level.json"),
-              "r") as origin:
-        json_reflex = json.load(origin)
-    origin.close()
-
-    for i in list(json_reflex.keys()):
-        for j in list(json_reflex[i].keys()):
-            if json_reflex[i][j] == None:
-                del json_reflex[i][j]
-
-    to_write = Path(os.path.join(save_folder, "reflex_run_level.json"))
-    to_write.write_text(json.dumps(json_reflex,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
-    # Save the PTA .json sidecar
-    df_pta.to_json(os.path.join(save_folder, "pta_run_level.json"), indent=2)
-
-    with open(os.path.join(save_folder, "pta_run_level.json"), "r") as origin:
-        json_pta = json.load(origin)
-    origin.close()
-
-    for i in list(json_pta.keys()):
-        for j in list(json_pta[i].keys()):
-            if json_pta[i][j] == None:
-                del json_pta[i][j]
-
-    to_write = Path(os.path.join(save_folder, "pta_run_level.json"))
-    to_write.write_text(json.dumps(json_pta,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
-    # Save the MTX .json sidecar
-    df_mtx.to_json(os.path.join(save_folder, "mtx_run_level.json"), indent=2)
-
-    with open(os.path.join(save_folder, "mtx_run_level.json"), "r") as origin:
-        json_mtx = json.load(origin)
-    origin.close()
-
-    for i in list(json_mtx.keys()):
-        for j in list(json_mtx[i].keys()):
-            if json_mtx[i][j] == None:
-                del json_mtx[i][j]
-
-    to_write = Path(os.path.join(save_folder, "mtx_run_level.json"))
-    to_write.write_text(json.dumps(json_mtx,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
-    # Save the TEOAE .json sidecar
-    df_teoae.to_json(os.path.join(save_folder, "teoae_run_level.json"),
-                     indent=2)
-
-    with open(os.path.join(save_folder, "teoae_run_level.json"),
-              "r") as origin:
-        json_teoae = json.load(origin)
-    origin.close()
-
-    for i in list(json_teoae.keys()):
-        for j in list(json_teoae[i].keys()):
-            if json_teoae[i][j] == None:
-                del json_teoae[i][j]
-
-    to_write = Path(os.path.join(save_folder, "teoae_run_level.json"))
-    to_write.write_text(json.dumps(json_teoae,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
-    # Save the DPOAE .json sidecar
-    df_dpoae.to_json(os.path.join(save_folder, "dpoae_run_level.json"),
-                     indent=2)
-
-    with open(os.path.join(save_folder, "dpoae_run_level.json"),
-              "r") as origin:
-        json_dpoae = json.load(origin)
-    origin.close()
-
-    for i in list(json_dpoae.keys()):
-        for j in list(json_dpoae[i].keys()):
-            if json_dpoae[i][j] == None:
-                del json_dpoae[i][j]
-
-    to_write = Path(os.path.join(save_folder, "dpoae_run_level.json"))
-    to_write.write_text(json.dumps(json_dpoae,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
-
+    
 else:
 
     parent_path = os.path.join("results")
@@ -617,77 +478,137 @@ else:
 
     save_folder = os.path.join(parent_path, "BIDS_sidecars_originals")
 
-    # Save the tympanometry .json sidecar
-    df_tymp.to_json(os.path.join(save_folder, "tymp_run_level.json"), indent=2)
+# Save the tympanometry .json sidecar
+df_tymp.to_json(os.path.join(save_folder, "tymp_run_level.json"), indent=2)
 
-    with open(os.path.join(save_folder, "tymp_run_level.json"), "r") as origin:
-        json_tymp = json.load(origin)
-    origin.close()
+with open(os.path.join(save_folder, "tymp_run_level.json"), "r") as origin:
+    json_tymp = json.load(origin)
+origin.close()
 
-    for i in list(json_tymp.keys()):
-        for j in list(json_tymp[i].keys()):
-            if json_tymp[i][j] == None:
-                del json_tymp[i][j]
+for i in list(json_tymp.keys()):
+    for j in list(json_tymp[i].keys()):
+        if json_tymp[i][j] == None:
+            del json_tymp[i][j]
 
-    to_write = Path(os.path.join(save_folder, "tymp_run_level.json"))
-    to_write.write_text(json.dumps(json_tymp,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
+to_write = Path(os.path.join(save_folder, "tymp_run_level.json"))
+to_write.write_text(json.dumps(json_tymp,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
 
-    # Save the stapedial reflex .json sidecar
-    df_reflex.to_json(os.path.join(save_folder,
-                                   "reflex_run_level.json"),
-                                   indent=2)
+# Save the stapedial reflex .json sidecar
+df_reflex.to_json(os.path.join(save_folder,
+                               "reflex_run_level.json"),
+                               indent=2)
 
-    with open(os.path.join(save_folder, "reflex_run_level.json"),
-              "r") as origin:
-        json_reflex = json.load(origin)
-    origin.close()
+with open(os.path.join(save_folder, "reflex_run_level.json"),
+          "r") as origin:
+    json_reflex = json.load(origin)
+origin.close()
 
-    for i in list(json_reflex.keys()):
-        for j in list(json_reflex[i].keys()):
-            if json_reflex[i][j] == None:
-                del json_reflex[i][j]
+for i in list(json_reflex.keys()):
+    for j in list(json_reflex[i].keys()):
+        if json_reflex[i][j] == None:
+            del json_reflex[i][j]
 
-    to_write = Path(os.path.join(save_folder, "reflex_run_level.json"))
-    to_write.write_text(json.dumps(json_reflex,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
+to_write = Path(os.path.join(save_folder, "reflex_run_level.json"))
+to_write.write_text(json.dumps(json_reflex,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
 
-    # Save the PTA .json sidecar
-    df_pta.to_json(os.path.join(save_folder, "pta_run_level.json"), indent=2)
+# Save the PTA .json sidecar
+df_pta.to_json(os.path.join(save_folder, "pta_run_level.json"), indent=2)
 
-    with open(os.path.join(save_folder, "pta_run_level.json"), "r") as origin:
-        json_pta = json.load(origin)
-    origin.close()
+with open(os.path.join(save_folder, "pta_run_level.json"), "r") as origin:
+    json_pta = json.load(origin)
+origin.close()
 
-    for i in list(json_pta.keys()):
-        for j in list(json_pta[i].keys()):
-            if json_pta[i][j] == None:
-                del json_pta[i][j]
+for i in list(json_pta.keys()):
+    for j in list(json_pta[i].keys()):
+        if json_pta[i][j] == None:
+            del json_pta[i][j]
 
-    to_write = Path(os.path.join(save_folder, "pta_run_level.json"))
-    to_write.write_text(json.dumps(json_pta,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
+to_write = Path(os.path.join(save_folder, "pta_run_level.json"))
+to_write.write_text(json.dumps(json_pta,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
 
-    # Save the MTX .json sidecar
-    df_mtx.to_json(os.path.join(save_folder, "mtx_run_level.json"), indent=2)
+# Save the MTX .json sidecar
+df_mtx.to_json(os.path.join(save_folder, "mtx_run_level.json"), indent=2)
 
-    with open(os.path.join(save_folder, "mtx_run_level.json"), "r") as origin:
-        json_mtx = json.load(origin)
-    origin.close()
+with open(os.path.join(save_folder, "mtx_run_level.json"), "r") as origin:
+    json_mtx = json.load(origin)
+origin.close()
 
-    for i in list(json_mtx.keys()):
-        for j in list(json_mtx[i].keys()):
-            if json_mtx[i][j] == None:
-                del json_mtx[i][j]
+for i in list(json_mtx.keys()):
+    for j in list(json_mtx[i].keys()):
+        if json_mtx[i][j] == None:
+            del json_mtx[i][j]
 
-    to_write = Path(os.path.join(save_folder, "mtx_run_level.json"))
-    to_write.write_text(json.dumps(json_mtx,
-                                   indent=2,
-                                   ensure_ascii=False),
-                        encoding=utf)
+to_write = Path(os.path.join(save_folder, "mtx_run_level.json"))
+to_write.write_text(json.dumps(json_mtx,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
+
+# Save the TEOAE .json sidecar
+df_teoae.to_json(os.path.join(save_folder, "teoae_run_level.json"),
+                 indent=2)
+
+with open(os.path.join(save_folder, "teoae_run_level.json"),
+          "r") as origin:
+    json_teoae = json.load(origin)
+origin.close()
+
+for i in list(json_teoae.keys()):
+    for j in list(json_teoae[i].keys()):
+        if json_teoae[i][j] == None:
+            del json_teoae[i][j]
+
+to_write = Path(os.path.join(save_folder, "teoae_run_level.json"))
+to_write.write_text(json.dumps(json_teoae,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
+
+# Save the DPOAE .json sidecar
+df_dpoae.to_json(os.path.join(save_folder, "dpoae_run_level.json"),
+                 indent=2)
+
+with open(os.path.join(save_folder, "dpoae_run_level.json"),
+          "r") as origin:
+    json_dpoae = json.load(origin)
+origin.close()
+
+for i in list(json_dpoae.keys()):
+    for j in list(json_dpoae[i].keys()):
+        if json_dpoae[i][j] == None:
+            del json_dpoae[i][j]
+
+to_write = Path(os.path.join(save_folder, "dpoae_run_level.json"))
+to_write.write_text(json.dumps(json_dpoae,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
+
+# Save the DP-Growth .json sidecar
+df_growth.to_json(os.path.join(save_folder, "growth_run_level.json"),
+                  indent=2)
+
+with open(os.path.join(save_folder, "growth_run_level.json"),
+          "r") as origin:
+    json_growth = json.load(origin)
+origin.close()
+
+for i in list(json_growth.keys()):
+    for j in list(json_growth[i].keys()):
+        if json_growth[i][j] == None:
+            del json_growth[i][j]
+
+to_write = Path(os.path.join(save_folder, "growth_run_level.json"))
+to_write.write_text(json.dumps(json_growth,
+                               indent=2,
+                               ensure_ascii=False),
+                    encoding=utf)
