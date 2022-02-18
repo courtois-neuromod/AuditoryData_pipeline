@@ -7,8 +7,8 @@ import json_sidecar_generator as jsg
 
 
 if __name__ == "__main__":
-    print("This script is not to be used as a standalone script."\
-          "Please use BIDS_formater.py to call it")
+    print("This script is not designed to be used as a standalone script. "\
+          "Please use BIDS_formater.py to call it.")
 
 else:
     def retrieve_db():
