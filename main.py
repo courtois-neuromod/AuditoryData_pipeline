@@ -1,5 +1,6 @@
 import os
-import code.BIDS_formater as formater
+from src import BIDS_formater as formater
+from src import json_sidecar_generator as jsg
 
 
 # Available functions list
@@ -8,8 +9,9 @@ ls_fct = ["Pure-Tone Audiometry graph generator",
           "BIDS format's json sidecars (test level) creation",
           "BIDS format's auditory data exporter"]
 
-# Prompt text generation          
-prompt_instruction = ("Please enter the number of the pipeline " +
+# Prompt text generation
+print("\nWelcome to the AuditoryData_pipeline.\n")
+prompt_instruction = ("Please enter the number of the pipeline "\
                       "functionality you want to run:")
 
 prompt_options = ""
@@ -28,6 +30,7 @@ loop_value = True
 while loop_value:
     
     value = input(prompt_txt)
+    print("\n")
 
     # Value validity verification
     # Is it a number?
@@ -44,14 +47,15 @@ while loop_value:
 
 ##########################
             else:
-                print("!= 5 == True")
+#                print("!= 5 == True")
                 if ls_fct[value - 1].count("graph") == 1:
                     print("graph = True")
                 elif ls_fct[value - 1].count("BIDS") == 1:
                     print("BIDS = True", ls_fct[value - 1])
-                    if ls_fct[value - 1] == "BIDS format's auditory "\
-                                            "data exporter":
-                        formater
+                    if ls_fct[value - 1] == ("BIDS format's auditory "\
+                                             "data exporter"):
+#                        print("formater")
+                        formater.master_run("./results")
                     
 ##########################
         else:
@@ -63,4 +67,4 @@ while loop_value:
         print("The provided value is not valid (not a digit).")
         continue
         
-print("Thanks for using the AuditoryData_pipeline")
+print("Thanks for using the AuditoryData_pipeline.")
