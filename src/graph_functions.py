@@ -549,24 +549,24 @@ def plot_boxplot_pta(df, ear, display=False):
     new_df["Protocol condition"].replace(post48, "48h+ Postscan", inplace=True)
     
     fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Baseline"],
-                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Baseline"],
-                             name="Baseline",
-                             legendgroup="Baseline"))
+                            y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Baseline"],
+                            name="Baseline",
+                            legendgroup="Baseline"))
                              
     fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Prescan"],
-                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Prescan"],
-                             name="Prescan",
-                             legendgroup="Prescan"))
+                            y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Prescan"],
+                            name="Prescan",
+                            legendgroup="Prescan"))
                             
     fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "Postscan"],
-                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Postscan"],
-                             name="Postscan",
-                             legendgroup="Postscan"))
+                            y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "Postscan"],
+                            name="Postscan",
+                            legendgroup="Postscan"))
                             
     fig.add_trace(go.Violin(x=new_df["Frequency (Hz)"][new_df["Protocol condition"] == "48h+ Postscan"],
-                             y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "48h+ Postscan"],
-                             name="48h+ Postscan",
-                             legendgroup="48h+ Postscan"))
+                            y=new_df["Hearing Threshold (dB HL)"][new_df["Protocol condition"] == "48h+ Postscan"],
+                            name="48h+ Postscan",
+                            legendgroup="48h+ Postscan"))
 
     if ear == "Right ear":
         save_parameter = "boxplot_R"
