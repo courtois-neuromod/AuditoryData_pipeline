@@ -204,8 +204,6 @@ def master_run(result_path):
 
         print(f"The tsv and json files for {i} have been created.")
 
-    print("\n")
-
     # This code section is present if, for any reason, the .tsv files are not
     # properly saved. You will first need to activate the "import glob" line
     # (line 2). It is then possible to replace the variable "ext"'s value in
@@ -224,6 +222,7 @@ if __name__ == "__main__":
     result_path = os.path.join(master_path, "results")
     
     master_run(result_path)
+    print("\n")
 
 
 else:

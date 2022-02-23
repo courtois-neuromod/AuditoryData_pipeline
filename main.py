@@ -1,13 +1,15 @@
 import os
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
+from src import MRI_session_design_generator as ses_design
 
 
 # Available functions list
-ls_fct = ["Pure-Tone Audiometry graph generator",
+ls_fct = ["BIDS format's json sidecars (test level) creation",
+          "BIDS format's auditory data exporter",
+          "Pure-Tone Audiometry graph generator",
           "Matrix Speech-in-Noise Test graph generator",
-          "BIDS format's json sidecars (test level) creation",
-          "BIDS format's auditory data exporter"]
+          "MRI session design files generator"]
 
 # Prompt text generation
 print("\nWelcome to the AuditoryData_pipeline.\n")
@@ -19,7 +21,7 @@ prompt_options = ""
 for i in range(0, len(ls_fct)):
     prompt_options += ("\n " + str(i+1) + "-" + ls_fct[i])
 
-prompt_options += ("\n " + str(len(ls_fct)+1) + "-Exit")
+prompt_options += ("\n " + str(len(ls_fct)+1) + "-Exit\n")
 
 prompt_txt = prompt_instruction + prompt_options
 
@@ -33,38 +35,73 @@ while loop_value:
     print("\n")
 
     # Value validity verification
-    # Is it a number?
+    # Is it a valid number?
     if value.isdigit():
         value = int(value)
 
         # Is it within the range of the options?
         if value > 0 and value <= len(ls_fct) + 1:
-#            print("value range = OK")
 
-            if value == 5:
-#                loop_value = False
+            # Loop breaks if the "Exit" option is selected
+            if value == len(ls_fct) + 1:
                 break
 
-##########################
+# The encased section contains the subscript calls.
+# If functionality are to be added, here is where to add them.
+# (Don't forget to also add them to the list of available functions: ls_fct)
+###############################################################################
+
             else:
-#                print("!= 5 == True")
-                if ls_fct[value - 1].count("graph") == 1:
-                    print("graph = True")
-                elif ls_fct[value - 1].count("BIDS") == 1:
-                    print("BIDS = True", ls_fct[value - 1])
-                    if ls_fct[value - 1] == ("BIDS format's auditory "\
-                                             "data exporter"):
-#                        print("formater")
+
+                # BIDS format functionalities
+                if ls_fct[value - 1].count("BIDS") == 1:
+
+                    if ls_fct[value - 1] == ("BIDS format's json sidecars "\
+                                             "(test level) creation"):
+                        #print("json\n")
+                        jsg.create_sidecars("./results")
+                        print("\n")
+
+                    elif ls_fct[value - 1] == ("BIDS format's auditory "\
+                                               "data exporter"):
+                        #print("formater\n")
                         formater.master_run("./results")
-                    
-##########################
+                        print("\n")
+
+                # Graph generation functionalities
+                elif ls_fct[value - 1].count("graph") == 1:
+
+                    # PTA graph plotting
+                    if ls_fct[value - 1].count("Pure-Tone") == 1:
+                        print("pure-tone\n")
+                        #pta graph generation functions to be added
+                        print("\n")
+
+                    # MTX graph plotting
+                    elif ls_fct[value - 1].count("Matrix") == 1:
+                        print("matrix\n")
+                        #matrix graph generation functions to be added
+                        print("\n")
+
+                # MRI sessions design files generation functionalities
+                elif ls_fct[value - 1].count("design files") == 1:
+                    #print("design files\n")
+                    ses_design.master_run("./data")
+                    print("\n")
+
+###############################################################################
+
         else:
+
             #If it is not within range, restart the loop
             print("The provided value is not valid (out of bound).")
             continue
+
     else:
+
         # If it is not a number, restart the loop
         print("The provided value is not valid (not a digit).")
         continue
-        
-print("Thanks for using the AuditoryData_pipeline.")
+
+# Exit message
+print("Thanks for using the AuditoryData_pipeline.\n")
