@@ -2,6 +2,7 @@ import os
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
 from src import MRI_session_design_generator as ses_design
+from src import graph_generator as graph
 
 
 # Available functions list
@@ -73,14 +74,14 @@ while loop_value:
 
                     # PTA graph plotting
                     if ls_fct[value - 1].count("Pure-Tone") == 1:
-                        print("pure-tone\n")
-                        #pta graph generation functions to be added
+                        #print("pure-tone\n")
+                        graph.master_run("PTA")
                         print("\n")
 
                     # MTX graph plotting
                     elif ls_fct[value - 1].count("Matrix") == 1:
-                        print("matrix\n")
-                        #matrix graph generation functions to be added
+                        #print("matrix\n")
+                        graph.master_run("MTX")
                         print("\n")
 
                 # MRI sessions design files generation functionalities
