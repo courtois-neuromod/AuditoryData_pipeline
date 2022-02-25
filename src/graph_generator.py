@@ -1,5 +1,6 @@
-import pandas as pd
 from src import graph_functions as gf
+from src import graph_PTA as pta
+from src import graph_MTX as mtx
 
 
 subjects = ["Sub01", "Sub02", "Sub03", "Sub04", "Sub05", "Sub06"]
@@ -23,6 +24,7 @@ ls_columns_MTX1 = ["MTX1_LANG", "MTX1_L_L", "MTX1_L_Bin",
                    "MTX1_Bin_Bin", "MTX1_R_Bin", "MTX1_R_R"]
 ls_columns_MTX2 = ["MTX2_LANG", "MTX2_L_L", "MTX2_L_Bin",
                    "MTX2_Bin_Bin", "MTX2_R_Bin", "MTX2_R_R"]
+
 
 def eliminate_row_mtx(data_mtx, language):
     data_mtx = gf.eliminate_row(data_mtx,
@@ -85,7 +87,7 @@ def pta_graph(result_path, master_data, counter, save_error):
     # Generation of the interactive graphs (.html file format)
     # PTA, Left ear
     for i in range(0, len(data_pta_L)):
-        action_i = gf.plot_pta_L(result_path, data_pta_L.loc[[i]])
+        action_i = pta.plot_pta_L(result_path, data_pta_L.loc[[i]])
         if action_i is True:
             counter = counter + 1
         else:
@@ -93,7 +95,7 @@ def pta_graph(result_path, master_data, counter, save_error):
 
     # PTA, Right ear
     for j in range(0, len(data_pta_R)):
-        action_j = gf.plot_pta_R(result_path, data_pta_R.loc[[j]])
+        action_j = pta.plot_pta_R(result_path, data_pta_R.loc[[j]])
         if action_j is True:
             counter = counter + 1
         else:
@@ -102,7 +104,7 @@ def pta_graph(result_path, master_data, counter, save_error):
     # PTA, All results for one participant in one graph
     for k in subjects:
         one_subject = gf.extract_subject(data_pta, k)
-        action_k = gf.plot_pta_subject(result_path, one_subject)
+        action_k = pta.plot_pta_subject(result_path, one_subject)
         if action_k is True:
             counter = counter + 1
         else:
@@ -111,7 +113,7 @@ def pta_graph(result_path, master_data, counter, save_error):
     # PTA, Box plot graph, Right ear
     for r in subjects:
         one_subject = gf.extract_subject(data_pta_R, r)
-        action_r = gf.plot_boxplot_pta(result_path, one_subject, "Right ear")
+        action_r = pta.plot_boxplot_pta(result_path, one_subject, "Right ear")
         if action_r is True:
             counter = counter + 1
         else:
@@ -120,7 +122,7 @@ def pta_graph(result_path, master_data, counter, save_error):
     # PTA, Box plot graph, Left ear
     for s in subjects:
         one_subject = gf.extract_subject(data_pta_L, s)
-        action_s = gf.plot_boxplot_pta(result_path, one_subject, "Left ear")
+        action_s = pta.plot_boxplot_pta(result_path, one_subject, "Left ear")
         if action_s is True:
             counter = counter + 1
         else:
@@ -140,11 +142,11 @@ def mtx_graph(result_path, master_data, counter, save_error):
     data_mtx_L1 = eliminate_row_mtx(data_mtx_L1, 1)
 
     # L2
-    data_mtx_L2 = eliminate_row_mtx(data_mtx_L2, 2)    
+    data_mtx_L2 = eliminate_row_mtx(data_mtx_L2, 2)
 
     # MTX, L1
     for m in range(0, len(data_mtx_L1)):
-        action_m = gf.plot_mtx(result_path, data_mtx_L1.loc[[m]], "L1")
+        action_m = mtx.plot_mtx(result_path, data_mtx_L1.loc[[m]], "L1")
         if action_m is True:
             counter = counter + 1
         else:
@@ -158,7 +160,7 @@ def mtx_graph(result_path, master_data, counter, save_error):
         if df_line["Participant_ID"][n] == "Sub06":
             continue
         else:
-            action_n = gf.plot_mtx(result_path, data_mtx_L2.loc[[n]], "L2")
+            action_n = mtx.plot_mtx(result_path, data_mtx_L2.loc[[n]], "L2")
             if action_n is True:
                 counter = counter + 1
             else:
@@ -167,7 +169,7 @@ def mtx_graph(result_path, master_data, counter, save_error):
     # MTX, L1, All results for one participant in one graph
     for p in subjects:
         one_subject = gf.extract_subject(data_mtx_L1, p)
-        action_p = gf.plot_mtx_subject(result_path, one_subject, "L1")
+        action_p = mtx.plot_mtx_subject(result_path, one_subject, "L1")
         if action_p is True:
             counter = counter + 1
         else:
@@ -179,7 +181,7 @@ def mtx_graph(result_path, master_data, counter, save_error):
             continue
         else:
             one_subject = gf.extract_subject(data_mtx_L2, q)
-            action_q = gf.plot_mtx_subject(result_path, one_subject, "L2")
+            action_q = mtx.plot_mtx_subject(result_path, one_subject, "L2")
             if action_q is True:
                 counter = counter + 1
             else:
@@ -190,7 +192,7 @@ def mtx_graph(result_path, master_data, counter, save_error):
 
 def master_run(path, test_type="all"):
     master_data = gf.retrieve_db()
-    
+
     # Counter initialisation to keep track of the amount of files generated
     counter = 0
     save_error = 0
@@ -200,7 +202,7 @@ def master_run(path, test_type="all"):
                                         master_data,
                                         counter,
                                         save_error)
-    
+
     elif test_type == "MTX":
         counter, save_error = mtx_graph(path,
                                         master_data,
@@ -212,7 +214,7 @@ def master_run(path, test_type="all"):
 
     elif test_type == "DPOAE":
         pass
-    
+
     elif test_type == "Growth":
         pass
 
@@ -228,7 +230,7 @@ def master_run(path, test_type="all"):
         print(save_error, "file(s) was/were not properly saved")
     else:
         print(counter, ".html files were saved.")
-        print(save_error, "file(s) was/were not properly saved")    
+        print(save_error, "file(s) was/were not properly saved")
 
 
 if __name__ == "__main__":
@@ -236,4 +238,3 @@ if __name__ == "__main__":
 
 else:
     pass
-
