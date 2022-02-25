@@ -108,7 +108,7 @@ else:
         return language
 
 
-    def save_graph_PTA(graph, df, ear):
+    def save_graph_PTA(path, graph, df, ear):
         """
         INPUTS
         -graph: interactive plotly.graph_objects figure
@@ -128,30 +128,30 @@ else:
         sub_short = sub.lstrip("Sub")
         sub_long = "sub-" + sub_short
 
-        folder = os.path.join("..", "results", "graphs", sub_long)
+        folder = os.path.join(path, "graphs", sub_long)
         path_header = os.path.join(folder,
                                    ("Sub-" + sub_short + "_" + test + "_"))
 
         if ear == "All_runs":
-            path = path_header + ear + ".html"
+            save_path = path_header + ear + ".html"
 
         elif ear.startswith("boxplot"):
-            path = path_header + ear + ".html"
+            save_path = path_header + ear + ".html"
         
         else:
             session = df["DATE"][row]
             name = df["Protocol name"][row]
             condition = df["Protocol condition"][row]
 
-            path = (path_header + session + "_" + name + ": " + condition
-                    + " (" + ear + ")" + ".html")
+            save_path = (path_header + session + "_" + name + ": "
+                         + condition + " (" + ear + ")" + ".html")
 
-        graph.write_html(path)
+        graph.write_html(save_path)
 
         return True
 
 
-    def save_graph_MTX(graph, df, language_ID):
+    def save_graph_MTX(path, graph, df, language_ID):
         """
         INPUTS
         -graph: interactive plotly.graph_objects figure
@@ -172,22 +172,22 @@ else:
         sub_short = sub.lstrip("Sub")
         sub_long = "sub-" + sub_short
 
-        folder = os.path.join("..", "results", "graphs", sub_long)
+        folder = os.path.join(path, "graphs", sub_long)
         path_header = os.path.join(folder,
                                    ("Sub-" + sub_short + "_" + test + "_"))
 
         if language_ID.endswith("_All_runs") is True:
-            path = path_header + language_ID + ".html"
+            save_path = path_header + language_ID + ".html"
 
         else:
             session = df["DATE"][row]
             name = df["Protocol name"][row]
             condition = df["Protocol condition"][row]
 
-            path = (path_header + session + "_" + name + ": " + condition
-                    + " (" + language_ID + ")" + ".html")
+            save_path = (path_header + session + "_" + name + ": "
+                         + condition + " (" + language_ID + ")" + ".html")
 
-        graph.write_html(path)
+        graph.write_html(save_path)
 
         return True
 
@@ -349,7 +349,7 @@ else:
         return x, y
 
 
-    def plot_pta_L(df):
+    def plot_pta_L(path, df):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -389,7 +389,7 @@ else:
                                  hovertemplate="%{x:1.0f} Hz<br>" +
                                                "%{y:1.0f} dB HL"))
 
-        completed = save_graph_PTA(fig, df, "Left Ear")
+        completed = save_graph_PTA(path, fig, df, "Left Ear")
 
         if completed is True:
             return True
@@ -397,7 +397,7 @@ else:
             return False
 
 
-    def plot_pta_R(df):
+    def plot_pta_R(path, df):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -437,7 +437,7 @@ else:
                                  hovertemplate="%{x:1.0f} Hz<br>" +
                                                "%{y:1.0f} dB HL"))
 
-        completed = save_graph_PTA(fig, df, "Right Ear")
+        completed = save_graph_PTA(path, fig, df, "Right Ear")
 
         if completed is True:
             return True
@@ -445,7 +445,7 @@ else:
             return False
 
 
-    def plot_pta_subject(df, display=False):
+    def plot_pta_subject(path, df, display=False):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -501,7 +501,7 @@ else:
         if display is True:
             fig.show()
         else:
-            completed = save_graph_PTA(fig, df, "All_runs")
+            completed = save_graph_PTA(path, fig, df, "All_runs")
 
             if completed is True:
                 return True
@@ -509,7 +509,7 @@ else:
                 return False
 
 
-    def plot_boxplot_pta(df, ear, display=False):
+    def plot_boxplot_pta(path, df, ear, display=False):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -625,7 +625,7 @@ else:
         if display is True:
             fig.show()
         else:
-            completed = save_graph_PTA(fig, df, save_parameter)
+            completed = save_graph_PTA(path, fig, df, save_parameter)
 
             if completed is True:
                 return True
@@ -633,7 +633,7 @@ else:
                 return False
 
 
-    def plot_mtx(df, run_ID):
+    def plot_mtx(path, df, run_ID):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -679,7 +679,7 @@ else:
                                  hovertemplate="%{x}<br>" +
                                                "%{y:0.1f} dB"))
 
-        completed = save_graph_MTX(fig, df, language_ID)
+        completed = save_graph_MTX(path, fig, df, language_ID)
 
         if completed is True:
             return True
@@ -687,7 +687,7 @@ else:
             return False
 
 
-    def plot_mtx_subject(df, run_ID, display=False):
+    def plot_mtx_subject(path, df, run_ID, display=False):
         """
         INPUTS
         -df: pandas dataframe containing the data to plot
@@ -741,7 +741,7 @@ else:
         if display is True:
             fig.show()
         else:
-            completed = save_graph_MTX(fig, df, language_ID_save)
+            completed = save_graph_MTX(path, fig, df, language_ID_save)
 
             if completed is True:
                 return True

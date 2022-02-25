@@ -75,13 +75,13 @@ while loop_value:
                     # PTA graph plotting
                     if ls_fct[value - 1].count("Pure-Tone") == 1:
                         #print("pure-tone\n")
-                        graph.master_run("PTA")
+                        graph.master_run("./results", "PTA")
                         print("\n")
 
                     # MTX graph plotting
                     elif ls_fct[value - 1].count("Matrix") == 1:
                         #print("matrix\n")
-                        graph.master_run("MTX")
+                        graph.master_run("./results", "MTX")
                         print("\n")
 
                 # MRI sessions design files generation functionalities
