@@ -30,8 +30,8 @@ keys_pta = ["order", "side", "250_hz", "500_hz", "1000_hz",
 keys_mtx = ["order", "language", "practice", "sp_bin_no_bin",
             "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
 
-keys_teoae = ["order", "side", "freq1", "freq2",
-              "oae", "noise", "snr", "confidence"]
+keys_teoae = ["order", "side", "freq", "oae",
+              "noise", "snr", "confidence"]
 
 keys_dpoae = ["order", "side", "freq1", "freq2", "l1",
               "l2", "dp", "snr", "noise+2sd", "noise+1sd",
@@ -270,38 +270,33 @@ def gen_df_teoae():
 
     df_teoae = pd.DataFrame(index=index, columns=keys_teoae)
 
-    dict_longname_teoae = {keys_teoae[2]: "Frequency #1",
-                           keys_teoae[3]: "Frequency #2",
-                           keys_teoae[4]: "Otoacoustic emissions response",
-                           keys_teoae[5]: "Noise relative strength",
-                           keys_teoae[6]: "Signal-to-noise ratio",
-                           keys_teoae[7]: "Confidence level"}
+    dict_longname_teoae = {keys_teoae[2]: "Frequency",
+                           keys_teoae[3]: "Otoacoustic emissions response",
+                           keys_teoae[4]: "Noise relative strength",
+                           keys_teoae[5]: "Signal-to-noise ratio",
+                           keys_teoae[6]: "Confidence level"}
 
-    dict_desc_teoae = {keys_teoae[2]: "Lower frequency (F1) used to produce "\
-                                      "transient-evoked otoacoustic "\
-                                      "emissions. The F2/F1 ratio = 1,22.",
-                       keys_teoae[3]: "Higher frequency (F2) used to produce "\
-                                      "transient-evoked otoacoustic "\
-                                      "emissions. The F2/F1 ratio = 1,22.",
-                       keys_teoae[4]: "Measured level of the "\
+    dict_desc_teoae = {keys_teoae[2]: "Frequency for which the intensity of "\
+                                      "the transient-evoked otoacoustic "\
+                                      "emission is reported.",
+                       keys_teoae[3]: "Amplitude of the "\
                                       "transient-evoked otoacoustic "   
-                                      "emissions.",
-                       keys_teoae[5]: "Measured level of the noise relative "\
+                                      "emissions at a specific frequency.",
+                       keys_teoae[4]: "Measured level of the noise relative "\
                                       "strength.",
-                       keys_teoae[6]: "Difference between the measured level "\
+                       keys_teoae[5]: "Difference between the measured level "\
                                       "of the transient-level otoacoustic "\
                                       "emissions and the measured noise "\
                                       "relative strength (TEOAE level - "\
                                       "Noise level).",
-                       keys_teoae[7]: "Level of confidence linked to the "\
+                       keys_teoae[6]: "Level of confidence linked to the "\
                                       "obtained signal-to-noise ratio."}
 
     dict_units_teoae = {keys_teoae[2]: "Hz",
-                        keys_teoae[3]: "Hz",
-                        keys_teoae[4]: "dB SPL",
+                        keys_teoae[3]: "dB SPL",
+                        keys_teoae[4]: "dB",
                         keys_teoae[5]: "dB",
-                        keys_teoae[6]: "dB",
-                        keys_teoae[7]: "%"}
+                        keys_teoae[6]: "%"}
 
     for k_teoae in keys_teoae:
         if k_teoae == keys_teoae[0]:
@@ -391,7 +386,7 @@ def gen_df_dpoae():
     dict_units_dpoae = {keys_dpoae[2]: "Hz",
                         keys_dpoae[3]: "Hz",
                         keys_dpoae[4]: "dB SPL",
-                        keys_dpoae[5]: "dB sPL",
+                        keys_dpoae[5]: "dB SPL",
                         keys_dpoae[6]: "dB",
                         keys_dpoae[7]: "dB",
                         keys_dpoae[8]: "dB",
