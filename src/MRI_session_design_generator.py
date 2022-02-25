@@ -15,17 +15,17 @@ tsv_columns = ["onset", "duration", "frequency",
                "volume", "ear", "trial_type"]
 
 # Number of session files to be generated for each subject
-#session_count = 4
+# session_count = 4
 Q_session_count = "How many sessions files should be generated "\
                   "for each participant?\n"
 
 # Inter-stimuli interval (sec.)
-#ISI = 5
+# ISI = 5
 Q_ISI = "What inter-stimuli interval (sec.) should be used in the "\
         "session design?\n"
 
 # Single stimulus file duration (sec.)
-#duration = 3
+# duration = 3
 Q_duration = "What stimuli duration (sec.) should be used in the "\
              "session design?\n"
 
@@ -49,14 +49,14 @@ def number_verify(x, low, high):
 
         # Is it within the range of the specified conditions?
         # No specified higher boundary
-        if high == None:
+        if high is None:
             if x >= low:
                 return False
             else:
                 return True
 
         # With a specified higher boundary
-        elif high != None:
+        elif high is not None:
 
             if low == high:
                 if x == low:
@@ -64,7 +64,7 @@ def number_verify(x, low, high):
                 else:
                     return True
 
-            elif low != high:            
+            elif low != high:
                 if x >= low and x < high:
                     return False
                 else:
@@ -76,7 +76,7 @@ def number_verify(x, low, high):
 
 def prompt_n_verify(question, low=0, high=None):
     """
-    This function ask the provided question, verify the validity of the 
+    This function ask the provided question, verify the validity of the
     user's answer and retruns it when valid.
     INPUTS:
     -question: text of the question to ask to the user
@@ -89,16 +89,13 @@ def prompt_n_verify(question, low=0, high=None):
     """
 
     loop = True
-    
+
     while loop:
         prompt = input(question)
         loop = number_verify(prompt, low, high)
 
     prompt = int(prompt)
     return prompt
-
-
-#def file_generation(sub_number, session_count):
 
 
 def master_run(output_path):
@@ -127,7 +124,7 @@ def master_run(output_path):
                                                   "_desc-L.tsv")),
                                     sep="\t")
             stimuli_R = pd.read_csv(os.path.join(data_path,
-                                                 ("sub-" + sub_number + 
+                                                 ("sub-" + sub_number +
                                                   "_desc-R.tsv")),
                                     sep="\t")
             stimuli_df = pd.concat([stimuli_L, stimuli_R], ignore_index=True)
@@ -141,7 +138,7 @@ def master_run(output_path):
             # Build a dataframe to receive the different values to be saved
             df = pd.DataFrame(columns=tsv_columns,
                               index=np.arange(0, len(random_stimuli_ls)))
-        
+
             for m in range(0, len(df)):
                 ls_info_filename = random_stimuli_ls[m].split("_")
                 frequency = ls_info_filename[0].rstrip("hz")
@@ -159,7 +156,7 @@ def master_run(output_path):
             ses_ID = str(j+1).zfill(3)
             filename = f"sub-{sub_number}_ses-{ses_ID}_"\
                        f"task-puretones_events.tsv"
-        
+
             df.to_csv(os.path.join(data_path, "stimuli", filename),
                       sep="\t", index=False)
 

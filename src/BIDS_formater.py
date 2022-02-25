@@ -1,7 +1,6 @@
-import pandas as pd
 import os
-from shutil import copyfile
-import glob
+# import glob
+
 from src import BIDS_utils as utils
 
 
@@ -32,9 +31,9 @@ def fetch_db():
     OUTPUTS:
     -returns a dataframe containing the database to use
     """
-    
+
     df = utils.retrieve_db()
-    
+
     # Manage the empty boxes
     df.fillna(value='n/a', inplace=True)
 
@@ -52,7 +51,7 @@ def subject_extractor(df, subject_ID):
     OUTPUTS:
     -returns a dataframe containing only the selected participant's lines
     """
-    
+
     mask = df['Participant_ID'] == subject_ID
     sub_df = df[mask].reset_index(drop=True)
 
@@ -68,7 +67,7 @@ def create_folder_subjects(subject, parent_path):
     -folder for the provided subject ID in the BIDS_data/ folder
     -NO specific return to the script
     """
-    
+
     dir_content = os.listdir(parent_path)
     dir_content.sort()
     sub_ID = subject.lstrip("Sub")
@@ -91,7 +90,7 @@ def create_folder_session(subject, session_count, parent_path):
     -folders for each session in the provided subject's folder
     -NO specific return to the script
     """
-    
+
     sub_ID = subject.lstrip("Sub")
     children_path = os.path.join(parent_path, f"sub-{sub_ID}")
     dir_content = os.listdir(children_path)
@@ -105,7 +104,7 @@ def create_folder_session(subject, session_count, parent_path):
 
 def master_run(result_path):
 
-    #retrieve a database
+    # retrieve a database
     df = fetch_db()
 
     # Verifications:
@@ -114,9 +113,9 @@ def master_run(result_path):
     #   (tymp, reflex, PTA, MTX)
     # If not, creates them.
     utils.result_location(result_path)
-    
+
     parent_path = os.path.join(result_path, "BIDS_data")
-    
+
     # Initialize empty lists to be filled with the proper column titles
     # for each test
     columns_tymp = []
@@ -167,10 +166,10 @@ def master_run(result_path):
         # Check if the subject-level folders exist
         # If not, create them
         create_folder_subjects(i, parent_path)
-        
+
         # Extraction of all the session for the subject
         data_sub = subject_extractor(df, i)
-        
+
         # Creation of a folder for each session
         create_folder_session(i, len(data_sub), parent_path)
 
@@ -218,9 +217,9 @@ def master_run(result_path):
 
 
 if __name__ == "__main__":
-    master_path = ".."    
+    master_path = ".."
     result_path = os.path.join(master_path, "results")
-    
+
     master_run(result_path)
     print("\n")
 

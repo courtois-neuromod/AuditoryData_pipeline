@@ -1,4 +1,3 @@
-import os
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
 from src import MRI_session_design_generator as ses_design
@@ -14,7 +13,7 @@ ls_fct = ["BIDS format's json sidecars (test level) creation",
 
 # Prompt text generation
 print("\nWelcome to the AuditoryData_pipeline.\n")
-prompt_instruction = ("Please enter the number of the pipeline "\
+prompt_instruction = ("Please enter the number of the pipeline "
                       "functionality you want to run:")
 
 prompt_options = ""
@@ -31,7 +30,7 @@ loop_value = True
 
 # function selection prompt
 while loop_value:
-    
+
     value = input(prompt_txt)
     print("\n")
 
@@ -57,15 +56,13 @@ while loop_value:
                 # BIDS format functionalities
                 if ls_fct[value - 1].count("BIDS") == 1:
 
-                    if ls_fct[value - 1] == ("BIDS format's json sidecars "\
+                    if ls_fct[value - 1] == ("BIDS format's json sidecars "
                                              "(test level) creation"):
-                        #print("json\n")
                         jsg.create_sidecars("./results")
                         print("\n")
 
-                    elif ls_fct[value - 1] == ("BIDS format's auditory "\
+                    elif ls_fct[value - 1] == ("BIDS format's auditory "
                                                "data exporter"):
-                        #print("formater\n")
                         formater.master_run("./results")
                         print("\n")
 
@@ -74,19 +71,16 @@ while loop_value:
 
                     # PTA graph plotting
                     if ls_fct[value - 1].count("Pure-Tone") == 1:
-                        #print("pure-tone\n")
                         graph.master_run("./results", "PTA")
                         print("\n")
 
                     # MTX graph plotting
                     elif ls_fct[value - 1].count("Matrix") == 1:
-                        #print("matrix\n")
                         graph.master_run("./results", "MTX")
                         print("\n")
 
                 # MRI sessions design files generation functionalities
                 elif ls_fct[value - 1].count("design files") == 1:
-                    #print("design files\n")
                     ses_design.master_run("./data")
                     print("\n")
 
@@ -94,7 +88,7 @@ while loop_value:
 
         else:
 
-            #If it is not within range, restart the loop
+            # If it is not within range, restart the loop
             print("The provided value is not valid (out of bound).")
             continue
 
