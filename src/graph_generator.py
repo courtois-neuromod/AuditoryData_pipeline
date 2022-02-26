@@ -1,3 +1,4 @@
+import os
 from src import graph_functions as gf
 from src import graph_PTA as pta
 from src import graph_MTX as mtx
@@ -189,8 +190,73 @@ def mtx_graph(result_path, master_data, counter, save_error):
 
     return counter, save_error
 
+###############################################################################
 
-def master_run(path, test_type="all"):
+def teoae_graph(data_path, result_path, counter, save_error):
+    """
+    INPUTS:
+    OUTPUTS:
+    """
+
+#    # Elimination of the lines that are irrelevant to each of the tests:
+#    # Matrix speech perception test
+#    # L1
+#    data_mtx_L1 = eliminate_row_mtx(data_mtx_L1, 1)
+
+#    # L2
+#    data_mtx_L2 = eliminate_row_mtx(data_mtx_L2, 2)
+
+#    # MTX, L1
+#    for m in range(0, len(data_mtx_L1)):
+#        action_m = mtx.plot_mtx(result_path, data_mtx_L1.loc[[m]], "L1")
+#        if action_m is True:
+#            counter = counter + 1
+#        else:
+#            save_error = save_error + 1
+
+#    # MTX, L2
+#    for n in range(0, len(data_mtx_L2)):
+#        df_line = data_mtx_L2.loc[[n]]
+
+#        # Participant Sub-06 can't do the second language test
+#        if df_line["Participant_ID"][n] == "Sub06":
+#            continue
+#        else:
+#            action_n = mtx.plot_mtx(result_path, data_mtx_L2.loc[[n]], "L2")
+#            if action_n is True:
+#                counter = counter + 1
+#            else:
+#                save_error = save_error + 1
+
+#    # MTX, L1, All results for one participant in one graph
+#    for p in subjects:
+#        one_subject = gf.extract_subject(data_mtx_L1, p)
+#        action_p = mtx.plot_mtx_subject(result_path, one_subject, "L1")
+#        if action_p is True:
+#            counter = counter + 1
+#        else:
+#            save_error = save_error + 1
+
+#    # MTX, L2, All results for one participant in one graph
+#    for q in subjects:
+#        if q == "Sub06":
+#            continue
+#        else:
+#            one_subject = gf.extract_subject(data_mtx_L2, q)
+#            action_q = mtx.plot_mtx_subject(result_path, one_subject, "L2")
+#            if action_q is True:
+#                counter = counter + 1
+#            else:
+#                save_error = save_error + 1
+
+#    return counter, save_error
+
+###############################################################################
+
+def master_run(root_path, test_type="all"):
+    result_path = os.path.join(root_path, "results")
+    data_path = os.path.join(root_path, "data")
+    
     master_data = gf.retrieve_db()
 
     # Counter initialisation to keep track of the amount of files generated
@@ -198,19 +264,22 @@ def master_run(path, test_type="all"):
     save_error = 0
 
     if test_type == "PTA":
-        counter, save_error = pta_graph(path,
+        counter, save_error = pta_graph(result_path,
                                         master_data,
                                         counter,
                                         save_error)
 
     elif test_type == "MTX":
-        counter, save_error = mtx_graph(path,
+        counter, save_error = mtx_graph(result_path,
                                         master_data,
                                         counter,
                                         save_error)
 
     elif test_type == "TEOAE":
-        pass
+        counter, save_error = teoae_graph(data_path,
+                                          result_path,
+                                          counter,
+                                          save_error)
 
     elif test_type == "DPOAE":
         pass
@@ -219,8 +288,8 @@ def master_run(path, test_type="all"):
         pass
 
     elif test_type == "all":
-        x1, y1 = pta_graph(path, master_data, counter, save_error)
-        x2, y2 = mtx_graph(path, master_data, counter, save_error)
+        x1, y1 = pta_graph(result_path, master_data, counter, save_error)
+        x2, y2 = mtx_graph(result_path, master_data, counter, save_error)
         counter = x1 + x2
         save_error = y1 + y2
 
@@ -234,7 +303,7 @@ def master_run(path, test_type="all"):
 
 
 if __name__ == "__main__":
-    master_run("../results")
+    master_run("..")
 
 else:
     pass
