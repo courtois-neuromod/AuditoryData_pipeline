@@ -287,7 +287,7 @@ def gen_df_teoae():
                        keys_teoae[4]: "Measured level of the noise relative "
                                       "strength.",
                        keys_teoae[5]: "Difference between the measured level "
-                                      "of the transient-level otoacoustic "
+                                      "of the transient-evoked otoacoustic "
                                       "emissions and the measured noise "
                                       "relative strength (TEOAE level - "
                                       "Noise level).",
