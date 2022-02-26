@@ -75,12 +75,12 @@ while loop_value:
 
                     # PTA graph plotting
                     if ls_fct[value - 1].count("Pure-Tone") == 1:
-                        graph.master_run(os.path.join(".", "results"), "PTA")
+                        graph.master_run(".", "PTA")
                         print("\n")
 
                     # MTX graph plotting
                     elif ls_fct[value - 1].count("Matrix") == 1:
-                        graph.master_run(os.path.join(".", "results"), "MTX")
+                        graph.master_run(".", "MTX")
                         print("\n")
 
                     # TEOAE graph plotting
