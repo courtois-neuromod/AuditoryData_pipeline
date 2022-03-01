@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 # import glob
 
 from src import BIDS_utils as utils
@@ -23,7 +24,20 @@ x_PTA = ["order", "side", "250_hz", "500_hz", "1000_hz",
          "14000_hz", "16000_hz", "18000_hz", "20000_hz"]
 x_MTX = ["order", "language", "practice", "sp_bin_no_bin",
          "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
+x_teoae = ["order", "side", "freq", "oae",
+           "noise", "snr", "confidence"]
+x_dpoae = ["order", "side", "freq1", "freq2", "l1",
+           "l2", "dp", "snr", "noise+2sd", "noise+1sd",
+           "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
+x_growth = ["order", "side", "freq1", "freq2", "l1",
+            "l2", "dp", "snr", "noise+2sd", "noise+1sd",
+            "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
 
+# Specify the protocol conditions including OAE tests
+condition_OAE = ["Baseline",
+                 "Condition 2 (2-7 days post-scan)",
+                 "Condition 3A (OAEs right before the scan)",
+                 "Condition 3B (OAEs right after the scan)"]
 
 def fetch_db():
     """This function retrieves a database to work on.
@@ -38,6 +52,27 @@ def fetch_db():
     df.fillna(value='n/a', inplace=True)
 
     return df
+
+
+def fetch_oae_data(data_path):
+    path = os.path.join(data_path, "OAE")
+    ls_file = os.listdir(path)
+    #print(ls_file)
+    
+    ls_of_ls = []
+    
+    for i in ls_file:
+        single_test_ls = i.rstrip(".csv").split("_")
+        ls_of_ls.append(single_test_ls)
+    
+    df = pd.DataFrame(ls_of_ls,
+                      columns=["Participant_ID",
+                               "Condition",
+                               "Test",
+                               "Ear"])
+    #print(df)
+    
+    return ls_file, df
 
 
 def subject_extractor(df, subject_ID):
@@ -102,10 +137,11 @@ def create_folder_session(subject, session_count, parent_path):
             os.mkdir(os.path.join(children_path, f"ses-{j:02d}"))
 
 
-def master_run(result_path):
+def master_run(data_path, result_path):
 
     # retrieve a database
     df = fetch_db()
+    oae_file_list, oae_tests_df = fetch_oae_data(data_path)
 
     # Verifications:
     # - existence of the "BIDS_data" folder
@@ -169,7 +205,52 @@ def master_run(result_path):
 
         # Extraction of all the session for the subject
         data_sub = subject_extractor(df, i)
+        data_oae_sub = subject_extractor(oae_tests_df, i)
+        #print("\ndata_sub\n", data_sub)
+        #print("\ndata_oae_sub\n", data_oae_sub)
+        
+        data_sub.insert(loc=3, column="Session_ID", value=None)
 
+        # Add a session line for the post-scan OAE condition
+        k = 0        
+        while k < len(data_sub):
+
+            data_sub["Session_ID"][k] = f"{k+1:02d}"
+            #print(data_sub)
+
+
+            if data_sub["Protocol condition"][k] == ("Condition 3A "
+                                                     "(OAEs right before "
+                                                     "the scan)"):
+                sub_df_A = data_sub.iloc[:k+1]
+                sub_df_B = data_sub.iloc[k+1:]
+                
+                sub_df_C = data_sub.copy()
+                sub_df_C.drop(sub_df_C.index[k+1:], inplace=True)
+                sub_df_C.drop(sub_df_C.index[0:k], inplace=True)
+
+                sub_df_C.loc[k, "Protocol condition"] = ("Condition 3B (OAEs "
+                                                         "right after the "
+                                                         "scan)")
+                sub_df_C.loc[k, "Session_ID"] = f"{k+2:02d}"
+                
+                ls_columns = sub_df_C.columns.tolist()
+                index_tests = ls_columns.index("Tymp_RE")
+                del ls_columns[0:index_tests]
+                
+                for m in ls_columns:
+                    sub_df_C[m][k] = "n/a"
+
+                data_sub = pd.concat([sub_df_A, sub_df_C, sub_df_B])
+                data_sub.reset_index(inplace=True, drop=True)
+                
+                k += 1
+
+            else:
+                pass
+
+            k += 1
+        
         # Creation of a folder for each session
         create_folder_session(i, len(data_sub), parent_path)
 
@@ -186,6 +267,8 @@ def master_run(result_path):
         mtx = utils.eliminate_columns(data_sub,
                                       columns_conditions,
                                       columns_MTX)
+        
+
 
         # Dataframe reconstruction
         utils.extract_tymp(tymp, columns_tymp_R,
@@ -200,6 +283,8 @@ def master_run(result_path):
         utils.extract_mtx(mtx, columns_MTX_L1,
                           columns_MTX_L2, x_MTX,
                           result_path)
+#        utils.extract_teoae(data_sub, data_oae_sub,
+#                            x_teoae, result_path)
 
         print(f"The tsv and json files for {i} have been created.")
 
@@ -217,10 +302,11 @@ def master_run(result_path):
 
 
 if __name__ == "__main__":
-    master_path = ".."
-    result_path = os.path.join(master_path, "results")
+    root_path = ".."
+    data_path = os.path.join(root_path, "data", "auditory_tests")
+    result_path = os.path.join(root_path, "results")
 
-    master_run(result_path)
+    master_run(data_path, result_path)
     print("\n")
 
 
