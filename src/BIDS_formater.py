@@ -10,9 +10,9 @@ subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
 
 # Specify the columns to be used for each test
 # -> Subject and session settings data
-columns_conditions = ['Participant_ID', 'DATE',
-                      'Protocol name', 'Protocol condition',
-                      'Scan type']
+columns_conditions = ["Participant_ID", "DATE",
+                      "Session_ID", "Protocol name",
+                      "Protocol condition", "Scan type"]
 
 # Generate the column titles to be used in the tsv files
 x_tymp = ["order", "side", 'type', 'tpp', 'ecv', 'sc', 'tw']
@@ -206,10 +206,11 @@ def master_run(data_path, result_path):
         # Extraction of all the session for the subject
         data_sub = subject_extractor(df, i)
         data_oae_sub = subject_extractor(oae_tests_df, i)
-        #print("\ndata_sub\n", data_sub)
+
         #print("\ndata_oae_sub\n", data_oae_sub)
         
         data_sub.insert(loc=3, column="Session_ID", value=None)
+        #print("\ndata_sub\n", data_sub)
 
         # Add a session line for the post-scan OAE condition
         k = 0        
@@ -267,9 +268,20 @@ def master_run(data_path, result_path):
         mtx = utils.eliminate_columns(data_sub,
                                       columns_conditions,
                                       columns_MTX)
+        teoae = data_sub[columns_conditions]
+        dpoae = data_sub[columns_conditions]
+        growth = data_sub[columns_conditions]
+        #print(teoae)
+
+        # Replace PTA values "130" with "No response"
+        for n in columns_PTA:
+            for p in range(0, len(pta)):
+                print(pta[n][p])
+                if pta[n][p] == 130:
+                    pta[n][p] = "No response"
+                else:
+                    pass
         
-
-
         # Dataframe reconstruction
         utils.extract_tymp(tymp, columns_tymp_R,
                            columns_tymp_L, x_tymp,

@@ -97,6 +97,17 @@ else:
 
     # Single test sub-df extraction from each participant's sub-df
     def eliminate_columns(sub_df, columns_conditions, test_columns):
+        """
+        This function removes the columns that are not required for a
+        specific test.
+        INPUTS:
+        -sub_df: df containing only the lines linked to a single subject
+        -columns_conditions: list of column names used for multiple tests
+        -test_columns: list of column names specific to a test
+        OUTPUTS:
+        -returns a sub-df without the useless columns
+        """
+        
         to_keep = columns_conditions + test_columns
         df_test = sub_df[to_keep]
 
@@ -123,10 +134,13 @@ else:
 
         sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
 
-        if (index + 1) < 10:
-            ses = '0' + str(index + 1)
-        else:
-            ses = str(index + 1)
+        ses = single_test_df["Session_ID"][index]
+        print("ses_ID =", ses)
+
+        #if (ses_ID) < 10:
+        #    ses = '0' + str(index + 1)
+        #else:
+        #    ses = str(index + 1)
 
         # The next variable ("ext") can take the value ".csv".
         # The last code section must then be activated
@@ -155,8 +169,10 @@ else:
 
     # Extraction of every single tympanometry test
     # The results are then sent to the save_df function to be saved
-    def extract_tymp(single_test_df, ls_columns_1, ls_columns_2, x, path):
+    def extract_tymp(single_test_df, ls_columns_1,
+                     ls_columns_2, x, path):
 
+        print("single_test_df in extract_tymp\n", single_test_df)
         for j in range(0, len(single_test_df)):
             y = [[], []]
 
@@ -168,9 +184,12 @@ else:
 
             y[1].append("2")
             y[1].append("L")
-
+            
             for m in ls_columns_2:
                 y[1].append(single_test_df[m][j])
+
+            test_y = pd.DataFrame(y)
+            print(test_y)            
 
             mask_0 = []
             mask_1 = []
@@ -205,7 +224,8 @@ else:
 
     # Extraction of every single stapedial reflex test
     # The results are then sent to the save_df function to be saved
-    def extract_reflex(single_test_df, ls_columns_1, ls_columns_2, x, path):
+    def extract_reflex(single_test_df, ls_columns_1,
+                       ls_columns_2, x, path):
 
         for j in range(0, len(single_test_df)):
             y = [[], []]
@@ -255,7 +275,8 @@ else:
 
     # Extraction of every single pure-tone audiometry test
     # The results are then sent to the save_df function to be saved
-    def extract_pta(single_test_df, ls_columns_1, ls_columns_2, x, path):
+    def extract_pta(single_test_df, ls_columns_1,
+                    ls_columns_2, x, path):
 
         for j in range(0, len(single_test_df)):
             y = [[], []]
@@ -305,7 +326,8 @@ else:
 
     # Extraction of every single matrix speech-in-noise perception test
     # The results are then sent to the save_df function to be saved
-    def extract_mtx(single_test_df, ls_columns_1, ls_columns_2, x, path):
+    def extract_mtx(single_test_df, ls_columns_1,
+                    ls_columns_2, x, path):
 
         for j in range(0, len(single_test_df)):
             y = [[], []]
@@ -350,3 +372,9 @@ else:
                 save_df(z, single_test_df, j, 'MTX', path)
             else:
                 continue
+
+    # Extraction of every single transient-evoked OAE test
+    # The results are then sent to the save_df function to be saved
+#    def extract_teoae(data_sub, data_oae_sub, x_teoae, result_path):
+        
+
