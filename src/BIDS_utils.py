@@ -135,7 +135,7 @@ else:
         sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
 
         ses = single_test_df["Session_ID"][index]
-        print("ses_ID =", ses)
+        #print("ses_ID =", ses)
 
         #if (ses_ID) < 10:
         #    ses = '0' + str(index + 1)
@@ -166,13 +166,16 @@ else:
         elif test == "MTX":
             copyfile(os.path.join(json_origin, "mtx_run_level.json"),
                      os.path.join(path, file_name + ".json"))
+        elif test == "TEOAE":
+            copyfile(os.path.join(json_origin, "teoae_run_level.json"),
+                     os.path.join(path, file_name + ".json"))
 
     # Extraction of every single tympanometry test
     # The results are then sent to the save_df function to be saved
     def extract_tymp(single_test_df, ls_columns_1,
                      ls_columns_2, x, path):
 
-        print("single_test_df in extract_tymp\n", single_test_df)
+        #print("single_test_df in extract_tymp\n", single_test_df)
         for j in range(0, len(single_test_df)):
             y = [[], []]
 
@@ -188,8 +191,8 @@ else:
             for m in ls_columns_2:
                 y[1].append(single_test_df[m][j])
 
-            test_y = pd.DataFrame(y)
-            print(test_y)            
+            #test_y = pd.DataFrame(y)
+            #print(test_y)            
 
             mask_0 = []
             mask_1 = []
@@ -375,6 +378,144 @@ else:
 
     # Extraction of every single transient-evoked OAE test
     # The results are then sent to the save_df function to be saved
-#    def extract_teoae(data_sub, data_oae_sub, x_teoae, result_path):
+    def extract_teoae(data_sub, data_oae_sub, oae_file_list,
+                      x_teoae, data_path, result_path):
+
+        data_path = os.path.join(data_path, "OAE")
+
+        no_oae = ["Condition 1A (right before the scan)",
+                  "Condition 1B (right after the scan)",
+                  "Supplementary PTA test (Baseline)",
+                  "Suppl. PTA test (right before the scan)",
+                  "Suppl. PTA test (right after the scan)"]
         
+        post = "Condition 3B (OAEs right after the scan)"
+        
+        teoae_R_file = None
+        teoae_L_file = None
+        
+        for j in range(0, len(data_sub)):
+            subject = data_sub["Participant_ID"][j]
+            date = data_sub["DATE"][j]
+            ses = data_sub["Session_ID"][j]
+            condition = data_sub["Protocol condition"][j]
+ 
+            if condition in no_oae:
+                pass
+                
+            else:
+                if data_sub.iloc[j]["Protocol condition"] == post:
+                    
+                    for k in range(0, len(oae_file_list)):
+                        if (oae_file_list[k].startswith(subject) and
+                            oae_file_list[k].find(date) != -1 and
+                            oae_file_list[k].find("PostScan") != -1):
+                            
+                            if oae_file_list[k].endswith("TE_R.csv"):
+                                teoae_R_file = oae_file_list[k]
+
+                            elif oae_file_list[k].endswith("TE_L.csv"):
+                                teoae_L_file = oae_file_list[k]
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+               
+                else:
+                    for m in range(0, len(oae_file_list)):
+                        if oae_file_list[m].find("PostScan") != -1:
+                            pass
+
+                        elif (oae_file_list[m].startswith(subject) and
+                              oae_file_list[m].find(date) != -1):
+                                
+                            if oae_file_list[m].endswith("TE_R.csv"):
+                                teoae_R_file = oae_file_list[m]
+
+                            elif oae_file_list[m].endswith("TE_L.csv"):
+                                teoae_L_file = oae_file_list[m]
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                                
+            if (teoae_R_file == None or teoae_L_file == None):
+                print(f"At least one of {subject}'s TEOAE csv files for "
+                      f"the {date} session ({condition}) is missing.\n")
+                pass
+
+            else:
+                df_L = pd.read_csv(os.path.join(data_path, teoae_L_file),
+                                   sep=";")
+                df_R = pd.read_csv(os.path.join(data_path, teoae_R_file),
+                                   sep=";")
+
+                #print("\nL:", df_L, "\nR:", df_R)
+
+                for a in df_L.columns.tolist():
+                    for b in range(0, len(df_L)):
+                        value_L = str(df_L.iloc[b][a]).replace(",", ".")
+                        #print(value_L)
+                        df_L.at[b, a] = float(value_L)
+
+                for c in df_R.columns.tolist():
+                    for d in range(0, len(df_R)):
+                        value_R = str(df_R.iloc[d][c]).replace(",", ".")
+                        #print(value_R)
+                        df_R.at[d, c] = float(value_R)
+
+                order_R = []
+                order_L = []
+                side_R = []
+                side_L = []
+                snr_R = []
+                snr_L = []
+
+                for q in range(0, len(df_R)):
+                    order_R.append(1)
+                    side_R.append("R")
+                    #print(type(float(df_R["OAE (dB)"][q])))
+                    snr_R.append(df_R["OAE (dB)"][q] - df_R["Noise (dB)"][q])
+
+                for r in range(0, len(df_L)):
+                    order_L.append(2)
+                    side_L.append("L")
+                    snr_L.append(df_L["OAE (dB)"][r] - df_L["Noise (dB)"][r])
+                
+                df_R["order"] = order_R
+                df_R["side"] = side_R
+                df_R["snr"] = snr_R
+                df_L["order"] = order_L
+                df_L["side"] = side_L
+                df_L["snr"] = snr_L
+                
+                #print("\nL:", df_L, "\nR:", df_R)
+                
+                df_teoae = pd.concat([df_R, df_L])
+                df_teoae.reset_index(inplace=True, drop=True)
+                
+                ls_columns = df_teoae.columns.tolist()
+                
+                if any("Unnamed" in n for n in ls_columns):
+                    column_to_drop = [p for p in ls_columns if "Unnamed" in p]
+                    df_teoae.drop(labels=column_to_drop.pop(),
+                                  axis=1, inplace=True)
+                else:
+                    pass
+                
+                #print(type(df_teoae["Freq (Hz)"][3]))
+                
+                
+                df_teoae = df_teoae[["order", "side", "Freq (Hz)",
+                                     "OAE (dB)", "Noise (dB)", "snr",
+                                     "Confidence (%)"]]
+                
+                df_teoae.set_axis(x_teoae, axis=1, inplace=True)
+                df_teoae.set_index("order", inplace=True)
+                
+                save_df(df_teoae, data_sub, j, 'TEOAE', result_path)
 

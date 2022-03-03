@@ -268,17 +268,17 @@ def master_run(data_path, result_path):
         mtx = utils.eliminate_columns(data_sub,
                                       columns_conditions,
                                       columns_MTX)
-        teoae = data_sub[columns_conditions]
-        dpoae = data_sub[columns_conditions]
-        growth = data_sub[columns_conditions]
-        #print(teoae)
+        oae = data_sub[columns_conditions]
 
+        #print(pta)
+        #print(oae)
+        
         # Replace PTA values "130" with "No response"
         for n in columns_PTA:
             for p in range(0, len(pta)):
-                print(pta[n][p])
-                if pta[n][p] == 130:
-                    pta[n][p] = "No response"
+                #print(pta.iloc[p][n])
+                if pta.iloc[p][n] == 130:
+                    pta.iloc[p][n] = "No response"
                 else:
                     pass
         
@@ -295,10 +295,10 @@ def master_run(data_path, result_path):
         utils.extract_mtx(mtx, columns_MTX_L1,
                           columns_MTX_L2, x_MTX,
                           result_path)
-#        utils.extract_teoae(data_sub, data_oae_sub,
-#                            x_teoae, result_path)
+        utils.extract_teoae(oae, data_oae_sub, oae_file_list,
+                            x_teoae, data_path, result_path)
 
-        print(f"The tsv and json files for {i} have been created.")
+        print(f"The tsv and json files for {i} have been created.\n")
 
     # This code section is present if, for any reason, the .tsv files are not
     # properly saved. You will first need to activate the "import glob" line
