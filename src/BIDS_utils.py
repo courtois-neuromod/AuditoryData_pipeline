@@ -169,6 +169,9 @@ else:
         elif test == "TEOAE":
             copyfile(os.path.join(json_origin, "teoae_run_level.json"),
                      os.path.join(path, file_name + ".json"))
+        elif test == "DPOAE":
+            copyfile(os.path.join(json_origin, "dpoae_run_level.json"),
+                     os.path.join(path, file_name + ".json"))
 
     # Extraction of every single tympanometry test
     # The results are then sent to the save_df function to be saved
@@ -518,4 +521,179 @@ else:
                 df_teoae.set_index("order", inplace=True)
                 
                 save_df(df_teoae, data_sub, j, 'TEOAE', result_path)
+
+    # Extraction of every single distortion product OAE test
+    # The results are then sent to the save_df function to be saved
+    def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
+                      x_dpoae, data_path, result_path):
+
+        data_path = os.path.join(data_path, "OAE")
+
+        no_oae = ["Condition 1A (right before the scan)",
+                  "Condition 1B (right after the scan)",
+                  "Supplementary PTA test (Baseline)",
+                  "Suppl. PTA test (right before the scan)",
+                  "Suppl. PTA test (right after the scan)"]
+        
+        post = "Condition 3B (OAEs right after the scan)"
+        
+        dpoae_R_file = None
+        dpoae_L_file = None
+        
+        for j in range(0, len(data_sub)):
+            subject = data_sub["Participant_ID"][j]
+            date = data_sub["DATE"][j]
+            ses = data_sub["Session_ID"][j]
+            condition = data_sub["Protocol condition"][j]
+ 
+            if condition in no_oae:
+                pass
+                
+            else:
+                if data_sub.iloc[j]["Protocol condition"] == post:
+                    
+                    for k in range(0, len(oae_file_list)):
+                        if (oae_file_list[k].startswith(subject) and
+                            oae_file_list[k].find(date) != -1 and
+                            oae_file_list[k].find("PostScan") != -1):
+                            
+                            if oae_file_list[k].endswith("DPOAE6555_R.csv"):
+                                dpoae_R_file = oae_file_list[k]
+
+                            elif oae_file_list[k].endswith("DPOAE6555_L.csv"):
+                                dpoae_L_file = oae_file_list[k]
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+               
+                else:
+                    for m in range(0, len(oae_file_list)):
+                        if oae_file_list[m].find("PostScan") != -1:
+                            pass
+
+                        elif (oae_file_list[m].startswith(subject) and
+                              oae_file_list[m].find(date) != -1):
+                                
+                            if oae_file_list[m].endswith("DPOAE6555_R.csv"):
+                                dpoae_R_file = oae_file_list[m]
+
+                            elif oae_file_list[m].endswith("DPOAE6555_L.csv"):
+                                dpoae_L_file = oae_file_list[m]
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                                
+            if (dpoae_R_file == None or dpoae_L_file == None):
+                print(f"At least one of {subject}'s DPOAE csv files for "
+                      f"the {date} session ({condition}) is missing.\n")
+                pass
+
+            else:
+                df_L = pd.read_csv(os.path.join(data_path, dpoae_L_file),
+                                   sep=";")
+                df_R = pd.read_csv(os.path.join(data_path, dpoae_R_file),
+                                   sep=";")
+
+                #print("\nL:", df_L, "\nR:", df_R)
+
+                for a in df_L.columns.tolist():
+                    #print(a)
+                    for b in range(0, len(df_L)):
+                        if str(df_L.iloc[b][a]).endswith(" *"):
+                            value_L = str(df_L.iloc[b][a].rstrip(" *"))
+                            value_L = value_L.replace(",", ".")
+                            df_L.at[b, a] = value_L + " *"
+                        elif str(df_L.iloc[b][a]) == "-":
+                            df_L.at[b, a] = "n/a"
+                        else:
+                            value_L = str(df_L.iloc[b][a]).replace(",", ".")
+                            #print(value_L)
+                            df_L.at[b, a] = float(value_L)
+
+                for c in df_R.columns.tolist():
+                    for d in range(0, len(df_R)):
+                        if str(df_R.iloc[d][c]).endswith(" *"):
+                            value_R = str(df_R.iloc[d][c].rstrip(" *"))
+                            value_R = value_R.replace(",", ".")
+                            df_R.at[d, c] = value_R + " *"
+                        elif str(df_R.iloc[d][c]) == "-":
+                            df_R.at[d, c] = "n/a"
+                        else:
+                            value_R = str(df_R.iloc[d][c]).replace(",", ".")
+                            #print(value_L)
+                            df_R.at[d, c] = float(value_R)
+
+                order_R = []
+                order_L = []
+                side_R = []
+                side_L = []
+                freq1_R = []
+                freq1_L = []
+                snr_R = []
+                snr_L = []
+
+                for q in range(0, len(df_R)):
+                    order_R.append(1)
+                    side_R.append("R")
+                    freq1_R.append(df_R["Freq (Hz)"][q] / 1.22)
+                    #print(type(float(df_R["DP (dB)"][q])))
+                    snr_R.append(df_R["DP (dB)"][q]
+                                 - df_R["Noise+2sd (dB)"][q])
+
+                for r in range(0, len(df_L)):
+                    order_L.append(2)
+                    side_L.append("L")
+                    freq1_L.append(df_L["Freq (Hz)"][r] / 1.22)
+                    snr_L.append(df_L["DP (dB)"][r]
+                                 - df_L["Noise+2sd (dB)"][r])
+                
+                df_R["order"] = order_R
+                df_R["side"] = side_R
+                df_R["freq1"] = freq1_R
+                df_R["snr"] = snr_R
+                df_L["order"] = order_L
+                df_L["side"] = side_L
+                df_L["freq1"] = freq1_L
+                df_L["snr"] = snr_L
+                
+                #print("\nL:", df_L, "\nR:", df_R)
+                
+                df_dpoae = pd.concat([df_R, df_L])
+                df_dpoae.reset_index(inplace=True, drop=True)
+                
+                #print(df_dpoae)
+                
+                ls_columns = df_dpoae.columns.tolist()
+                #print(ls_columns)
+                
+                if any("Unnamed" in n for n in ls_columns):
+                    #print("RED FLAG: Unnamed")
+                    column_to_drop = [p for p in ls_columns if "Unnamed" in p]
+                    #print(column_to_drop)
+                    df_dpoae.drop(labels=column_to_drop.pop(),
+                                  axis=1, inplace=True)
+                else:
+                    pass
+                
+                #print(type(df_dpoae["Freq (Hz)"][3]))
+                
+                
+                df_dpoae = df_dpoae[["order", "side", "freq1", "Freq (Hz)",
+                                     "F1 (dB)", "F2 (dB)", "DP (dB)", "snr",
+                                     "Noise+2sd (dB)", "Noise+1sd (dB)",
+                                     "2F2-F1 (dB)", "3F1-2F2 (dB)",
+                                     "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
+                
+                df_dpoae.set_axis(x_dpoae, axis=1, inplace=True)
+                df_dpoae.set_index("order", inplace=True)
+                
+                #print(df_dpoae)
+                
+                save_df(df_dpoae, data_sub, j, 'DPOAE', result_path)
 
