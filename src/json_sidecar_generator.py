@@ -361,7 +361,9 @@ def gen_df_dpoae():
                        keys_dpoae[4]: "Frequency #1's presentation level.",
                        keys_dpoae[5]: "Frequency #2's presentation level.",
                        keys_dpoae[6]: "Measured level of the distortion "
-                                      "product otoacoustic emissions.",
+                                      "product (2F1 - F2) otoacoustic "
+                                      "emissions at the nominal "
+                                      "frequency F2.",
                        keys_dpoae[7]: "Difference between the measured level "
                                       "of the distortion product otoacoustic "
                                       "emissions and the measured noise "
