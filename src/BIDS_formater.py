@@ -299,6 +299,8 @@ def master_run(data_path, result_path):
                             x_teoae, data_path, result_path)
         utils.extract_dpoae(oae, data_oae_sub, oae_file_list,
                             x_dpoae, data_path, result_path)
+        utils.extract_growth(oae, data_oae_sub, oae_file_list,
+                             x_growth, data_path, result_path)
 
         print(f"The tsv and json files for {i} have been created.\n")
 

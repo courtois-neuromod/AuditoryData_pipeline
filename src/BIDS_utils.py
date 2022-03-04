@@ -172,6 +172,9 @@ else:
         elif test == "DPOAE":
             copyfile(os.path.join(json_origin, "dpoae_run_level.json"),
                      os.path.join(path, file_name + ".json"))
+        elif test == "Growth":
+            copyfile(os.path.join(json_origin, "dpgrowth_run_level.json"),
+                     os.path.join(path, file_name + ".json"))
 
     # Extraction of every single tympanometry test
     # The results are then sent to the save_df function to be saved
@@ -697,3 +700,365 @@ else:
                 
                 save_df(df_dpoae, data_sub, j, 'DPOAE', result_path)
 
+    def growth_prepost(data_sub, i, oae_file_list,
+                       x_growth, data_path, result_path):
+ 
+        subject = data_sub["Participant_ID"][i]
+        date = data_sub["DATE"][i]
+        ses = data_sub["Session_ID"][i]
+        condition = data_sub["Protocol condition"][i]
+
+        #print("\n\n\n", date, condition)
+
+        if condition.find("Condition 3A") != -1:
+            prepost = "PreScan"
+        elif condition.find("Condition 3B") != -1:
+            prepost = "PostScan"
+
+        #print(prepost)
+
+        g2k_R_file = None
+        g4k_R_file = None
+        g6k_R_file = None
+        g2k_L_file = None
+        g4k_L_file = None
+        g6k_L_file = None
+     
+        for n in range(0, len(oae_file_list)):
+            #print(oae_file_list[n])
+
+            if oae_file_list[n].find(prepost) == -1:
+                #print("Forget about it")
+                pass
+
+            elif (oae_file_list[n].startswith(subject) and
+                  oae_file_list[n].find(date) != -1 and
+                  oae_file_list[n].find(prepost) != -1):
+                #print("Yes")
+
+                if oae_file_list[n].endswith("R.csv"):
+                    #print("R")
+
+                    if oae_file_list[n].find("2000") != -1:
+                        #print("2K")
+                        g2k_R_file = oae_file_list[n]
+
+                    elif oae_file_list[n].find("4000") != -1:
+                        #print("4K")
+                        g4k_R_file = oae_file_list[n]
+
+                    elif oae_file_list[n].find("6000") != -1:
+                        #print("6K")
+                        g6k_R_file = oae_file_list[n]
+
+                    else:
+                        #print("But no")
+                        pass
+
+                elif oae_file_list[n].endswith("L.csv"):
+                    #print("L")
+                    
+                    if oae_file_list[n].find("2000") != -1:
+                        #print("2K")
+                        g2k_L_file = oae_file_list[n]
+
+                    elif oae_file_list[n].find("4000") != -1:
+                        #print("4K")
+                        g4k_L_file = oae_file_list[n]
+
+                    elif oae_file_list[n].find("6000") != -1:
+                        #print("6K")
+                        g6k_L_file = oae_file_list[n]                   
+                   
+                    else:
+                        #print("But no")
+                        pass
+
+                else:
+                    #print("No")
+                    pass
+
+            else:
+                #print("No")
+                pass
+
+        if (g2k_R_file == None or g4k_R_file == None
+            or g6k_R_file == None or g2k_L_file == None
+            or g4k_L_file == None or g6k_L_file == None):
+                
+            print(f"At least one of {subject}'s DP-growth csv files for "
+                  f"the {date} session ({condition}) is missing.\n")
+            return
+
+        else:
+            df_2k_L = pd.read_csv(os.path.join(data_path, g2k_L_file),
+                                  sep=";")
+            df_4k_L = pd.read_csv(os.path.join(data_path, g4k_L_file),
+                                  sep=";")
+            df_6k_L = pd.read_csv(os.path.join(data_path, g6k_L_file),
+                                  sep=";")
+            df_2k_R = pd.read_csv(os.path.join(data_path, g2k_R_file),
+                                  sep=";")
+            df_4k_R = pd.read_csv(os.path.join(data_path, g4k_R_file),
+                                  sep=";")
+            df_6k_R = pd.read_csv(os.path.join(data_path, g6k_R_file),
+                                  sep=";")
+
+            print("\nL 2k:", df_2k_L,
+                  "\nL 4k:", df_4k_L,
+                  "\nL 6k:", df_6k_L,
+                  "\nR 2k:", df_2k_R,
+                  "\nR 4k:", df_4k_R,
+                  "\nR 6k:", df_6k_R)
+
+###############################################################################
+### 
+                
+#            for a in df_L.columns.tolist():
+#                for b in range(0, len(df_L)):
+#                    value_L = str(df_L.iloc[b][a]).replace(",", ".")
+#                    #print(value_L)
+#                    df_L.at[b, a] = float(value_L)
+
+#                for c in df_R.columns.tolist():
+#                    for d in range(0, len(df_R)):
+#                        value_R = str(df_R.iloc[d][c]).replace(",", ".")
+#                        #print(value_R)
+#                        df_R.at[d, c] = float(value_R)
+
+#                order_R = []
+#                order_L = []
+#                side_R = []
+#                side_L = []
+#                freq1_R = []
+#                freq1_L = []
+#                snr_R = []
+#                snr_L = []
+
+#                for q in range(0, len(df_R)):
+#                    order_R.append(1)
+#                    side_R.append("R")
+#                    freq1_R.append(df_R["Freq (Hz)"][q] / 1.22)
+#                    #print(type(float(df_R["DP (dB)"][q])))
+#                    snr_R.append(df_R["DP (dB)"][q]
+#                                 - df_R["Noise+2sd (dB)"][q])
+
+#                for r in range(0, len(df_L)):
+#                    order_L.append(2)
+#                    side_L.append("L")
+#                    freq1_L.append(df_L["Freq (Hz)"][r] / 1.22)
+#                    snr_L.append(df_L["DP (dB)"][r]
+#                                 - df_L["Noise+2sd (dB)"][r])
+                
+#                df_R["order"] = order_R
+#                df_R["side"] = side_R
+#                df_R["freq1"] = freq1_R
+#                df_R["snr"] = snr_R
+#                df_L["order"] = order_L
+#                df_L["side"] = side_L
+#                df_L["freq1"] = freq1_L
+#                df_L["snr"] = snr_L
+                
+                #print("\nL:", df_L, "\nR:", df_R)
+                
+#                df_growth = pd.concat([df_R, df_L])
+#                df_growth.reset_index(inplace=True, drop=True)
+                
+                #print(df_dpoae)
+                
+#                ls_columns = df_growth.columns.tolist()
+                #print(ls_columns)
+                
+#                if any("Unnamed" in n for n in ls_columns):
+#                    #print("RED FLAG: Unnamed")
+#                    column_to_drop = [p for p in ls_columns if "Unnamed" in p]
+#                    #print(column_to_drop)
+#                    df_growth.drop(labels=column_to_drop.pop(),
+#                                   axis=1, inplace=True)
+#                else:
+#                    pass
+                
+                #print(type(df_growth["Freq (Hz)"][3]))
+                
+                
+#                df_growth = df_growth[["order", "side", "freq1", "Freq (Hz)",
+#                                       "F1 (dB)", "F2 (dB)", "DP (dB)", "snr",
+#                                       "Noise+2sd (dB)", "Noise+1sd (dB)",
+#                                       "2F2-F1 (dB)", "3F1-2F2 (dB)",
+#                                       "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
+                 
+#                df_growth.set_axis(x_growth, axis=1, inplace=True)
+#                df_growth.set_index("order", inplace=True)
+                
+                #print(df_growth)
+                
+#                save_df(df_growth, data_sub, j, 'DPGrowth', result_path)
+
+###
+###############################################################################
+    
+    def growth_others(data_sub, i, oae_file_list,
+                      x_growth, data_path, result_path):
+
+        subject = data_sub["Participant_ID"][i]
+        date = data_sub["DATE"][i]
+        ses = data_sub["Session_ID"][i]
+        condition = data_sub["Protocol condition"][i]
+
+        growth_R_file = None
+        growth_L_file = None
+
+        for m in range(0, len(oae_file_list)):
+            #print("oae_file_list[m]:", oae_file_list[m])
+            if oae_file_list[m].find("PostScan") != -1:
+                #print("Forget about it")
+                pass
+
+            elif (oae_file_list[m].startswith(subject) and
+                  oae_file_list[m].find(date) != -1):
+                #print("Yes")
+                                
+                if oae_file_list[m].endswith("4000_R.csv"):
+                    #print("R")
+                    growth_R_file = oae_file_list[m]
+
+                elif oae_file_list[m].endswith("4000_L.csv"):
+                    #print("L")
+                    growth_L_file = oae_file_list[m]
+
+                else:
+                    #print("But no")
+                    pass
+
+            else:
+                #print("No")
+                pass                
+            
+        if (growth_R_file == None or growth_L_file == None):
+            print(f"At least one of {subject}'s DP-growth csv "
+                  f"files for the {date} session ({condition}) "
+                  f"is missing.\n")
+            #return
+        
+        else:               
+            df_L = pd.read_csv(os.path.join(data_path, growth_L_file),
+                               sep=";")
+            df_R = pd.read_csv(os.path.join(data_path, growth_R_file),
+                               sep=";")
+
+            #print("\nL:", df_L, "\nR:", df_R)
+                
+            for a in df_L.columns.tolist():
+                for b in range(0, len(df_L)):
+                    value_L = str(df_L.iloc[b][a]).replace(",", ".")
+                    #print(value_L)
+                    df_L.at[b, a] = float(value_L)
+
+            for c in df_R.columns.tolist():
+                for d in range(0, len(df_R)):
+                    value_R = str(df_R.iloc[d][c]).replace(",", ".")
+                    #print(value_R)
+                    df_R.at[d, c] = float(value_R)
+
+            #print("\nL:", df_L, "\nR:", df_R)
+
+            order_R = []
+            order_L = []
+            side_R = []
+            side_L = []
+            freq1_R = []
+            freq1_L = []
+            snr_R = []
+            snr_L = []
+
+            for q in range(0, len(df_R)):
+                order_R.append(1)
+                side_R.append("R")
+                freq1_R.append(df_R["Freq (Hz)"][q] / 1.22)
+                #print(type(float(df_R["DP (dB)"][q])))
+                snr_R.append(df_R["DP (dB)"][q]
+                             - df_R["Noise+2sd (dB)"][q])
+
+            for r in range(0, len(df_L)):
+                order_L.append(2)
+                side_L.append("L")
+                freq1_L.append(df_L["Freq (Hz)"][r] / 1.22)
+                snr_L.append(df_L["DP (dB)"][r]
+                             - df_L["Noise+2sd (dB)"][r])
+                
+            df_R["order"] = order_R
+            df_R["side"] = side_R
+            df_R["freq1"] = freq1_R
+            df_R["snr"] = snr_R
+            df_L["order"] = order_L
+            df_L["side"] = side_L
+            df_L["freq1"] = freq1_L
+            df_L["snr"] = snr_L
+   
+            #print("\nL:", df_L, "\nR:", df_R)
+               
+            df_growth = pd.concat([df_R, df_L])
+            df_growth.reset_index(inplace=True, drop=True)
+               
+            #print(df_dpoae)
+                
+            ls_columns = df_growth.columns.tolist()
+            #print(ls_columns)
+                
+            if any("Unnamed" in n for n in ls_columns):
+                #print("RED FLAG: Unnamed")
+                column_to_drop = [p for p in ls_columns if "Unnamed" in p]
+                #print(column_to_drop)
+                df_growth.drop(labels=column_to_drop.pop(),
+                               axis=1, inplace=True)
+            else:
+                pass
+                
+            #print(type(df_growth["Freq (Hz)"][3]))
+                    
+            df_growth = df_growth[["order", "side", "freq1", "Freq (Hz)",
+                                   "F1 (dB)", "F2 (dB)", "DP (dB)", "snr",
+                                   "Noise+2sd (dB)", "Noise+1sd (dB)",
+                                   "2F2-F1 (dB)", "3F1-2F2 (dB)",
+                                   "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
+                
+            df_growth.set_axis(x_growth, axis=1, inplace=True)
+            df_growth.set_index("order", inplace=True)
+     
+            #print(df_growth)
+                
+            save_df(df_growth, data_sub, i, 'DPGrowth', result_path)    
+
+    # Extraction of every single DP growth function OAE test
+    # The results are then sent to the save_df function to be saved
+    def extract_growth(data_sub, data_oae_sub, oae_file_list,
+                       x_growth, data_path, result_path):
+
+        data_path = os.path.join(data_path, "OAE")
+
+        no_oae = ["Condition 1A (right before the scan)",
+                  "Condition 1B (right after the scan)",
+                  "Supplementary PTA test (Baseline)",
+                  "Suppl. PTA test (right before the scan)",
+                  "Suppl. PTA test (right after the scan)"]
+        
+        just_4k = ["Baseline", "Condition 2 (2-7 days post-scan)"]
+        
+        prepost = ["Condition 3A (OAEs right before the scan)",
+                   "Condition 3B (OAEs right after the scan)"]
+        
+        for j in range(0, len(data_sub)):
+            condition = data_sub["Protocol condition"][j]
+
+            #print(subject, date, "session:", ses, condition)
+ 
+            if condition in no_oae:
+                pass
+                
+            elif condition in just_4k:
+                growth_others(data_sub, j, oae_file_list,
+                              x_growth, data_path, result_path)
+                           
+            elif condition in prepost:
+                growth_prepost(data_sub, j, oae_file_list,
+                               x_growth, data_path, result_path)
