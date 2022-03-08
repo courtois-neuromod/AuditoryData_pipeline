@@ -39,14 +39,16 @@ condition_OAE = ["Baseline",
                  "Condition 3A (OAEs right before the scan)",
                  "Condition 3B (OAEs right after the scan)"]
 
-def fetch_db():
+
+def fetch_db(data_path):
     """This function retrieves a database to work on.
-    INPUTS: none
+    INPUTS:
+    -data_path: path to the [repo_root]/data folder
     OUTPUTS:
     -returns a dataframe containing the database to use
     """
 
-    df = utils.retrieve_db()
+    df = utils.retrieve_db(data_path)
 
     # Manage the empty boxes
     df.fillna(value='n/a', inplace=True)
@@ -57,21 +59,19 @@ def fetch_db():
 def fetch_oae_data(data_path):
     path = os.path.join(data_path, "OAE")
     ls_file = os.listdir(path)
-    #print(ls_file)
-    
+
     ls_of_ls = []
-    
+
     for i in ls_file:
         single_test_ls = i.rstrip(".csv").split("_")
         ls_of_ls.append(single_test_ls)
-    
+
     df = pd.DataFrame(ls_of_ls,
                       columns=["Participant_ID",
                                "Condition",
                                "Test",
                                "Ear"])
-    #print(df)
-    
+
     return ls_file, df
 
 
@@ -140,8 +140,9 @@ def create_folder_session(subject, session_count, parent_path):
 def master_run(data_path, result_path):
 
     # retrieve a database
-    df = fetch_db()
-    oae_file_list, oae_tests_df = fetch_oae_data(data_path)
+    df = fetch_db(data_path)
+    auditory_test_path = os.path.join(data_path, "auditory_tests")
+    oae_file_list, oae_tests_df = fetch_oae_data(auditory_test_path)
 
     # Verifications:
     # - existence of the "BIDS_data" folder
@@ -207,25 +208,20 @@ def master_run(data_path, result_path):
         data_sub = subject_extractor(df, i)
         data_oae_sub = subject_extractor(oae_tests_df, i)
 
-        #print("\ndata_oae_sub\n", data_oae_sub)
-        
         data_sub.insert(loc=3, column="Session_ID", value=None)
-        #print("\ndata_sub\n", data_sub)
 
         # Add a session line for the post-scan OAE condition
-        k = 0        
+        k = 0
         while k < len(data_sub):
 
             data_sub["Session_ID"][k] = f"{k+1:02d}"
-            #print(data_sub)
-
 
             if data_sub["Protocol condition"][k] == ("Condition 3A "
                                                      "(OAEs right before "
                                                      "the scan)"):
                 sub_df_A = data_sub.iloc[:k+1]
                 sub_df_B = data_sub.iloc[k+1:]
-                
+
                 sub_df_C = data_sub.copy()
                 sub_df_C.drop(sub_df_C.index[k+1:], inplace=True)
                 sub_df_C.drop(sub_df_C.index[0:k], inplace=True)
@@ -234,24 +230,24 @@ def master_run(data_path, result_path):
                                                          "right after the "
                                                          "scan)")
                 sub_df_C.loc[k, "Session_ID"] = f"{k+2:02d}"
-                
+
                 ls_columns = sub_df_C.columns.tolist()
                 index_tests = ls_columns.index("Tymp_RE")
                 del ls_columns[0:index_tests]
-                
+
                 for m in ls_columns:
                     sub_df_C[m][k] = "n/a"
 
                 data_sub = pd.concat([sub_df_A, sub_df_C, sub_df_B])
                 data_sub.reset_index(inplace=True, drop=True)
-                
+
                 k += 1
 
             else:
                 pass
 
             k += 1
-        
+
         # Creation of a folder for each session
         create_folder_session(i, len(data_sub), parent_path)
 
@@ -270,18 +266,14 @@ def master_run(data_path, result_path):
                                       columns_MTX)
         oae = data_sub[columns_conditions]
 
-        #print(pta)
-        #print(oae)
-        
         # Replace PTA values "130" with "No response"
         for n in columns_PTA:
             for p in range(0, len(pta)):
-                #print(pta.iloc[p][n])
                 if pta.iloc[p][n] == 130:
                     pta.iloc[p][n] = "No response"
                 else:
                     pass
-        
+
         # Dataframe reconstruction
         utils.extract_tymp(tymp, columns_tymp_R,
                            columns_tymp_L, x_tymp,
@@ -296,11 +288,11 @@ def master_run(data_path, result_path):
                           columns_MTX_L2, x_MTX,
                           result_path)
         utils.extract_teoae(oae, data_oae_sub, oae_file_list,
-                            x_teoae, data_path, result_path)
+                            x_teoae, auditory_test_path, result_path)
         utils.extract_dpoae(oae, data_oae_sub, oae_file_list,
-                            x_dpoae, data_path, result_path)
+                            x_dpoae, auditory_test_path, result_path)
         utils.extract_growth(oae, data_oae_sub, oae_file_list,
-                             x_growth, data_path, result_path)
+                             x_growth, auditory_test_path, result_path)
 
         print(f"The tsv and json files for {i} have been created.\n")
 
@@ -319,7 +311,7 @@ def master_run(data_path, result_path):
 
 if __name__ == "__main__":
     root_path = ".."
-    data_path = os.path.join(root_path, "data", "auditory_tests")
+    data_path = os.path.join(root_path, "data")
     result_path = os.path.join(root_path, "results")
 
     master_run(data_path, result_path)
