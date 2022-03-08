@@ -62,12 +62,13 @@ while loop_value:
 
                     if ls_fct[value - 1] == ("BIDS format's json sidecars "
                                              "(test level) creation"):
-                        jsg.create_sidecars(os.path.join(".", "results")
+                        jsg.create_sidecars(os.path.join(".", "results"))
                         print("\n")
 
                     elif ls_fct[value - 1] == ("BIDS format's auditory "
                                                "data exporter"):
-                        formater.master_run(os.path.join(".", "results")
+                        formater.master_run(os.path.join(".", "data"),
+                                            os.path.join(".", "results"))
                         print("\n")
 
                 # Graph generation functionalities
@@ -112,7 +113,7 @@ while loop_value:
 
                 # MRI sessions design files generation functionalities
                 elif ls_fct[value - 1].count("design files") == 1:
-                    ses_design.master_run(os.path.join(".", "data")
+                    ses_design.master_run(os.path.join(".", "data"))
                     print("\n")
 
                 # Test Dummy
