@@ -3,6 +3,7 @@ import pandas as pd
 # import glob
 
 from src import BIDS_utils as utils
+from src import common_functions as common
 
 
 # Create a list of the subjects and a reference path for the results
@@ -48,7 +49,7 @@ def fetch_db(data_path):
     -returns a dataframe containing the database to use
     """
 
-    df = utils.retrieve_db(data_path)
+    df = common.retrieve_db(data_path)
 
     # Manage the empty boxes
     df.fillna(value='n/a', inplace=True)

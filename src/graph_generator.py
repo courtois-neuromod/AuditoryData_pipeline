@@ -2,6 +2,7 @@ import os
 from src import graph_functions as gf
 from src import graph_PTA as pta
 from src import graph_MTX as mtx
+from src import common_functions as common
 
 
 subjects = ["Sub01", "Sub02", "Sub03", "Sub04", "Sub05", "Sub06"]
@@ -194,10 +195,19 @@ def mtx_graph(result_path, master_data, counter, save_error):
 
 def teoae_graph(data_path, result_path, counter, save_error):
     """
+    This function
     INPUTS:
+    -data_path:
+    -result_path:
+    -counter:
+    -save_error: 
     OUTPUTS:
     """
-
+    
+    os.path.join
+    
+    content_folder = os.listdir(data_path)
+    print(content_folder)
 #    # Elimination of the lines that are irrelevant to each of the tests:
 #    # Matrix speech perception test
 #    # L1
@@ -257,7 +267,7 @@ def master_run(root_path, test_type="all"):
     result_path = os.path.join(root_path, "results")
     data_path = os.path.join(root_path, "data")
     
-    master_data = gf.retrieve_db()
+    master_data = common.retrieve_db(data_path)
 
     # Counter initialisation to keep track of the amount of files generated
     counter = 0
@@ -290,6 +300,7 @@ def master_run(root_path, test_type="all"):
     elif test_type == "all":
         x1, y1 = pta_graph(result_path, master_data, counter, save_error)
         x2, y2 = mtx_graph(result_path, master_data, counter, save_error)
+        x3, y3 = teoae_graph(data_path, result_path, counter, save_error)
         counter = x1 + x2
         save_error = y1 + y2
 
