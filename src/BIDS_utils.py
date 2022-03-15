@@ -647,6 +647,9 @@ else:
 
                 save_df(df_dpoae, data_sub, j, 'DPOAE', result_path)
 
+    # Extraction of the distortion product OAE growth function tests
+    # for the conditions 3A (pre-scan) and 3B (post-scan).
+    # The results are then sent to the save_df function to be saved
     def growth_prepost(data_sub, i, oae_file_list,
                        x_growth, data_path, result_path):
 
@@ -809,6 +812,9 @@ else:
                 save_df(df_growth, data_sub, i,
                         'DPGrowth', result_path, run=run)
 
+    # Extraction of the distortion product OAE growth function tests
+    # for the other conditions (baseline and condition 2).
+    # The results are then sent to the save_df function to be saved
     def growth_others(data_sub, i, oae_file_list,
                       x_growth, data_path, result_path):
 
