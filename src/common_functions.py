@@ -104,3 +104,23 @@ else:
                 # If it is not a number, restart the loop
                 print("The provided value is not valid (not a digit).\n")
                 continue
+
+    def create_folder_subjects(subject, parent_path):
+        """This function creates by-subject folders in a specified folder
+        INPUTS:
+        -subject: subject ID used by the script or the database's
+                  dataframe (format: Sub0X)
+        -parent_path: path to get inside the specified folder
+        OUTPUTS:
+        -folder for the provided subject ID in the BIDS_data/ folder
+        -NO specific return to the script
+        """
+
+        dir_content = os.listdir(parent_path)
+        dir_content.sort()
+        sub_ID = subject.lstrip("Sub")
+
+        if dir_content.count(f"sub-{sub_ID}") == 1:
+            pass
+        else:
+            os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
