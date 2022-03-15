@@ -94,26 +94,6 @@ def subject_extractor(df, subject_ID):
     return sub_df
 
 
-def create_folder_subjects(subject, parent_path):
-    """This function creates by-subject folders in the BIDS_data/ folder
-    INPUTS:
-    -subject: subject ID used in the database's dataframe (format: Sub0X)
-    -parent_path: path to get inside the BIDS_data/ folder
-    OUTPUTS:
-    -folder for the provided subject ID in the BIDS_data/ folder
-    -NO specific return to the script
-    """
-
-    dir_content = os.listdir(parent_path)
-    dir_content.sort()
-    sub_ID = subject.lstrip("Sub")
-
-    if dir_content.count(f"sub-{sub_ID}") == 1:
-        pass
-    else:
-        os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
-
-
 # Check if the session-level folders exist for each participant
 # If not, create them
 def create_folder_session(subject, session_count, parent_path):
@@ -203,7 +183,7 @@ def master_run(data_path, result_path):
 
         # Check if the subject-level folders exist
         # If not, create them
-        create_folder_subjects(i, parent_path)
+        common.create_folder_subjects(i, parent_path)
 
         # Extraction of all the session for the subject
         data_sub = subject_extractor(df, i)
