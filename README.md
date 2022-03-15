@@ -80,11 +80,11 @@ figure reference:
 
 Gorgolewski, K. J., Auer, T., Calhoun, V. D., Craddock, R. C., Das, S., Duff, E. P., Flandin, G., Ghosh, S. S., Glatard, T., Halchenko, Y. O., Handwerker, D. A., Hanke, M., Keator, D., Li, X., Michael, Z., Maumet, C., Nichols, B. N., Nichols, T. E., Pellman, J., … Poldrack, R. A. (2016). The brain imaging data structure, a format for organizing and describing outputs of neuroimaging experiments. Scientific data, 3, 160044. https://doi.org/10.1038/sdata.2016.44
 
-[![Illustration of a BIDS structured dataset](images/BIDS_structure.png)](https://www.nature.com/articles/sdata201644)
+[![Illustration of a BIDS structured dataset](data/BIDS_structure.png)](https://www.nature.com/articles/sdata201644)
 
 ### Screen capture of a section of the results obtained with this pipeline
 
-![fortier_project_BIDS_structure.png](images/fortier_project_BIDS_structure.png)
+![fortier_project_BIDS_structure.png](data/fortier_project_BIDS_structure.png)
 
 
 ## Graph generation (Pure-tone audiometry, Matrix speech-in-noise perception test)
@@ -94,7 +94,7 @@ The second task to be done is to build python scripts to generate the interactiv
 
 ### Exemple of audiogram (manually obtained)
 
-![P01-Baseline 2, Bilateral.png](images/P01-Baseline_2_Bilateral.png)
+![PTA_sample_graph.png](data/PTA_sample_graph.png)
 
 ### Exemple of interactive HTML audiogram (obtained with this pipeline)
 
@@ -102,7 +102,7 @@ The second task to be done is to build python scripts to generate the interactiv
 
 ### Exemple of Matrix test results graph (manually obtained)
 
-![P01-Matrix test FR, Condition 2 (may_2021).png](images/P01-Matrix_test_FR_Condition_2_(may_2021).png)
+![MTX_sample_graph.png](data/MTX_sample_graph.png)
 
 ### Exemple of Matrix test interactive HTML graph (obtained with this pipeline)
 
