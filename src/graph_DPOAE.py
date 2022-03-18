@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 #import plotly.graph_objects as go
 #import plotly.figure_factory as ff
+from matplotlib.ticker import ScalarFormatter
+
 from src import graph_functions as gf
 
 
@@ -37,7 +39,7 @@ else:
 
 #        return True
 
-    def generate_title_teoae(df, ear, filename):
+    def generate_title_dpoae(df, ear, filename):
         """
         INPUTS
         -df: dataframe with the informations to generate the title for a
@@ -58,7 +60,7 @@ else:
         ID = "Sub" + ls_sub[1]
         name = "Session " + ls_ses[1]
 
-        title = (ID + " - " + name + ": TEOAE (" + ear + ")")
+        title = (ID + " - " + name + ": DPOAE (" + ear + ")")
         #print(title)
 
         return title, ls_sub[1], ls_ses[1]
@@ -77,14 +79,14 @@ else:
         y = []
 
         for i in range(0, len(df)):
-            x.append(df["freq"][i])
+            x.append(df["freq2"][i])
             y.append(df[column][i])
 
         return x, y
 
 ###############################################################################
 
-    def plot_teoae(path, df, side, filename):
+    def plot_dpoae(path, df, side, filename):
         """
         INPUTS
         -path: path to the result folder: [repo_root]/results/
@@ -92,17 +94,19 @@ else:
         -side: side of the ear linked to the data in the df
         -filename: .tsv file name to be used to extract test information
         OUTPUTS
-        -saves TEOAE graphs in .html
+        -saves DPOAE graphs in .html
         """
 
         if side == "R":
             ear = "Right Ear"
+            marker = "o"
         elif side == "L":
             ear = "Left Ear"
+            marker = "x"
 
-        title, ID, session = generate_title_teoae(df, ear, filename)
+        title, ID, session = generate_title_dpoae(df, ear, filename)
         labels = {"title": title,
-                  "x": "Frequency (Hz)",
+                  "x": "F2 frequency (Hz)",
                   "y": "OAE response (dB SPL)"}
 
 #        fig = go.Figure()
@@ -125,11 +129,13 @@ else:
 #                          yaxis_zerolinecolor="black",
 #                          barmode="overlay")
 
-        x_data, y_data = data_to_plot(df, "oae")
+        x_data, y_data = data_to_plot(df, "dp")
         #print(y_data)
-        x_noise, y_noise = data_to_plot(df, "noise")
-        #print(x_noise, y_noise)
-        y_floor = [-25, -25, -25, -25, -25]
+        x_2sd, y_2sd = data_to_plot(df, "noise+2sd")
+        #print(x_2sd, y_2sd)
+        x_1sd, y_1sd = data_to_plot(df, "noise+1sd")
+        #print(x_1sd, y_1sd)
+        y_floor = [-25, -25, -25, -25, -25, -25, -25, -25]
 
 #        fig.add_trace(go.Scatter(x=x_data,
 #                                 y=y_floor,
@@ -155,12 +161,25 @@ else:
 #                                 hovertemplate="%{x:.0f} Hz<br>" +
 #                                               "%{y:.1f} dB SPL"))
 
-        plt.figure(figsize=(11, 8.5), dpi=250)
-        plt.plot(x_data, y_data, label="TEOAE response", color="c")
-        plt.plot(x_noise, y_noise, label="Noise level", color="r")
+        fig, ax = plt.subplots(figsize=(11, 8.5), dpi=250)
+        plt.plot(x_data,
+                 y_data,
+                 label="DPOAE response",
+                 color="darkturquoise",
+                 marker=marker)
+        plt.plot(x_2sd,
+                 y_2sd,
+                 label="Noise + 2 SD level",
+                 color="orange")
+        plt.plot(x_1sd,
+                 y_1sd,
+                 label="Noise + 1 SD level",
+                 color="orangered")
 
-        plt.axis([0, 5000, -20, 20])
+        ax.axis([900, 11000, -10, 30])
         plt.grid()
+        plt.xscale("log")
+        ax.xaxis.set_major_formatter(ScalarFormatter())
         #plt.axhline(0, color="k")
         #plt.axvline(0, color="k")
         plt.title(labels["title"])
@@ -168,14 +187,24 @@ else:
         plt.ylabel(labels["y"])
         plt.legend()
 
-        plt.fill_between(x=x_data, y1=y_data, y2=y_floor, color="c")
-        plt.fill_between(x=x_noise, y1=y_noise, y2=y_floor, color="r")
+#        plt.fill_between(x=x_data,
+#                         y1=y_data,
+#                         y2=y_floor,
+#                         color="darkturquoise")
+        plt.fill_between(x=x_2sd,
+                         y1=y_2sd,
+                         y2=y_floor,
+                         color="orange")
+        plt.fill_between(x=x_1sd,
+                         y1=y_1sd,
+                         y2=y_floor,
+                         color="orangered")
 
 
         
         sub = "sub-" + ID
         folder = os.path.join(path, "graphs", sub)
-        filename = ("Sub-" + ID + "_TEOAE_Session-" + session
+        filename = ("Sub-" + ID + "_DPOAE_Session-" + session
                     + "_(" + ear + ").png")
 
         save_path = os.path.join(folder, filename)
@@ -191,14 +220,6 @@ else:
 #            return True
 #        else:
 #            return False
-
-#    def plot_pta_subject(path, df, display=False):
-#        """
-#        INPUTS
-#        -df: pandas dataframe containing the data to plot
-#        OUTPUTS
-#        -saves pta graph in .html
-#        """
 
 ###############################################################################
 

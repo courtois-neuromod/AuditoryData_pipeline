@@ -86,9 +86,7 @@ while loop_value:
 
                     # TEOAE graph plotting
                     elif ls_fct[value - 1].count("Transient") == 1:
-                        print("TEOAE graph: This functionality is not "
-                              "supported yet but will be added soon.\n")
-                        # TEOAE graph plotting functionalities
+                        graph.master_run(".", "TEOAE")
                         print("\n")
                     
                     elif ls_fct[value - 1].count("Distortion"):
@@ -96,18 +94,14 @@ while loop_value:
                         # DPOAE graph plotting
                         if ls_fct[value - 1] == ("Distortion product OAE "
                                                  "test graph generator"):
-                            print("DPOAE graph: This functionality is not "
-                                  "supported yet but will be added soon.\n")
-                            # DPOAE graph plotting functionalities
+                            graph.master_run(".", "DPOAE")
                             print("\n")
                         
                         # DP Growth graph plotting
                         elif ls_fct[value - 1] == ("Distortion product "
                                                    "growth function test "
                                                    "graph generator"):
-                            print("DP growth graph: This functionality is not "
-                                  "supported yet but will be added soon.\n")
-                            # DP growth graph plotting functionalities
+                            graph.master_run(".", "Growth")
                             print("\n")
                             
 

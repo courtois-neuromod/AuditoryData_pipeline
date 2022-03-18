@@ -1,7 +1,12 @@
 import os
+import pandas as pd
+#from src import BIDS_utils as utils
 from src import graph_functions as gf
 from src import graph_PTA as pta
 from src import graph_MTX as mtx
+from src import graph_TEOAE as teoae
+from src import graph_DPOAE as dpoae
+from src import graph_DPGrowth as growth
 from src import common_functions as common
 
 
@@ -191,83 +196,243 @@ def mtx_graph(result_path, master_data, counter, save_error):
 
     return counter, save_error
 
-###############################################################################
 
-def teoae_graph(data_path, result_path, counter, save_error):
+def teoae_graph(result_path, counter, save_error):
     """
-    This function
+    This function generates and save the TEOAE test figures
     INPUTS:
-    -data_path:
-    -result_path:
-    -counter:
-    -save_error: 
+    -result_path: path to the results folder [repo_root]/results/
+    -counter: variable tracking the amount of files produced by the script
+    -save_error: variable tracking the amount of files that were not
+                 properly saved
     OUTPUTS:
+    -returns an updated value for the saved files counter and the save_error
+     counter as well as the saved figures
     """
     
-    os.path.join
+    data_path = os.path.join(result_path, "BIDS_data")
+        
+    ls_folders_sub = os.listdir(data_path)
+    ls_folders_sub.sort()
+    #print("sub:", ls_folders_sub, "\n")
     
-    content_folder = os.listdir(data_path)
-    print(content_folder)
-#    # Elimination of the lines that are irrelevant to each of the tests:
-#    # Matrix speech perception test
-#    # L1
-#    data_mtx_L1 = eliminate_row_mtx(data_mtx_L1, 1)
+    for i in ls_folders_sub:
+        path_sub = os.path.join(data_path, i)
+        ls_folders_ses = os.listdir(path_sub)
+        ls_folders_ses.sort()
+        #print("ses:", ls_folders_ses, "\n")
+        
+        for j in ls_folders_ses:
+            path_ses = os.path.join(path_sub, j)
+            ls_files_test = os.listdir(path_ses)
+            ls_files_test.sort()
+            #print("tests:", ls_files_test, "\n")
+            
+            ls_teoae = []
+            
+            for k in ls_files_test:
+                if (k.find("TEOAE") != -1
+                        and k.endswith(".tsv")):
+                    ls_teoae.append(k)
+                else:
+                    pass
+            
+            #print(ls_teoae)
+            
+            if len(ls_teoae) == 0:
+                continue
+            else:
+                for m in ls_teoae:
+                    df = pd.read_csv(os.path.join(path_ses, m),
+                                     sep="\t")
+                    #print(df)
+                    
+                    # TEOAE, Right ear
+                    mask_R = df["side"] == "R"
+                    df_R = df[mask_R].reset_index(drop=True)
+                    action_R = teoae.plot_teoae(result_path, df_R,
+                                                "R", m)
+                    if action_R is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1
+                    
+                    # TEOAE, Left ear
+                    mask_L = df["side"] == "L"
+                    df_L = df[mask_L].reset_index(drop=True)
+                    action_L = teoae.plot_teoae(result_path, df_L,
+                                                "L", m)
+                    if action_L is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1                    
+                    
+                    #print(df, "\n", df_R, "\n", df_L, "\n")
 
-#    # L2
-#    data_mtx_L2 = eliminate_row_mtx(data_mtx_L2, 2)
+        return counter, save_error
 
-#    # MTX, L1
-#    for m in range(0, len(data_mtx_L1)):
-#        action_m = mtx.plot_mtx(result_path, data_mtx_L1.loc[[m]], "L1")
-#        if action_m is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
 
-#    # MTX, L2
-#    for n in range(0, len(data_mtx_L2)):
-#        df_line = data_mtx_L2.loc[[n]]
+def dpoae_graph(result_path, counter, save_error):
+    """
+    This function generates and save the DPOAE test figures
+    INPUTS:
+    -result_path: path to the results folder [repo_root]/results/
+    -counter: variable tracking the amount of files produced by the script
+    -save_error: variable tracking the amount of files that were not
+                 properly saved
+    OUTPUTS:
+    -returns an updated value for the saved files counter and the save_error
+     counter as well as the saved figures
+    """
+    
+    data_path = os.path.join(result_path, "BIDS_data")
+        
+    ls_folders_sub = os.listdir(data_path)
+    ls_folders_sub.sort()
+    #print("sub:", ls_folders_sub, "\n")
+    
+    for i in ls_folders_sub:
+        path_sub = os.path.join(data_path, i)
+        ls_folders_ses = os.listdir(path_sub)
+        ls_folders_ses.sort()
+        #print("ses:", ls_folders_ses, "\n")
+        
+        for j in ls_folders_ses:
+            path_ses = os.path.join(path_sub, j)
+            ls_files_test = os.listdir(path_ses)
+            ls_files_test.sort()
+            #print("tests:", ls_files_test, "\n")
+            
+            ls_dpoae = []
+            
+            for k in ls_files_test:
+                if (k.find("DPOAE") != -1
+                        and k.endswith(".tsv")):
+                    ls_dpoae.append(k)
+                else:
+                    pass
+            
+            #print(ls_dpoae)
+            
+            if len(ls_dpoae) == 0:
+                continue
+            else:
+                for m in ls_dpoae:
+                    df = pd.read_csv(os.path.join(path_ses, m),
+                                     sep="\t")
+                    #print(df)
+                    
+                    # DPOAE, Right ear
+                    mask_R = df["side"] == "R"
+                    df_R = df[mask_R].reset_index(drop=True)
+                    action_R = dpoae.plot_dpoae(result_path, df_R,
+                                                "R", m)
+                    if action_R is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1
+                    
+                    # DPOAE, Left ear
+                    mask_L = df["side"] == "L"
+                    df_L = df[mask_L].reset_index(drop=True)
+                    action_L = dpoae.plot_dpoae(result_path, df_L,
+                                                "L", m)
+                    if action_L is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1                    
+                    
+                    #print(df, "\n", df_R, "\n", df_L, "\n")
 
-#        # Participant Sub-06 can't do the second language test
-#        if df_line["Participant_ID"][n] == "Sub06":
-#            continue
-#        else:
-#            action_n = mtx.plot_mtx(result_path, data_mtx_L2.loc[[n]], "L2")
-#            if action_n is True:
-#                counter = counter + 1
-#            else:
-#                save_error = save_error + 1
+        return counter, save_error 
 
-#    # MTX, L1, All results for one participant in one graph
-#    for p in subjects:
-#        one_subject = gf.extract_subject(data_mtx_L1, p)
-#        action_p = mtx.plot_mtx_subject(result_path, one_subject, "L1")
-#        if action_p is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
 
-#    # MTX, L2, All results for one participant in one graph
-#    for q in subjects:
-#        if q == "Sub06":
-#            continue
-#        else:
-#            one_subject = gf.extract_subject(data_mtx_L2, q)
-#            action_q = mtx.plot_mtx_subject(result_path, one_subject, "L2")
-#            if action_q is True:
-#                counter = counter + 1
-#            else:
-#                save_error = save_error + 1
+def growth_graph(result_path, counter, save_error):
+    """
+    This function generates and save the DP Growth test figures
+    INPUTS:
+    -result_path: path to the results folder [repo_root]/results/
+    -counter: variable tracking the amount of files produced by the script
+    -save_error: variable tracking the amount of files that were not
+                 properly saved
+    OUTPUTS:
+    -returns an updated value for the saved files counter and the save_error
+     counter as well as the saved figures
+    """
+    
+    data_path = os.path.join(result_path, "BIDS_data")
+        
+    ls_folders_sub = os.listdir(data_path)
+    ls_folders_sub.sort()
+    #print("sub:", ls_folders_sub, "\n")
+    
+    for i in ls_folders_sub:
+        path_sub = os.path.join(data_path, i)
+        ls_folders_ses = os.listdir(path_sub)
+        ls_folders_ses.sort()
+        #print("ses:", ls_folders_ses, "\n")
+        
+        for j in ls_folders_ses:
+            path_ses = os.path.join(path_sub, j)
+            ls_files_test = os.listdir(path_ses)
+            ls_files_test.sort()
+            #print("tests:", ls_files_test, "\n")
+            
+            ls_growth = []
+            
+            for k in ls_files_test:
+                if (k.find("DPGrowth") != -1
+                        and k.endswith(".tsv")):
+                    ls_growth.append(k)
+                else:
+                    pass
+            
+            #print(ls_growth)
+            
+            if len(ls_growth) == 0:
+                continue
+            else:
+                for m in ls_growth:
+                    df = pd.read_csv(os.path.join(path_ses, m),
+                                     sep="\t")
+                    #print(df)
+                    
+                    # DP Growth, Right ear
+                    mask_R = df["side"] == "R"
+                    df_R = df[mask_R].reset_index(drop=True)
+                    action_R = growth.plot_growth(result_path, df_R,
+                                                  "R", m)
+                    if action_R is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1
+                    
+                    # DP Growth, Left ear
+                    mask_L = df["side"] == "L"
+                    df_L = df[mask_L].reset_index(drop=True)
+                    action_L = growth.plot_growth(result_path, df_L,
+                                                  "L", m)
+                    if action_L is True:
+                        counter = counter + 1
+                    else:
+                        save_error = save_error + 1                    
+                    
+                    #print(df, "\n", df_R, "\n", df_L, "\n")
 
-#    return counter, save_error
+        return counter, save_error 
 
-###############################################################################
 
 def master_run(root_path, test_type="all"):
     result_path = os.path.join(root_path, "results")
     data_path = os.path.join(root_path, "data")
     
     master_data = common.retrieve_db(data_path)
+    
+    # Verifications:
+    # - existence of the "graphs" folder
+    # - existence of the subjects' sub-folders
+    # If not, creates them.
+    gf.result_location(result_path, subjects)
 
     # Counter initialisation to keep track of the amount of files generated
     counter = 0
@@ -286,30 +451,35 @@ def master_run(root_path, test_type="all"):
                                         save_error)
 
     elif test_type == "TEOAE":
-        counter, save_error = teoae_graph(data_path,
-                                          result_path,
+        counter, save_error = teoae_graph(result_path,
                                           counter,
                                           save_error)
 
     elif test_type == "DPOAE":
-        pass
+        counter, save_error = dpoae_graph(result_path,
+                                          counter,
+                                          save_error)
 
     elif test_type == "Growth":
-        pass
+        counter, save_error = growth_graph(result_path,
+                                           counter,
+                                           save_error)
 
     elif test_type == "all":
         x1, y1 = pta_graph(result_path, master_data, counter, save_error)
         x2, y2 = mtx_graph(result_path, master_data, counter, save_error)
-        x3, y3 = teoae_graph(data_path, result_path, counter, save_error)
-        counter = x1 + x2
-        save_error = y1 + y2
+        x3, y3 = teoae_graph(result_path, counter, save_error)
+        x4, y4 = dpoae_graph(result_path, counter, save_error)
+        x5, y5 = growth_graph(result_path, counter, save_error)
+        counter = x1 + x2 + x3 + x4 + x5
+        save_error = y1 + y2 + y3 + y4 + y5
 
     # Return a feedback to the user regarding the number of files created
     if counter <= 1:
-        print(counter, ".html file was saved.")
+        print(counter, "file was saved.")
         print(save_error, "file(s) was/were not properly saved")
     else:
-        print(counter, ".html files were saved.")
+        print(counter, "files were saved.")
         print(save_error, "file(s) was/were not properly saved")
 
 

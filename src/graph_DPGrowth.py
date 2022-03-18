@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 #import plotly.graph_objects as go
 #import plotly.figure_factory as ff
+from matplotlib.ticker import ScalarFormatter
+
 from src import graph_functions as gf
 
 
@@ -37,7 +39,7 @@ else:
 
 #        return True
 
-    def generate_title_teoae(df, ear, filename):
+    def generate_title_growth(df, ear, filename):
         """
         INPUTS
         -df: dataframe with the informations to generate the title for a
@@ -58,10 +60,18 @@ else:
         ID = "Sub" + ls_sub[1]
         name = "Session " + ls_ses[1]
 
-        title = (ID + " - " + name + ": TEOAE (" + ear + ")")
+        if df["freq2"][0] == 2002:
+            frequency = "2 kHz"
+        elif df["freq2"][0] == 4004:
+            frequency = "4 kHz"
+        elif df["freq2"][0] == 6006:
+            frequency = "6 khz"
+
+        title = (ID + " - " + name + ": DP growth, "
+                 + frequency + " (" + ear + ")")
         #print(title)
 
-        return title, ls_sub[1], ls_ses[1]
+        return title, ls_sub[1], ls_ses[1], frequency
 
     def data_to_plot(df, column):
         """
@@ -77,14 +87,14 @@ else:
         y = []
 
         for i in range(0, len(df)):
-            x.append(df["freq"][i])
+            x.append(df["l2"][i])
             y.append(df[column][i])
 
         return x, y
 
 ###############################################################################
 
-    def plot_teoae(path, df, side, filename):
+    def plot_growth(path, df, side, filename):
         """
         INPUTS
         -path: path to the result folder: [repo_root]/results/
@@ -92,17 +102,21 @@ else:
         -side: side of the ear linked to the data in the df
         -filename: .tsv file name to be used to extract test information
         OUTPUTS
-        -saves TEOAE graphs in .html
+        -saves DP Growth graphs in .html
         """
 
         if side == "R":
             ear = "Right Ear"
+            marker = "o"
         elif side == "L":
             ear = "Left Ear"
+            marker = "x"
 
-        title, ID, session = generate_title_teoae(df, ear, filename)
+        title, ID, session, frequency = generate_title_growth(df,
+                                                              ear,
+                                                              filename)
         labels = {"title": title,
-                  "x": "Frequency (Hz)",
+                  "x": "F2 frequency presentation level (dB SPL)",
                   "y": "OAE response (dB SPL)"}
 
 #        fig = go.Figure()
@@ -125,11 +139,34 @@ else:
 #                          yaxis_zerolinecolor="black",
 #                          barmode="overlay")
 
-        x_data, y_data = data_to_plot(df, "oae")
-        #print(y_data)
-        x_noise, y_noise = data_to_plot(df, "noise")
-        #print(x_noise, y_noise)
-        y_floor = [-25, -25, -25, -25, -25]
+        x_data, y_data = data_to_plot(df, "dp")
+        #print(x_data, y_data)
+        x_2sd, y_2sd = data_to_plot(df, "noise+2sd")
+        #print(x_2sd, y_2sd)
+        x_1sd, y_1sd = data_to_plot(df, "noise+1sd")
+        #print(x_1sd, y_1sd)
+        y_floor = [-25, -25, -25, -25, -25, -25, -25]
+        
+#        columns = ["l2", "dp", "noise+2sd", "noise+1sd"]
+#        data = []
+#        data.extend([x_data, y_data, y_2sd, y_1sd])
+#        #print(data)
+        
+        
+#        df_growth = pd.DataFrame(data=data)
+#        df_growth = df_growth.T
+#        df_growth.set_axis(columns, axis=1, inplace=True)
+#        df_growth.sort_values(by="l2", inplace=True, ignore_index=True)
+#        #print(df_growth)
+        
+#        x_data = df_growth["l2"].tolist()
+#        print(x_data)
+#        y_data = df_growth["dp"].tolist()
+#        print(y_data)
+#        y_2sd = df_growth["noise+2sd"].tolist()
+#        print(y_2sd)
+#        y_1sd = df_growth["noise+1sd"].tolist()
+#        print(y_1sd)
 
 #        fig.add_trace(go.Scatter(x=x_data,
 #                                 y=y_floor,
@@ -155,11 +192,23 @@ else:
 #                                 hovertemplate="%{x:.0f} Hz<br>" +
 #                                               "%{y:.1f} dB SPL"))
 
-        plt.figure(figsize=(11, 8.5), dpi=250)
-        plt.plot(x_data, y_data, label="TEOAE response", color="c")
-        plt.plot(x_noise, y_noise, label="Noise level", color="r")
 
-        plt.axis([0, 5000, -20, 20])
+        plt.figure(figsize=(11, 8.5), dpi=250)
+        plt.plot(x_data,
+                 y_data,
+                 label="DPOAE response",
+                 color="darkturquoise",
+                 marker=marker)
+        plt.plot(x_2sd,
+                 y_2sd,
+                 label="Noise + 2 SD level",
+                 color="orange")
+        plt.plot(x_1sd,
+                 y_1sd,
+                 label="Noise + 1 SD level",
+                 color="orangered")
+
+        plt.axis([30, 80, -10, 30])
         plt.grid()
         #plt.axhline(0, color="k")
         #plt.axvline(0, color="k")
@@ -168,15 +217,26 @@ else:
         plt.ylabel(labels["y"])
         plt.legend()
 
-        plt.fill_between(x=x_data, y1=y_data, y2=y_floor, color="c")
-        plt.fill_between(x=x_noise, y1=y_noise, y2=y_floor, color="r")
+#        plt.fill_between(x=x_data,
+#                         y1=y_data,
+#                         y2=y_floor,
+#                         color="darkturquoise")
+        plt.fill_between(x=x_2sd,
+                         y1=y_2sd,
+                         y2=y_floor,
+                         color="orange")
+        plt.fill_between(x=x_1sd,
+                         y1=y_1sd,
+                         y2=y_floor,
+                         color="orangered")
 
 
         
         sub = "sub-" + ID
+        frequency = frequency.replace(" ", "_")
         folder = os.path.join(path, "graphs", sub)
-        filename = ("Sub-" + ID + "_TEOAE_Session-" + session
-                    + "_(" + ear + ").png")
+        filename = ("Sub-" + ID + "_Growth_" + frequency +"_Session-"
+                    + session + "_(" + ear + ").png")
 
         save_path = os.path.join(folder, filename)
 
@@ -191,14 +251,6 @@ else:
 #            return True
 #        else:
 #            return False
-
-#    def plot_pta_subject(path, df, display=False):
-#        """
-#        INPUTS
-#        -df: pandas dataframe containing the data to plot
-#        OUTPUTS
-#        -saves pta graph in .html
-#        """
 
 ###############################################################################
 
