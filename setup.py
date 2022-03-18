@@ -7,5 +7,5 @@ setup(name="AuditoryDataPipeline",
       author="E. Fortier",
       author_email="eddy.fortier@umontreal.ca",
       url="https://github.com/eddyfortier/AuditoryData_pipeline",
-      install_requires=["numpy", "pandas", "plotly"],
+      install_requires=["numpy", "pandas", "plotly", "matplotlib"],
       packages=find_packages())
