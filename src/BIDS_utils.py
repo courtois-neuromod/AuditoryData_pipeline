@@ -320,12 +320,26 @@ else:
             y[0].append("1")
 
             for k in ls_columns_1:
-                y[0].append(single_test_df[k][j])
+                value_1 = str(single_test_df[k][j].replace(",", "."))
+                try:
+                    float(value_1)
+                except ValueError:
+                    y[0].append(single_test_df[k][j])
+                else:
+                    y[0].append(float(value_1))
 
             y[1].append("2")
 
             for m in ls_columns_2:
-                y[1].append(single_test_df[m][j])
+                value_2 = str(single_test_df[m][j].replace(",", "."))
+                try:
+                    float(value_2)
+                except ValueError:
+                    y[1].append(single_test_df[m][j])
+                else:
+                    y[1].append(float(value_2))
+                
+            #print(y)
 
             mask_0 = []
             mask_1 = []
