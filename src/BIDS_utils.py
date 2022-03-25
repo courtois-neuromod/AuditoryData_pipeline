@@ -81,6 +81,67 @@ else:
                   "were created in the results/BIDS_sidecars_originals "
                   "folder.\n")
 
+    # List the available test results
+    def retrieve_tests(subject_folder, ses_ID):
+        """
+        This function lists the test data available in a specified
+        session folder.
+        INPUTS:
+        -subject_folder: path into the subject's folder:
+                         [repo_root]/results/BIDS_data/sub-[XX]/
+        -ses_ID: name of the session folder to explore
+        OUTPUTS:
+        -returns a list of the tests represented by the data in the
+         session folder
+        """
+
+        ls_test = []
+
+        path = os.path.join(subject_folder, ses_ID)
+        ls_files = os.listdir(path)
+
+        i = 0
+        while i < len(ls_files):
+            if ls_files[i].endswith(".tsv"):
+                pass
+            else:
+                ls_files.pop(i)
+                i -= 1
+            i += 1
+
+        for j in ls_files:
+            if j.find("Tymp") != -1:
+                ls_test.append("Tymp")
+
+            elif j.find("Reflex") != -1:
+                ls_test.append("Reflex")
+
+            elif j.find("PTA") != -1:
+                ls_test.append("PTA")
+
+            elif j.find("MTX") != -1:
+                ls_test.append("MTX")
+
+            elif j.find("TEOAE") != -1:
+                ls_test.append("TEOAE")
+
+            elif j.find("DPOAE") != -1:
+                ls_test.append("DPOAE")
+
+            elif j.find("DPGrowth") != -1:
+                filepath = os.path.join(path, j)
+                df = pd.read_csv(filepath, sep="\t")
+                value = df.at[0, "freq2"]
+
+                if value == 2002:
+                    ls_test.append("Growth_2")
+                elif value == 4004:
+                    ls_test.append("Growth_4")
+                elif value == 6006:
+                    ls_test.append("Growth_6")
+
+        return ls_test
+
     # Single test sub-df extraction from each participant's sub-df
     def eliminate_columns(sub_df, columns_conditions, test_columns):
         """
@@ -127,8 +188,8 @@ else:
         ext = '.tsv'
 
         path = os.path.join(parent_path, 'sub-' + sub, 'ses-' + ses)
-        file_name = os.path.join('sub-' + sub + '_ses-' + ses + '_task-' + test
-                                 + '_run-' + run + "_beh")
+        file_name = ('sub-' + sub + '_ses-' + ses + '_task-'
+                     + test + '_run-' + run + "_beh")
 
         data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')
 
@@ -338,8 +399,6 @@ else:
                     y[1].append(single_test_df[m][j])
                 else:
                     y[1].append(float(value_2))
-                
-            #print(y)
 
             mask_0 = []
             mask_1 = []

@@ -40,6 +40,10 @@ condition_OAE = ["Baseline",
                  "Condition 3A (OAEs right before the scan)",
                  "Condition 3B (OAEs right after the scan)"]
 
+# Specifiy the different tests used in those different protocol conditions
+ls_test = ["Tymp", "Reflex", "PTA", "MTX", "TEOAE", "DPOAE",
+           "DPGrowth_2kHz", "DPGrowth_4kHz", "DPGrowth_6kHz"]
+
 
 def fetch_db(data_path):
     """This function retrieves a database to work on.
@@ -104,18 +108,23 @@ def create_folder_session(subject, session_count, parent_path):
     -session_count: number of line(s) in the by-subject dataframe
     OUTPUTS:
     -folders for each session in the provided subject's folder
-    -NO specific return to the script
+    -returns the list of the session folder names
     """
 
     sub_ID = subject.lstrip("Sub")
     children_path = os.path.join(parent_path, f"sub-{sub_ID}")
     dir_content = os.listdir(children_path)
 
+    ls_ses = []
+
     for j in range(1, session_count + 1):
         if dir_content.count(f"ses-{j:02d}") == 1:
-            pass
+            ls_ses.append(f"ses-{j:02d}")
         else:
             os.mkdir(os.path.join(children_path, f"ses-{j:02d}"))
+            ls_ses.append(f"ses-{j:02d}")
+
+    return ls_ses, children_path
 
 
 def master_run(data_path, result_path):
@@ -230,7 +239,9 @@ def master_run(data_path, result_path):
             k += 1
 
         # Creation of a folder for each session
-        create_folder_session(i, len(data_sub), parent_path)
+        ls_ses, subject_folder_path = create_folder_session(i,
+                                                            len(data_sub),
+                                                            parent_path)
 
         # Extraction of the test columns
         tymp = utils.eliminate_columns(data_sub,
@@ -274,6 +285,76 @@ def master_run(data_path, result_path):
                             x_dpoae, auditory_test_path, result_path)
         utils.extract_growth(oae, data_oae_sub, oae_file_list,
                              x_growth, auditory_test_path, result_path)
+
+        # .tsv session-level reference file creation
+        column_reference = ["session", "condition"]
+        for x in ls_test:
+            column_reference.append(x)
+
+        index_reference = []
+        for y in range(0, len(ls_ses)):
+            index_reference.append(y)
+
+        ls_condition = []
+        for z in range(0, len(data_sub)):
+            ls_condition.append(data_sub.at[z, "Protocol condition"])
+
+        ref = pd.DataFrame(index=index_reference, columns=column_reference)
+
+        for a in ref.index:
+            ref.at[a, "session"] = ls_ses[a]
+            ref.at[a, "condition"] = ls_condition[a]
+
+            ls_data = utils.retrieve_tests(subject_folder_path, ls_ses[a])
+
+            if "Tymp" in ls_data:
+                ref.at[a, "Tymp"] = "X"
+            else:
+                ref.at[a, "Tymp"] = ""
+
+            if "Reflex" in ls_data:
+                ref.at[a, "Reflex"] = "X"
+            else:
+                ref.at[a, "Reflex"] = ""
+
+            if "PTA" in ls_data:
+                ref.at[a, "PTA"] = "X"
+            else:
+                ref.at[a, "PTA"] = ""
+
+            if "MTX" in ls_data:
+                ref.at[a, "MTX"] = "X"
+            else:
+                ref.at[a, "MTX"] = ""
+
+            if "TEOAE" in ls_data:
+                ref.at[a, "TEOAE"] = "X"
+            else:
+                ref.at[a, "TEOAE"] = ""
+
+            if "DPOAE" in ls_data:
+                ref.at[a, "DPOAE"] = "X"
+            else:
+                ref.at[a, "DPOAE"] = ""
+
+            if "Growth_2" in ls_data:
+                ref.at[a, "DPGrowth_2kHz"] = "X"
+            else:
+                ref.at[a, "DPGrowth_2kHz"] = ""
+
+            if "Growth_4" in ls_data:
+                ref.at[a, "DPGrowth_4kHz"] = "X"
+            else:
+                ref.at[a, "DPGrowth_4kHz"] = ""
+
+            if "Growth_6" in ls_data:
+                ref.at[a, "DPGrowth_6kHz"] = "X"
+            else:
+                ref.at[a, "DPGrowth_6kHz"] = ""
+
+        ref_name = 'sub-' + i.lstrip("Sub") + ".tsv"
+        ref_save_path = os.path.join(subject_folder_path, ref_name)
+        ref.to_csv(ref_save_path, sep="\t")
 
         print(f"The tsv and json files for {i} have been created.\n")
 
