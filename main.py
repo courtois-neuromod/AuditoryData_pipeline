@@ -119,13 +119,13 @@ while loop_value:
         else:
 
             # If it is not within range, restart the loop
-            print("The provided value is not valid (out of bound).")
+            print("The provided value is not valid (out of bound).\n")
             continue
 
     else:
 
         # If it is not a number, restart the loop
-        print("The provided value is not valid (not a digit).")
+        print("The provided value is not valid (not a digit).\n")
         continue
 
 # Exit message
