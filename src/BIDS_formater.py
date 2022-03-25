@@ -352,6 +352,8 @@ def master_run(data_path, result_path):
             else:
                 ref.at[a, "DPGrowth_6kHz"] = ""
 
+        ref.set_index("session", inplace=True)
+
         ref_name = 'sub-' + i.lstrip("Sub") + ".tsv"
         ref_save_path = os.path.join(subject_folder_path, ref_name)
         ref.to_csv(ref_save_path, sep="\t")
