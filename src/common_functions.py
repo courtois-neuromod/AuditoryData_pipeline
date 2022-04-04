@@ -121,7 +121,7 @@ else:
         sub_ID = subject.lstrip("Sub")
 
         if dir_content.count(f"sub-{sub_ID}") == 1:
-            print(f"The subject's subfolder for sub-{sub_ID} is present")
+            print(f"The subject's subfolder for sub-{sub_ID} is present.\n")
         else:
             os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
-            print(f"The subject's subfolder for sub-{sub_ID} was created")
+            print(f"The subject's subfolder for sub-{sub_ID} was created.\n")
