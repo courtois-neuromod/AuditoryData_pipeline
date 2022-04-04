@@ -44,7 +44,7 @@ else:
         for i in ls_subjects:
             common.create_folder_subjects(i, subfolder_path)
 
-        print("\nThe subjects' subfolders are present in the graphs folder.\n")
+        print("The subjects' subfolders are present in the graphs folder.\n")
 
     def eliminate_row(df, column_to_search, value_to_search):
         """
