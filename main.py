@@ -2,7 +2,7 @@ import os
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
 from src import MRI_session_design_generator as ses_design
-from src import graph_generator as graph
+from src import graph_generator_BIDS as graph
 
 
 # Available functions list
