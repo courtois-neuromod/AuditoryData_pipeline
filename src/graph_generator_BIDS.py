@@ -64,21 +64,39 @@ subjects = ["Sub01", "Sub02", "Sub03", "Sub04", "Sub05", "Sub06"]
 
 
 def pta_graph(result_path, counter, save_error):
+    """
+    This function generates and save the PTA test figures
+    INPUTS:
+    -result_path: path to the results folder [repo_root]/results/
+    -counter: variable tracking the amount of files produced by the script
+    -save_error: variable tracking the amount of files that were not
+                 properly saved
+    OUTPUTS:
+    -returns an updated value for the saved files counter and the save_error
+     counter as well as the saved figures
+    """
 
+    print("Generating PTA graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
 
+    # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
     
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
+        
+        # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
+            
+            # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
             #print("tests:", ls_files_test, "\n")
@@ -166,21 +184,41 @@ def pta_graph(result_path, counter, save_error):
 ###############################################################################
 
 def mtx_graph(result_path, counter, save_error):
+    """
+    This function generates and save the MTX test figures
+    INPUTS:
+    -result_path: path to the results folder [repo_root]/results/
+    -counter: variable tracking the amount of files produced by the script
+    -save_error: variable tracking the amount of files that were not
+                 properly saved
+    OUTPUTS:
+    -returns an updated value for the saved files counter and the save_error
+     counter as well as the saved figures
+    """
 
+    print("Generating MTX graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
 
+    # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
-    
+
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
+        
+        # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
+        
+        ls_mtx_all = []
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
+
+            # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
             #print("tests:", ls_files_test, "\n")
@@ -191,6 +229,7 @@ def mtx_graph(result_path, counter, save_error):
                 if (k.find("MTX") != -1
                         and k.endswith(".tsv")):
                     ls_mtx.append(k)
+                    ls_mtx_all.append(k)
                 else:
                     pass
             
@@ -234,6 +273,10 @@ def mtx_graph(result_path, counter, save_error):
                             save_error = save_error + 1                        
 
                     #print(df, "\n", df_1, "\n", df_2, "\n")
+        
+        #TO BE ADDED: all tests graph generation
+        ls_mtx_all.sort()
+        #print(ls_mtx_all)
 
     return counter, save_error
 
@@ -309,21 +352,28 @@ def teoae_graph(result_path, counter, save_error):
     -returns an updated value for the saved files counter and the save_error
      counter as well as the saved figures
     """
-    
+
+    print("Generating TEOAE graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
-        
+
+    # extract the list of subject folders        
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
     
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
+
+        # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
+
+            # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
             #print("tests:", ls_files_test, "\n")
@@ -385,20 +435,27 @@ def dpoae_graph(result_path, counter, save_error):
      counter as well as the saved figures
     """
 
+    print("Generating DPOAE graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
 
+    # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
     
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
+
+        # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
+
+            # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
             #print("tests:", ls_files_test, "\n")
@@ -459,21 +516,28 @@ def growth_graph(result_path, counter, save_error):
     -returns an updated value for the saved files counter and the save_error
      counter as well as the saved figures
     """
-    
+
+    print("Generating Growth function graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
         
+    # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
     
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
+
+        # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
+
+            # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
             #print("tests:", ls_files_test, "\n")
