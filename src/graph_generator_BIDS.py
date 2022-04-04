@@ -590,7 +590,7 @@ def master_run(root_path, test_type="all"):
     result_path = os.path.join(root_path, "results")
     data_path = os.path.join(root_path, "data")
     
-    master_data = common.retrieve_db(data_path)
+    #master_data = common.retrieve_db(data_path)
     
     # Verifications:
     # - existence of the "graphs" folder
