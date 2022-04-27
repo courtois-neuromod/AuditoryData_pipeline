@@ -23,7 +23,8 @@ else:
         # Available functions list
         ls_fct = ["Retrieve from a user supplied URL (Google Spreadsheet)",
                   "Use the URL listed in the [repo_root]/data/URL.tsv file",
-                  "Retrieve from the [repo_root]/data/test_database.xlsx file"]
+                  ("Retrieve locally from the "
+                   "[repo_root]/data/test_database.xlsx file")]
 
         # Prompt text generation
         prompt_instruction = ("Please specify the database retrieval "
