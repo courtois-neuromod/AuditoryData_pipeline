@@ -287,7 +287,7 @@ def master_run(data_path, result_path):
                              x_growth, auditory_test_path, result_path)
 
         # .tsv session-level reference file creation
-        column_reference = ["session_id", "condition", "scan_type"]
+        column_reference = ["session_id", "session_name", "condition", "scan_type"]
         for w in ls_test:
             column_reference.append(w)
 
@@ -295,18 +295,19 @@ def master_run(data_path, result_path):
         for x in range(0, len(ls_ses)):
             index_reference.append(x)
 
+        ls_name = []
         ls_condition = []
-        for y in range(0, len(data_sub)):
-            ls_condition.append(data_sub.at[y, "Protocol condition"])
-            
         ls_scan = []
-        for z in range(0, len(data_sub)):
-            ls_scan.append(data_sub.at[z, "Scan type"])
+        for y in range(0, len(data_sub)):
+            ls_name.append(data_sub.at[y, "Protocol name"])
+            ls_condition.append(data_sub.at[y, "Protocol condition"])
+            ls_scan.append(data_sub.at[y, "Scan type"])
 
         ref = pd.DataFrame(index=index_reference, columns=column_reference)
 
         for a in ref.index:
             ref.at[a, "session_id"] = ls_ses[a]
+            ref.at[a, "session_name"] = ls_name[a]
             ref.at[a, "condition"] = ls_condition[a]
             ref.at[a, "scan_type"] = ls_scan[a]
 
