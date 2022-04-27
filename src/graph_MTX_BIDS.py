@@ -221,6 +221,92 @@ else:
 
 ###############################################################################
 
+    def plot_all_mtx(path, df, filename, run_ID):
+        """
+        INPUTS
+        -path: path to the result folder: [repo_root]/results/
+        -df: pandas dataframe containing the data to plot
+        -filename: .tsv file name to be used to extract test information
+        -run_ID: language ID (first or second language of the participant)
+        OUTPUTS
+        -saves PTA graphs in .html
+        """
+
+#        title, ID, session, language = generate_title_mtx(df, filename, run_ID)
+#        labels = {"title": title,
+#                  "x": "Test Condition",
+#                  "y": "50% Comprehension Threshold (dB)"}
+
+#        fig = go.Figure()
+
+#        fig.update_layout(title=labels["title"],
+#                          xaxis_title=labels["x"],
+#                          yaxis_title=labels["y"],
+#                          yaxis_range=[-15, 5],
+#                          yaxis_dtick=5,
+#                          xaxis_showline=True,
+#                          xaxis_linecolor="black",
+#                          yaxis_showline=True,
+#                          yaxis_linecolor="black",
+#                          yaxis_zeroline=True,
+#                          yaxis_zerolinewidth=1,
+#                          yaxis_zerolinecolor="black")
+
+#        x, y = data_to_plot(df, run_ID)
+        #print(x, y)
+
+#        fig.add_trace(go.Scatter(x=x,
+#                                 y=y,
+#                                 mode='lines+markers',
+#                                 name=labels["title"],
+#                                 hovertemplate="%{x}<br>" +
+#                                               "%{y:0.1f} dB"))
+
+#        elif side == "L":
+#            frequency_L, value_L = data_to_plot(df, "L")
+#            #print(value_L)
+
+#            fig.add_trace(go.Scatter(x=frequency_L,
+#                                     y=value_L,
+#                                     line_color="blue",
+#                                     mode='lines+markers',
+#                                     name=ear,
+#                                     hovertemplate="%{x:1.0f} Hz<br>" +
+#                                                   "%{y:1.0f} dB HL"))
+
+#        elif side == "Both":
+#            frequency_R, value_R = data_to_plot(df, "R")
+#            #print(value_R)
+#            frequency_L, value_L = data_to_plot(df, "L")
+#            #print(value_L)
+
+#            fig.add_trace(go.Scatter(x=frequency_R,
+#                                     y=value_R,
+#                                     line_color="red",
+#                                     mode='lines+markers',
+#                                     name="Right ear",
+#                                     hovertemplate="%{x:1.0f} Hz<br>" +
+#                                                   "%{y:1.0f} dB HL"))
+
+#            fig.add_trace(go.Scatter(x=frequency_L,
+#                                     y=value_L,
+#                                     line_color="blue",
+#                                     mode='lines+markers',
+#                                     name="Left ear",
+#                                     hovertemplate="%{x:1.0f} Hz<br>" +
+#                                                   "%{y:1.0f} dB HL"))
+
+#        fig.show()
+
+#        completed = save_graph(fig, language, path, ID, session)
+
+#        if completed is True:
+#            return True
+#        else:
+#            return False
+
+###############################################################################
+
 #        """
 #        INPUTS
 #        -df: pandas dataframe containing the data to plot
