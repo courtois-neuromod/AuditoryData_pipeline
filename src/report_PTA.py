@@ -97,6 +97,7 @@ def fct_1(result_path):
             elif init_cond.startswith("Condition 2"):
                 ls_48.append(ref_df.at[b, "session_id"])
 
+        # Production of the reports regarding the accute phase effects
         for c in ls_prepost:
             path_pre = os.path.join(path_ses, c[0])
             path_post = os.path.join(path_ses, c[1])
@@ -127,10 +128,15 @@ def fct_1(result_path):
             df_post.astype(int, copy=False, errors="ignore")
 
             columns = df_pre.columns
+            #print(columns)
 
             for r in [0, 1]:
                 ls_diff = []
+                ls_freq = []
+
                 for x in columns:
+                    ls_freq.append(int(x.rstrip("_hz")))
+                    
                     try:
                         float(df_post.at[r, x])
                     except:
@@ -177,6 +183,9 @@ def fct_1(result_path):
                 elif r == 1:
                     ls_diff_L = ls_diff
 
+            #print(ls_diff_R)
+            #print(ls_diff_L)
+            
             ls_threshold = []
 
             for s in ls_diff_L:
@@ -202,11 +211,14 @@ def fct_1(result_path):
                         ls_threshold.append(float(t))
 
             ls_threshold.sort()
+            #print(ls_threshold)
 
             data = []
             for u in range(0, len(ls_threshold)):
                 data.append([])
 
+            #print(data)
+            
             for v in range(0, len(data)):
                 data[v].append(ls_threshold[v])
                 data[v].append([])
@@ -228,7 +240,33 @@ def fct_1(result_path):
             name_to_save = f"{i}_report-PTA_{c[0]}_{c[1]}.tsv"
             path_to_save = os.path.join(path_reports, name_to_save)
             df_data.to_csv(path_to_save, sep="\t")
+            
+            #print(ls_freq)
+            delta_columns = ["freq", "diff_L", "diff_R"]
+#            for w in columns:
+#                delta_columns.append(w)
 
+            ls_delta = []
+
+#            ls_delta = [["L"], ["R"]]
+            for d in range(0, len(ls_freq)):
+                row = []
+                row.append(ls_freq[d])
+                row.append(ls_diff_L[d])
+                row.append(ls_diff_R[d])
+#                ls_delta[0].append(ls_diff_L[d])
+#                ls_delta[1].append(ls_diff_R[d])
+#            #print(ls_delta)
+                ls_delta.append(row)
+            #print(ls_delta)
+            df_delta = pd.DataFrame(data=ls_delta, columns=delta_columns)
+            #df_delta.reset_index(drop=True, inplace=True)
+            
+            delta_filename = f"{i}_deltas-PTA_{c[0]}_{c[1]}.tsv"
+            delta_path = os.path.join(path_reports, delta_filename)
+            df_delta.to_csv(delta_path, sep="\t", index=False)
+
+        # Production of the reports regarding the chronic phase effects
         df_ref.drop(columns=["order", "side"], inplace=True)
         df_ref.astype(int, copy=False, errors="ignore")
 
