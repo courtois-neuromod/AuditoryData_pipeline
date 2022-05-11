@@ -40,7 +40,7 @@ def fct_1(result_path):
         ref_df = pd.read_csv(os.path.join(path_ses, ref_filename), sep="\t")
 
         # extract reference data: ses-02 (Baseline #2)
-        ses_baseline = ref_df.at[1, "session_id"]
+        ses_baseline = ref_df.at[0, "session_id"]
         path_base_ses = os.path.join(path_ses, ses_baseline)
         ls_folder_baseline = os.listdir(path_base_ses)
 
@@ -271,10 +271,12 @@ def fct_1(result_path):
         df_ref.astype(int, copy=False, errors="ignore")
 
         for e in ls_48:
+            #print(e)
             path_48 = os.path.join(path_ses, e)
 
             file_ls_48 = os.listdir(path_48)
             file_ls_48.sort()
+            #print(file_ls_48)
 
             for k in file_ls_48:
                 if k.find("PTA") != -1 and k.endswith(".tsv"):
@@ -282,6 +284,7 @@ def fct_1(result_path):
                 else:
                     pass
 
+            #print(file_48)
             df_48 = pd.read_csv(file_48,
                                 sep="\t",
                                 na_filter=False)
@@ -290,12 +293,15 @@ def fct_1(result_path):
             df_48.astype(int, copy=False, errors="ignore")
 
             columns = df_ref.columns
+            #print(columns)
 
             for m in [0, 1]:
+                #print("line =", m)
                 ls_diff = []
                 for y in columns:
-                    if df_48.at[m, y] == "n/a":
-                        pass
+                    #print("freq =", y)
+                    #if df_48.at[m, y] == "n/a":
+                        #pass
                     try:
                         float(df_48.at[m, y])
                     except:
@@ -311,36 +317,47 @@ def fct_1(result_path):
                         df_ref.at[m, y] = float(df_ref.at[m, y])
 
                     if (df_48.at[m, y] == "n/a"
-                            or df_48.at[m, y] == "n/a"):
+                            or df_ref.at[m, y] == "n/a"):
                         value = "n/a"
                         ls_diff.append(value)
 
                     elif (df_48.at[m, y] != "No response"
                           and df_ref.at[m, y] != "No response"):
+                        #print(df_48.at[m, y])
+                        #print(df_ref.at[m, y])
                         value = df_48.at[m, y] - df_ref.at[m, y]
+                        #print(value)
+                        #print("\n")
                         ls_diff.append(value)
 
                     elif (df_48.at[m, y] == "No response"
                           and df_ref.at[m, y] != "No response"):
                         value_pre = df_ref.at[m, y]
-                        value = f"Post = NR ({value_pre} before scan)"
+                        #print("pre =", value_pre)
+                        value = f"Post = NR ({value_pre} at baseline)"
                         ls_diff.append(value)
 
                     elif (df_48.at[m, y] != "No response"
                           and df_ref.at[m, y] == "No response"):
                         value_post = df_48.at[m, y]
-                        value = f"Pre = NR ({value_post} after scan)"
+                        #print("post =", value_post)
+                        value = f"Pre = NR ({value_post} at exp. session)"
                         ls_diff.append(value)
 
                     elif (df_48.at[m, y] == "No response"
                           and df_ref.at[m, y] == "No response"):
                         value = "Both = NR"
+                        #print(value)
                         ls_diff.append(value)
 
-                if r == 0:
+                #print(ls_diff)
+
+                if m == 0:
                     ls_diff_R = ls_diff
-                elif r == 1:
+                elif m == 1:
                     ls_diff_L = ls_diff
+
+            #print(ls_diff_R)
 
             ls_threshold = []
 
@@ -390,9 +407,34 @@ def fct_1(result_path):
             names_columns = ["48post-baseline_diff", "freq_L", "freq_R"]
             df_data = pd.DataFrame(data=data, columns=names_columns)
 
-            name_to_save = f"{i}_report-PTA_Baseline2_{e}.tsv"
+            name_to_save = f"{i}_report-PTA_Baseline1_{e}.tsv"
             path_to_save = os.path.join(path_reports, name_to_save)
             df_data.to_csv(path_to_save, sep="\t")
+
+            #print(ls_freq)
+            delta_columns_48 = ["freq", "diff_L", "diff_R"]
+
+            ls_delta_48 = []
+
+#            ls_delta_48 = [["L"], ["R"]]
+            for d in range(0, len(ls_freq)):
+                row = []
+                row.append(ls_freq[d])
+                row.append(ls_diff_L[d])
+                row.append(ls_diff_R[d])
+#                ls_delta[0].append(ls_diff_L[d])
+#                ls_delta[1].append(ls_diff_R[d])
+#            #print(ls_delta)
+                ls_delta_48.append(row)
+            #print(ls_delta_48)
+            df_delta_48 = pd.DataFrame(data=ls_delta_48, columns=delta_columns)
+            #print(df_delta_48)
+            #df_delta.reset_index(drop=True, inplace=True)
+            
+            delta48_filename = f"{i}_deltas-PTA_{ses_baseline}_{e}.tsv"
+            #print(delta48_filename)
+            delta48_path = os.path.join(path_reports, delta48_filename)
+            df_delta_48.to_csv(delta48_path, sep="\t", index=False)
 
 
 fct_1(os.path.join("..", "results"))
