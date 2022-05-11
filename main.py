@@ -13,7 +13,9 @@ ls_fct = ["BIDS format's json sidecars (test level) creation",
           "Transient-evoked OAE test graph generator",
           "Distortion product OAE test graph generator",
           "Distortion product growth function test graph generator",
-          "MRI session design files generator"]
+          "MRI session design files generator",
+          # "Dummy line",
+          ]
 
 # Prompt text generation
 print("\nWelcome to the AuditoryData_pipeline.\n")
