@@ -1,6 +1,9 @@
 import os
+import numpy as np
 import pandas as pd
 import statistics as stats
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from src import report_common as common
 
 
@@ -86,6 +89,8 @@ def fct_1(result_path):
             elif init_cond.startswith("Condition 2"):
                 ls_48.append(ref_df.at[b, "session_id"])
 
+        #print(ls_prepost)
+
         # extract the dataframes for each of the pre/post pairs
         for c in ls_prepost:
             #print("\n")
@@ -161,14 +166,38 @@ def fct_1(result_path):
             #mega_ls = []
 
             ls_diff_2L = []
+            ls_xpre_2L = []
+            ls_ypre_2L = []
+            ls_xpost_2L = []
+            ls_ypost_2L = []
             ls_diff_2R = []
+            ls_xpre_2R = []
+            ls_ypre_2R = []
+            ls_xpost_2R = []
+            ls_ypost_2R = []
             ls_diff_4L = []
+            ls_xpre_4L = []
+            ls_ypre_4L = []
+            ls_xpost_4L = []
+            ls_ypost_4L = []
             ls_diff_4R = []
+            ls_xpre_4R = []
+            ls_ypre_4R = []
+            ls_xpost_4R = []
+            ls_ypost_4R = []
             ls_diff_6L = []
+            ls_xpre_6L = []
+            ls_ypre_6L = []
+            ls_xpost_6L = []
+            ls_ypost_6L = []
             ls_diff_6R = []
+            ls_xpre_6R = []
+            ls_ypre_6R = []
+            ls_xpost_6R = []
+            ls_ypost_6R = []
             
             for t in range(0, len(ls_df_pre)):
-
+                
                 for x in range(0, len(ls_df_pre[t])):
                     value = (ls_df_post[t].at[x, "dp"]
                              - ls_df_pre[t].at[x, "dp"])
@@ -176,35 +205,152 @@ def fct_1(result_path):
                     if ls_df_pre[t].at[x, "freq2"] == 2002:
                         if ls_df_pre[t].at[x, "side"] == "L":
                             ls_diff_2L.append(value)
+                            ls_xpre_2L.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_2L.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_2L.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_2L.append(ls_df_post[t].at[x, "dp"])
                         elif ls_df_pre[t].at[x, "side"] == "R":
                             ls_diff_2R.append(value)
+                            ls_xpre_2R.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_2R.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_2R.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_2R.append(ls_df_post[t].at[x, "dp"])
 
                     elif ls_df_pre[t].at[x, "freq2"] == 4004:
                         if ls_df_pre[t].at[x, "side"] == "L":
                             ls_diff_4L.append(value)
+                            ls_xpre_4L.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_4L.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_4L.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_4L.append(ls_df_post[t].at[x, "dp"])
                         elif ls_df_pre[t].at[x, "side"] == "R":
                             ls_diff_4R.append(value)
+                            ls_xpre_4R.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_4R.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_4R.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_4R.append(ls_df_post[t].at[x, "dp"])
 
                     elif ls_df_pre[t].at[x, "freq2"] == 6006:
                         if ls_df_pre[t].at[x, "side"] == "L":
                             ls_diff_6L.append(value)
+                            ls_xpre_6L.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_6L.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_6L.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_6L.append(ls_df_post[t].at[x, "dp"])
                         elif ls_df_pre[t].at[x, "side"] == "R":
-                            ls_diff_6R.append(value)                        
+                            ls_diff_6R.append(value)
+                            ls_xpre_6R.append(ls_df_pre[t].at[x, "l2"])
+                            ls_ypre_6R.append(ls_df_pre[t].at[x, "dp"])
+                            ls_xpost_6R.append(ls_df_post[t].at[x, "l2"])
+                            ls_ypost_6R.append(ls_df_post[t].at[x, "dp"])
 
-            ls_diff = [[ls_diff_2L, ls_diff_2R],
-                       [ls_diff_4L, ls_diff_4R],
-                       [ls_diff_6L, ls_diff_6R]]
+            #print(ls_ypre_2L)
+
+            ls_diff = [[ls_diff_2L, ls_diff_2R,
+                        np.array(ls_xpre_2L), np.array(ls_ypre_2L),
+                        np.array(ls_xpost_2L), np.array(ls_ypost_2L),
+                        np.array(ls_xpre_2R), np.array(ls_ypre_2R),
+                        np.array(ls_xpost_2R), np.array(ls_ypost_2R)],
+                       [ls_diff_4L, ls_diff_4R,
+                        np.array(ls_xpre_4L), np.array(ls_ypre_4L),
+                        np.array(ls_xpost_4L), np.array(ls_ypost_4L),
+                        np.array(ls_xpre_4R), np.array(ls_ypre_4R),
+                        np.array(ls_xpost_4R), np.array(ls_ypost_4R)],
+                       [ls_diff_6L, ls_diff_6R,
+                        np.array(ls_xpre_6L), np.array(ls_ypre_6L),
+                        np.array(ls_xpost_6L), np.array(ls_ypost_6L),
+                        np.array(ls_xpre_6R), np.array(ls_ypre_6R),
+                        np.array(ls_xpost_6R), np.array(ls_ypost_6R)]]
             
             ls_diff_tag = ["2", "4", "6"]
 
             names_columns = ["l2_target", "diff_L", "diff_R"]
 
             intensity_column = [65, 60, 55, 50, 45, 40, 35,
-                                "Mean", "Standard Deviation"]
+                                "Mean", "Standard Deviation",
+                                "Reg_Pre_coef", "Reg_Pre_intercept",
+                                "Reg_Pre_MSE", "Reg_Pre_MAE",
+                                "Reg_Post_coef", "Reg_Post_intercept",
+                                "Reg_Post_MSE", "Reg_Post_MAE"]
 
             for u in range(0, len(ls_diff)):
                 ls2df = []
-
+                
+                #print(ls_diff[u][2])
+                
+                # Linear regression values computation (a, b and mean errors)
+                model_pre_L = LinearRegression()
+                model_pre_R = LinearRegression()
+                model_post_L = LinearRegression()
+                model_post_R = LinearRegression()
+                
+                model_pre_L.fit(ls_diff[u][2].reshape(-1, 1),
+                                ls_diff[u][3])
+                model_pre_R.fit(ls_diff[u][6].reshape(-1, 1),
+                                ls_diff[u][7])
+                model_post_L.fit(ls_diff[u][4].reshape(-1, 1),
+                                 ls_diff[u][5])
+                model_post_R.fit(ls_diff[u][8].reshape(-1, 1),
+                                 ls_diff[u][9])
+                
+                # Linear regression values: Coefficient (a)
+                coef_pre_L = model_pre_L.coef_[0]
+                coef_pre_R = model_pre_R.coef_[0]
+                coef_post_L = model_post_L.coef_[0]
+                coef_post_R = model_post_R.coef_[0]
+                
+                #print("a_pre_L:", coef_pre_L)
+                #print("a_pre_R:", coef_pre_R)
+                #print("a_post_L:", coef_post_L)
+                #print("a_post_R:", coef_post_R)
+                
+                # Linear regression values: Intercept (b)
+                inter_pre_L = model_pre_L.intercept_
+                inter_pre_R = model_pre_R.intercept_
+                inter_post_L = model_post_L.intercept_
+                inter_post_R = model_post_R.intercept_
+                
+                #print("b_pre_L:", inter_pre_L)
+                #print("b_pre_R:", inter_pre_R)
+                #print("b_post_L:", inter_post_L)
+                #print("b_post_R:", inter_post_R)
+                
+                # Linear regression values: mean errors
+                pct_pre_L = model_pre_L.predict(ls_diff[u][2].reshape(-1, 1))
+                pct_pre_R = model_pre_R.predict(ls_diff[u][6].reshape(-1, 1))
+                pct_post_L = model_post_L.predict(ls_diff[u][4].reshape(-1, 1))
+                pct_post_R = model_post_R.predict(ls_diff[u][8].reshape(-1, 1))
+                
+                # Mean Squared Errors
+                mse_pre_L = mean_squared_error(ls_diff[u][3],
+                                               pct_pre_L)
+                mse_pre_R = mean_squared_error(ls_diff[u][7],
+                                               pct_pre_R)
+                mse_post_L = mean_squared_error(ls_diff[u][5],
+                                                pct_post_L)
+                mse_post_R = mean_squared_error(ls_diff[u][9],
+                                                pct_post_R)
+                
+                #print("mse_pre_L:", mse_pre_L)
+                #print("mse_pre_R:", mse_pre_R)
+                #print("mse_post_L:", mse_post_L)
+                #print("mse_post_R:", mse_post_R)
+                
+                # Mean Absolute Errors
+                mae_pre_L = mean_absolute_error(ls_diff[u][3],
+                                                pct_pre_L)
+                mae_pre_R = mean_absolute_error(ls_diff[u][7],
+                                                pct_pre_R)
+                mae_post_L = mean_absolute_error(ls_diff[u][5],
+                                                 pct_post_L)
+                mae_post_R = mean_absolute_error(ls_diff[u][9],
+                                                 pct_post_R)
+                
+                #print("mae_pre_L:", mae_pre_L)
+                #print("mae_pre_R:", mae_pre_R)
+                #print("mae_post_L:", mae_post_L)
+                #print("mae_post_R:", mae_post_R)
+                
                 #print(ls_diff[u])
                 for y in range(0, len(intensity_column)):
                     row = []
@@ -218,6 +364,30 @@ def fct_1(result_path):
                         elif intensity_column[y] == "Standard Deviation":
                             row.append(stats.pstdev(ls_diff[u][0]))
                             row.append(stats.pstdev(ls_diff[u][1]))
+                        elif intensity_column[y] == "Reg_Pre_coef":
+                            row.append(coef_pre_L)
+                            row.append(coef_pre_R)
+                        elif intensity_column[y] == "Reg_Pre_intercept":
+                            row.append(inter_pre_L)
+                            row.append(inter_pre_R)
+                        elif intensity_column[y] == "Reg_Pre_MSE":
+                            row.append(mse_pre_L)
+                            row.append(mse_pre_R)
+                        elif intensity_column[y] == "Reg_Pre_MAE":
+                            row.append(mae_pre_L)
+                            row.append(mae_pre_R)
+                        elif intensity_column[y] == "Reg_Post_coef":
+                            row.append(coef_post_L)
+                            row.append(coef_post_R)
+                        elif intensity_column[y] == "Reg_Post_intercept":
+                            row.append(inter_post_L)
+                            row.append(inter_post_R)
+                        elif intensity_column[y] == "Reg_Post_MSE":
+                            row.append(mse_post_L)
+                            row.append(mse_post_R)
+                        elif intensity_column[y] == "Reg_Post_MAE":
+                            row.append(mae_post_L)
+                            row.append(mae_post_R)
                     else:
                         row.append(ls_diff[u][0][y])
                         row.append(ls_diff[u][1][y])
@@ -230,7 +400,7 @@ def fct_1(result_path):
                                 + f"_{c[0]}_{c[1]}.tsv")
                 #print(name_to_save)
                 path_to_save = os.path.join(path_reports, name_to_save)
-                df_data.to_csv(path_to_save, sep="\t")
+                df_data.to_csv(path_to_save, sep="\t", index=False)
 
 #        df_ref.drop(columns=["order", "side"], inplace=True)
 #        df_ref.astype(int, copy=False, errors="ignore")
