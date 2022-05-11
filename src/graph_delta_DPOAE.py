@@ -15,6 +15,7 @@ def trace_list(report_path, sub):
             ls.append(i)
         else:
             pass
+    ls.sort()
     
     return ls
 
@@ -35,7 +36,7 @@ def savefile(result_path, fig, sub, ear):
 def graph_title(sub):
     title = (sub.capitalize()
              + (", Différences (Postscan - Préscan), Émissions "
-                "otoacoustiques par produit de distortion"))
+                "otoacoustiques par produits de distortion"))
 
     return title
 
@@ -64,7 +65,7 @@ def fct_1(result_path):
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Fréquence F2 (Hz)",
-                  "y": "Variation des émissions otoacoustiques (dB SPL)"}
+                  "y": "\u0394 émissions otoacoustiques (dB SPL)"}
         #print(labels["y"])
         
         fig_L = go.Figure()
@@ -75,7 +76,7 @@ def fct_1(result_path):
                             yaxis_title=labels["y"],
                             xaxis_type="log",
                             xaxis_range=[np.log10(750), np.log10(11000)],
-                            yaxis_range=[-45, 20],
+                            yaxis_range=[-45, 30],
                             yaxis_dtick=5,
                             xaxis_showline=True,
                             xaxis_linecolor="black",
@@ -90,7 +91,7 @@ def fct_1(result_path):
                             yaxis_title=labels["y"],
                             xaxis_type="log",
                             xaxis_range=[np.log10(750), np.log10(11000)],
-                            yaxis_range=[-45, 20],
+                            yaxis_range=[-45, 30],
                             yaxis_dtick=5,
                             xaxis_showline=True,
                             xaxis_linecolor="black",
@@ -101,6 +102,18 @@ def fct_1(result_path):
                             yaxis_zerolinecolor="black")
         
         for a in range(0, len(ls2do[i])):
+            #print(ls2do[i][a])
+            ses_decomp = ls2do[i][a].split("_")
+            #print(ses_decomp)
+            ses_type = ses_decomp[2]
+            
+            if ses_type == "ses-01":
+                ses_name = "(48post - Bsl_1)"
+            else:
+                ses_name = "(post - pre)"
+                
+            name = f"Session {a+1:02d} {ses_name}"
+            #print(name)
             path_df = os.path.join(report_path, ls2do[i][a])
             df = pd.read_csv(path_df, sep="\t")
             #print(df)
@@ -137,13 +150,13 @@ def fct_1(result_path):
             fig_L.add_trace(go.Scatter(x=x_L,
                                        y=data_L,
                                        mode='lines+markers',
-                                       #name=title_run_L,
+                                       name=name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.1f} dB SPL"))
             fig_R.add_trace(go.Scatter(x=x_R,
                                        y=data_R,
                                        mode='lines+markers',
-                                       #name=title_run_R,
+                                       name=name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.1f} dB SPL"))
             
