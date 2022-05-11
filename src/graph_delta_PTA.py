@@ -15,6 +15,8 @@ def trace_list(report_path, sub):
         else:
             pass
     
+    ls.sort()
+    
     return ls
 
 def file_name(sub, ear):
@@ -38,25 +40,27 @@ def fct_1(result_path):
     files_01 = trace_list(report_path, "sub-01")
     files_02 = trace_list(report_path, "sub-02")
     files_03 = trace_list(report_path, "sub-03")
-    # files_04 = trace_list(report_path, "sub-04")
+    files_04 = trace_list(report_path, "sub-04")
     files_05 = trace_list(report_path, "sub-05")
     files_06 = trace_list(report_path, "sub-06")
     
     ls2do = [files_01, files_02,
-             files_03, # files_04,
+             files_03, files_04,
              files_05, files_06]
 
     #print(ls2do)
     
     for i in range(0, len(ls2do)):
         #print(ls2do[i])
-        filename_decomp = ls2do[i][0].split("_")
-        sub = filename_decomp[0]
+        filename_decomp_sub = ls2do[i][0].split("_")
+        #print(filename_decomp_sub)
+        sub = filename_decomp_sub[0]
         #print(sub)
+
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Fréquence (Hz)",
-                  "y": "Variation du seuil de détection (dB HL)"}
+                  "y": "\u0394 seuil de détection (dB HL)"}
         
         fig_L = go.Figure()
         fig_R = go.Figure()
@@ -96,7 +100,27 @@ def fct_1(result_path):
             df = pd.read_csv(path_df, sep="\t")
             #print(df)
             columns = list(df.columns)
-            #columns.remove("side")
+
+            filename_decomp_ses = ls2do[i][a].split("_")
+            #ses_pre = filename_decomp_ses[2]
+            ses_type = filename_decomp_ses[2]
+
+            file_ref = f"{sub}_sessions.tsv"
+            path_df_ref = os.path.join(result_path, "BIDS_data", sub, file_ref)
+            df_ref = pd.read_csv(path_df_ref, sep="\t")
+
+            #index = df_ref.index[df_ref["session_id"] == ses_pre].values
+            #print(index)
+            
+            if ses_type == "ses-01":
+                ses_name = "(48post - Bsl_1)"
+            else:
+                ses_name = "(post - pre)"
+            
+            #ses_name = df_ref.at[index[0], "session_name"]
+
+            name = f"Session {a+1:02d} {ses_name}"
+            #print(name)
             
             x_L = []
             x_R = []
@@ -128,13 +152,13 @@ def fct_1(result_path):
             fig_L.add_trace(go.Scatter(x=x_L,
                                        y=data_L,
                                        mode='lines+markers',
-#                                       name=title_run_L,
+                                       name=ses_name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.0f} dB HL"))
             fig_R.add_trace(go.Scatter(x=x_R,
                                        y=data_R,
                                        mode='lines+markers',
-#                                       name=title_run_R,
+                                       name=ses_name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.0f} dB HL"))
             
