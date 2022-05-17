@@ -1,8 +1,17 @@
 import os
 import pandas as pd
+import numpy as np
+import matplotlib.cm as cm
+import colorama as color
+
+# Initialize colorama
+color.init(autoreset=True)
+
 
 if __name__ == "__main__":
-    print("This script is not designed to be used as a standalone script.")
+    print(color.Fore.RED
+          + ("ERROR: This script is not designed to be used as a "
+             "standalone script."))
 
 else:
     def retrieve_db(data_path):
@@ -98,16 +107,21 @@ else:
 
                 else:
                     # If it is not within range, restart the loop
-                    print("The provided value is not valid (out of bound).\n")
+                    print(color.Fore.RED
+                          + ("ERROR: The provided value is not valid "
+                             "(out of bound).\n"))
                     continue
 
             else:
                 # If it is not a number, restart the loop
-                print("The provided value is not valid (not a digit).\n")
+                print(color.Fore.RED
+                      + ("ERROR: The provided value is not valid "
+                         "(not a digit).\n"))
                 continue
 
     def create_folder_subjects(subject, parent_path):
-        """This function creates by-subject folders in a specified folder
+        """
+        This function creates by-subject folders in a specified folder
         INPUTS:
         -subject: subject ID used by the script or the database's
                   dataframe (format: Sub0X)
@@ -115,14 +129,41 @@ else:
         OUTPUTS:
         -folder for the provided subject ID in the BIDS_data/ folder
         -NO specific return to the script
+        USED BY:
+        -BIDS_formater.py
+        -report_PTA.py
         """
 
         dir_content = os.listdir(parent_path)
         dir_content.sort()
-        sub_ID = subject.lstrip("Sub")
+        
+        sub_ID = ""
+        
+        for i in subject:
+            if i.isdigit():
+                sub_ID += i
+            else:
+                pass
 
         if dir_content.count(f"sub-{sub_ID}") == 1:
             print(f"The subject's subfolder for sub-{sub_ID} is present.\n")
         else:
             os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
             print(f"The subject's subfolder for sub-{sub_ID} was created.\n")
+
+    def graph_trace_color(color_qty):
+        """
+        INPUTS:
+        -color_qty: the amount of different colors to pick from the colormap
+        OUTPUTS:
+        -returns the color values in two lists of equal length
+        """
+
+        color_ls_prepost = []
+        color_ls_48 = []
+
+        cmap = cm.get_cmap("viridis")
+
+        ls_value = np.linspace(0, 1, color_qty, endpoint=True)
+
+        return color_ls_prepost, color_ls_48
