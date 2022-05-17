@@ -1,9 +1,12 @@
 import os
+import colorama as color
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
 from src import MRI_session_design_generator as ses_design
 from src import graph_generator_BIDS as graph
 
+# Initialize colorama
+color.init(autoreset=True)
 
 # Available functions list
 ls_fct = ["BIDS format's json sidecars (test level) creation",
@@ -121,13 +124,15 @@ while loop_value:
         else:
 
             # If it is not within range, restart the loop
-            print("The provided value is not valid (out of bound).\n")
+            print(color.Fore.RED
+                  + "The provided value is not valid (out of bound).\n")
             continue
 
     else:
 
         # If it is not a number, restart the loop
-        print("The provided value is not valid (not a digit).\n")
+        print(color.Fore.RED
+              + "The provided value is not valid (not a digit).\n")
         continue
 
 # Exit message
