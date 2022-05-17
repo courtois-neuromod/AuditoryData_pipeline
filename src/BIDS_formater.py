@@ -62,6 +62,12 @@ def fetch_db(data_path):
 
 
 def fetch_oae_data(data_path):
+    """This function [...]
+    INPUTS:
+    -data_path:
+    OUTPUTS
+    -returns [...]
+    """
     path = os.path.join(data_path, "OAE")
     ls_file = os.listdir(path)
 
@@ -139,6 +145,7 @@ def master_run(data_path, result_path):
     # - existence of the run-level json sidecar originals
     #   (tymp, reflex, PTA, MTX)
     # If not, creates them.
+
     utils.result_location(result_path)
 
     parent_path = os.path.join(result_path, "BIDS_data")
@@ -369,8 +376,9 @@ def master_run(data_path, result_path):
     # This code section is present if, for any reason, the .tsv files are not
     # properly saved. You will first need to activate the "import glob" line
     # (line 2). It is then possible to replace the variable "ext"'s value in
-    # the save_df function with ".csv" and rerun the script with this section
-    # to rename all the files with the correct ".tsv" file extansion.
+    # the save_df function (BIDS_utils.py) with ".csv" and rerun the script
+    # with this section to rename all the files with the correct ".tsv"
+    # file extansion.
 
     # file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
 
