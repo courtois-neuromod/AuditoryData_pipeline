@@ -65,7 +65,7 @@ def fct_1(result_path):
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Fréquence F2 (Hz)",
-                  "y": "\u0394 émissions otoacoustiques (dB SPL)"}
+                  "y": "\u0394 amplitude émissions otoacoustiques (dB SPL)"}
         #print(labels["y"])
         
         fig_L = go.Figure()
