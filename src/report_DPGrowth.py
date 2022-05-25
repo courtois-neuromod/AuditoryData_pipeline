@@ -1,56 +1,443 @@
 import os
 import numpy as np
 import pandas as pd
+import colorama as color
 import statistics as stats
+
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from src import report_common as common
+
+from src import report_common as report
+from src import common_functions as common
+
+# Initialize colorama
+color.init(autoreset=True)
 
 
-def fct_1(result_path):
+def linreg_values(x_pre, y_pre, x_post, y_post):
+    """
+    This function computes linear regression models on the data and returns
+    those models keys values (a, b and mean errors).
+    INPUTS:
+    -x_pre: array of the presented stimuli intensities (before)
+    -y_pre: array of the measured responses (before)
+    -x_post: array of the presented stimuli intensities (after)
+    -y_post: array of the measured responses (after)
+    OUTPUTS:
+    -returns a list of two lists of keys values (a, b, mean errors)
+     ([["before" values], ["after" values]])
+    """
+
+    # Linear regression values computation (a, b and mean errors)
+    model_pre = LinearRegression()
+    model_post = LinearRegression()
+
+    model_pre.fit(x_pre.reshape(-1, 1), y_pre)
+    model_post.fit(x_post.reshape(-1, 1), y_post)
+
+    # Linear regression values: Coefficient (a)
+    a_pre = model_pre.coef_[0]
+    a_post = model_post.coef_[0]
+
+    # Linear regression values: Intercept (b)
+    b_pre = model_pre.intercept_
+    b_post = model_post.intercept_
+
+    # Linear regression values: mean errors
+    pct_pre = model_pre.predict(x_pre.reshape(-1, 1))
+    pct_post = model_post.predict(x_post.reshape(-1, 1))
+
+    # Mean Squared Errors
+    mse_pre = mean_squared_error(y_pre, pct_pre)
+    mse_post = mean_squared_error(y_post, pct_post)
+
+    # Mean Absolute Errors
+    mae_pre = mean_absolute_error(y_pre, pct_pre)
+    mae_post = mean_absolute_error(y_post, pct_post)
+
+    ls_pre = [a_pre, b_pre, mse_pre, mae_pre]
+    ls_post = [a_post, b_post, mse_post, mae_post]
+
+    ls_of_ls = [ls_pre, ls_post]
+
+    return ls_of_ls
+
+
+def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
+    """
+    This function takes the arrays of tested frequencies and calculated
+    before/after variations and places them into a dataframe.
+    It also calculates and add to the dataframe the mean and standard
+    deviations values for each of the ears
+    INPUTS:
+    -ls_diff: list of the calculated [after - before] difference lists
+              ([Left side list, Right side list])
+    -ls_xpre: list of the presented stimuli intensities arrays (before)
+              ([Left side array, Right side array])
+    -ls_ypre: list of the measured responses arrays (before)
+              ([Left side array, Right side array])
+    -ls_xpost: list of the presented stimuli intensities arrays (after)
+               ([Left side array, Right side array])
+    -ls_ypost: list of the measured responses arrays (after)
+               ([Left side array, Right side array])
+    OUTPUTS
+    -returns a report dataframe ready to be saved into .tsv format
+    """
+
+    names_columns = ["l2_target", "diff_L", "diff_R"]
+
+    intensity_column = [65, 60, 55, 50, 45, 40, 35,
+                        "Mean", "Standard Deviation",
+                        "Reg_Pre_coef", "Reg_Pre_intercept",
+                        "Reg_Pre_MSE", "Reg_Pre_MAE",
+                        "Reg_Post_coef", "Reg_Post_intercept",
+                        "Reg_Post_MSE", "Reg_Post_MAE"]
+
+    # Linear model computations and value extractions (a, b, mse, mae)
+    values_L = linreg_values(ls_xpre[0], ls_ypre[0], ls_xpost[0], ls_ypost[0])
+    values_R = linreg_values(ls_xpre[1], ls_ypre[1], ls_xpost[1], ls_ypost[1])
+
+    ls2df = []
+
+    for i in range(0, len(intensity_column)):
+        row = []
+        row.append(intensity_column[i])
+
+        try:
+            float(intensity_column[i])
+        except ValueError:
+            if intensity_column[i] == "Mean":
+                row.append(stats.mean(ls_diff[0]))
+                row.append(stats.mean(ls_diff[1]))
+            elif intensity_column[i] == "Standard Deviation":
+                row.append(stats.pstdev(ls_diff[0]))
+                row.append(stats.pstdev(ls_diff[1]))
+            elif intensity_column[i] == "Reg_Pre_coef":
+                row.append(values_L[0][0])
+                row.append(values_R[0][0])
+            elif intensity_column[i] == "Reg_Pre_intercept":
+                row.append(values_L[0][1])
+                row.append(values_R[0][1])
+            elif intensity_column[i] == "Reg_Pre_MSE":
+                row.append(values_L[0][2])
+                row.append(values_R[0][2])
+            elif intensity_column[i] == "Reg_Pre_MAE":
+                row.append(values_L[0][3])
+                row.append(values_R[0][3])
+            elif intensity_column[i] == "Reg_Post_coef":
+                row.append(values_L[1][0])
+                row.append(values_R[1][0])
+            elif intensity_column[i] == "Reg_Post_intercept":
+                row.append(values_L[1][1])
+                row.append(values_R[1][1])
+            elif intensity_column[i] == "Reg_Post_MSE":
+                row.append(values_L[1][2])
+                row.append(values_R[1][2])
+            elif intensity_column[i] == "Reg_Post_MAE":
+                row.append(values_L[1][3])
+                row.append(values_R[1][3])
+        else:
+            row.append(ls_diff[0][i])
+            row.append(ls_diff[1][i])
+        ls2df.append(row)
+
+    df = pd.DataFrame(data=ls2df, columns=names_columns)
+
+    return df
+
+
+def list_builder(df_1, df_2):
+    """
+    This function calculates the response variations between two acquistion
+    sessions and extract the test values (stimulations and measured responses)
+    for the linear regression models.
+    INPUTS:
+    -df_1: first timepoint's dataframe (reference)
+    -df_2: second timepoint's dataframe (data after scan session)
+    OUTPUTS:
+    -returns a list of 10 elements (5 for each ear):
+            -before/after response variations
+            -presented stimuli intensities (before)
+            -presented stimuli intensities (after)
+            -measured responses (before)
+            -measured responses (after)
+    """
+
+    diff_L = []
+    xpre_L = []
+    xpost_L = []
+    ypre_L = []
+    ypost_L = []
+    diff_R = []
+    xpre_R = []
+    xpost_R = []
+    ypre_R = []
+    ypost_R = []
+
+    for i in range(0, len(df_1)):
+        value = df_2.at[i, "dp"] - df_1.at[i, "dp"]
+
+        if df_1.at[i, "side"] == "L":
+            diff_L.append(value)
+            xpre_L.append(df_1.at[i, "l2"])
+            ypre_L.append(df_1.at[i, "dp"])
+            xpost_L.append(df_2.at[i, "l2"])
+            ypost_L.append(df_2.at[i, "dp"])
+        elif df_1.at[i, "side"] == "R":
+            diff_R.append(value)
+            xpre_R.append(df_1.at[i, "l2"])
+            ypre_R.append(df_1.at[i, "dp"])
+            xpost_R.append(df_2.at[i, "l2"])
+            ypost_R.append(df_2.at[i, "dp"])
+
+    ls_of_ls = [diff_L, xpre_L, xpost_L, ypre_L, ypost_L,
+                diff_R, xpre_R, xpost_R, ypre_R, ypost_R]
+
+    return ls_of_ls
+
+
+def report_prepost(ls, sub, path_ses, path_reports):
+    """
+    This function takes a list of couples of pre/post sessions, calculates
+    the response differences, generates and saves the results dataframes
+    INPUTS:
+    -ls: list of pre/post session couples
+    -sub: subject ID
+    -path_ses: path inside the subject's BIDS folder
+               ([repo_root]/results/BIDS_data/[subject_folder]/)
+    -path_reports: path inside the report folder
+                   ([repo_root]/results/reports/)
+    OUTPUTS:
+    -saves dataframes into .tsv file
+    -NO specific return to the script
+    """
+
+    for i in ls:
+
+        # Extraction of the pairs of dataframes
+        path_pre = os.path.join(path_ses, i[0])
+        path_post = os.path.join(path_ses, i[1])
+
+        file_ls_pre = os.listdir(path_pre)
+        file_ls_pre.sort()
+        file_ls_post = os.listdir(path_post)
+        file_ls_post.sort()
+
+        a = 0
+        while a < len(file_ls_pre):
+            if (file_ls_pre[a].find("DPGrowth") != -1
+                    and file_ls_pre[a].endswith(".tsv")):
+                a += 1
+            else:
+                file_ls_pre.pop(a)
+
+        b = 0
+        while b < len(file_ls_post):
+            if (file_ls_post[b].find("DPGrowth") != -1
+                    and file_ls_post[b].endswith(".tsv")):
+                b += 1
+            else:
+                file_ls_post.pop(b)
+
+        ls_df_pre = []
+
+        for c in file_ls_pre:
+
+            # path to each of the prescan session .tsv files
+            tsv_filepath = os.path.join(path_pre, c)
+            growth_df = pd.read_csv(tsv_filepath, sep="\t", na_filter=False)
+
+            if growth_df["freq2"][0] == 2002:
+                df_pre2 = growth_df
+                ls_df_pre.append(df_pre2)
+            elif growth_df["freq2"][0] == 4004:
+                df_pre4 = growth_df
+                ls_df_pre.append(df_pre4)
+            elif growth_df["freq2"][0] == 6006:
+                df_pre6 = growth_df
+                ls_df_pre.append(df_pre6)
+
+        ls_df_post = []
+
+        for d in file_ls_post:
+
+            # path to each of the postscan session .tsv files
+            tsv_filepath = os.path.join(path_post, d)
+            growth_df = pd.read_csv(tsv_filepath, sep="\t", na_filter=False)
+
+            if growth_df["freq2"][0] == 2002:
+                df_post2 = growth_df
+                ls_df_post.append(df_post2)
+            elif growth_df["freq2"][0] == 4004:
+                df_post4 = growth_df
+                ls_df_post.append(df_post4)
+            elif growth_df["freq2"][0] == 6006:
+                df_post6 = growth_df
+                ls_df_post.append(df_post6)
+
+        # Calculation of the [post - pre] differences
+        for e in range(0, len(ls_df_pre)):
+            if ls_df_pre[e].at[0, "freq2"] == 2002:
+                ls_2 = list_builder(ls_df_pre[e], ls_df_post[e])
+            elif ls_df_pre[e].at[0, "freq2"] == 4004:
+                ls_4 = list_builder(ls_df_pre[e], ls_df_post[e])
+            elif ls_df_pre[e].at[0, "freq2"] == 6006:
+                ls_6 = list_builder(ls_df_pre[e], ls_df_post[e])
+
+        ls_diff = [[ls_2[0], ls_2[5]],
+                   [ls_4[0], ls_4[5]],
+                   [ls_6[0], ls_6[5]]]
+
+        # Test data formating for the linear regression models
+        ls_xpre = [[np.array(ls_2[1]), np.array(ls_2[6])],
+                   [np.array(ls_4[1]), np.array(ls_4[6])],
+                   [np.array(ls_6[1]), np.array(ls_6[6])]]
+
+        ls_ypre = [[np.array(ls_2[3]), np.array(ls_2[8])],
+                   [np.array(ls_4[3]), np.array(ls_4[8])],
+                   [np.array(ls_6[3]), np.array(ls_6[8])]]
+
+        ls_xpost = [[np.array(ls_2[2]), np.array(ls_2[7])],
+                    [np.array(ls_4[2]), np.array(ls_4[7])],
+                    [np.array(ls_6[2]), np.array(ls_6[7])]]
+
+        ls_ypost = [[np.array(ls_2[4]), np.array(ls_2[9])],
+                    [np.array(ls_4[4]), np.array(ls_4[9])],
+                    [np.array(ls_6[4]), np.array(ls_6[9])]]
+
+        ls_diff_tag = ["2", "4", "6"]
+
+        # Dataframe generation
+        for f in ls_diff_tag:
+            if f == "2":
+                df_report = report_df(ls_diff[0],
+                                      ls_xpre[0], ls_ypre[0],
+                                      ls_xpost[0], ls_ypost[0])
+            elif f == "4":
+                df_report = report_df(ls_diff[1],
+                                      ls_xpre[1], ls_ypre[1],
+                                      ls_xpost[1], ls_ypost[1])
+            elif f == "6":
+                df_report = report_df(ls_diff[2],
+                                      ls_xpre[2], ls_ypre[2],
+                                      ls_xpost[2], ls_ypost[2])
+
+            # Save df_report to .tsv
+            report_filename = (f"{sub}_report-Growth{f}"
+                               + f"_{i[0]}_{i[1]}.tsv")
+            report_path = os.path.join(path_reports, sub, report_filename)
+            df_report.to_csv(report_path, sep="\t", index=False)
+
+
+def report_48(ls, ses_baseline, sub, df_ref, path_ses, path_reports):
+    """
+    This function takes a list of [48h, 7 days] sessions, calculates
+    the response differences between these sessions and the baseline session,
+    generates and saves the results dataframes
+    INPUTS:
+    -ls: list of pre/post session couples
+    -ses_baseline: session identifier for the reference/baseline session used
+                   to make the comparisons
+    -sub: subject ID
+    -path_ses: path inside the subject's BIDS folder
+               ([repo_root]/results/BIDS_data/[subject_folder]/)
+    -path_reports: path inside the report folder
+                   ([repo_root]/results/reports/)
+    OUTPUTS:
+    -saves dataframes into .tsv files
+    -NO specific return to the script
+    """
+
+    for i in ls:
+
+        # Extraction of the post-procedure dataframe
+        path_48 = os.path.join(path_ses, i)
+
+        file_ls_48 = os.listdir(path_48)
+        file_ls_48.sort()
+
+        for a in file_ls_48:
+            if a.find("DPGrowth") != -1 and a.endswith(".tsv"):
+                file_48 = os.path.join(path_48, a)
+            else:
+                pass
+
+        df_48 = pd.read_csv(file_48, sep="\t", na_filter=False)
+
+        # Calculation of the [post - pre] differences
+        ls_4 = list_builder(df_ref, df_48)
+
+        ls_diff = [ls_4[0], ls_4[5]]
+
+        # Test data formating for the linear regression models
+        ls_xpre = [np.array(ls_4[1]), np.array(ls_4[6])]
+
+        ls_ypre = [np.array(ls_4[3]), np.array(ls_4[8])]
+
+        ls_xpost = [np.array(ls_4[2]), np.array(ls_4[7])]
+
+        ls_ypost = [np.array(ls_4[4]), np.array(ls_4[9])]
+
+        # Dataframe generation
+        df_report = report_df(ls_diff,
+                              ls_xpre, ls_ypre,
+                              ls_xpost, ls_ypost)
+
+        # Save df_report to .tsv
+        report_filename = (f"{sub}_report-Growth4_{ses_baseline}_{i}.tsv")
+        report_path = os.path.join(path_reports, sub, report_filename)
+        df_report.to_csv(report_path, sep="\t", index=False)
+
+
+def master_run(result_path):
+
     # path to the BIDS formated dataset
     bids_path = os.path.join(result_path, "BIDS_data")
 
     # Content of the BIDS dataset: list of the subject folders
     try:
         os.listdir(bids_path)
-
     except FileNotFoundError:
-        print("\nThe BIDS dataset folder is missing. Please verify that "
-              "the folder is correctly located "
-              "([repo_root]/results/BIDS_data/) or use the BIDS dataset "
-              "formating function to regenarate the dataset.\n")
+        print(color.Fore.RED
+              + ("\nERROR: The BIDS dataset folder is missing.\n"
+                 "Please verify that the folder is correctly located "
+                 "([repo_root]/results/BIDS_data/) or use the BIDS dataset "
+                 "formating function to regenerate the dataset.\n"))
         exit()
-
     else:
         sub = os.listdir(bids_path)
 
     sub.sort()
 
     # Verification/Creation of the reports folder
-    path_reports = common.report_file_verif(result_path)
+    path_reports = report.report_file_verif(result_path)
 
     for i in sub:
-        #print("\n")
-        #print(i)
-        # path inside the subject's folder
+
+        # Verification/Creation of the subjects' report folder
+        common.create_folder_subjects(i, path_reports)
+
+        # Path inside the subject's folder
         path_ses = os.path.join(bids_path, i)
 
-        # content of the subject's folder (sessions + reference .tsv file)
+        # Content of the subject's folder (sessions + reference .tsv file)
         ls_ses = os.listdir(path_ses)
         ls_ses.sort()
 
-        # retrieve the reference .tsv file
+        # Retrieve the reference .tsv file
         filename_index = ls_ses.index(i + "_sessions.tsv")
         ref_filename = ls_ses.pop(filename_index)
-        ref_df = pd.read_csv(os.path.join(path_ses, ref_filename), sep="\t")
+        ses_ls_df = pd.read_csv(os.path.join(path_ses, ref_filename), sep="\t")
 
-        # extract reference data: ses-02 (Baseline #2)
-        ses_baseline = ref_df.at[1, "session_id"]
-        # path inside the baseline #2 folder
+        # Extract reference data: ses-01 (Baseline #1)
+        ses_baseline = ses_ls_df.at[0, "session_id"]
+
+        # Path inside the Baseline #1 folder
         path_base_ses = os.path.join(path_ses, ses_baseline)
-
         ls_folder_baseline = os.listdir(path_base_ses)
+
+        baseline_ref = None
+        stop_48 = False
 
         for a in ls_folder_baseline:
             if a.find("DPGrowth") != -1 and a.endswith(".tsv"):
@@ -58,477 +445,59 @@ def fct_1(result_path):
             else:
                 pass
 
-        # path to the baseline #2 DPGrowth data file
-        filepath_ref = os.path.join(path_base_ses, baseline_ref)
-        #print(filepath_ref)
-        df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+        if baseline_ref is None:
+            ses_baseline_retry = ses_ls_df.at[1, "session_id"]
 
-        # extract list of pre/post and 48h post scan session IDs
-        ls_48 = []
-        ls_prepost = []
-        for b in range(0, len(ref_df)):
-            prepost = []
-            init_cond = ref_df.at[b, "condition"]
+            path_base_ses = os.path.join(path_ses, ses_baseline_retry)
+            ls_folder_baseline = os.listdir(path_base_ses)
 
-            if init_cond.startswith("Condition 3A"):
-                prepost.append(ref_df.at[b, "session_id"])
-
-                follow_ses = ref_df.at[b + 1, "session_id"]
-                follow_cond = ref_df.at[b + 1, "condition"]
-
-                if follow_cond.startswith("Condition 3B"):
-                    prepost.append(follow_ses)
-                    ls_prepost.append(prepost)
-                    b += 1
+            for x in ls_folder_baseline:
+                if x.find("DPGrowth") != -1 and x.endswith(".tsv"):
+                    baseline_ref = x
+                    print(color.Fore.YELLOW
+                          + (f"WARNING: No DP-growth data file was found for "
+                             f"{i} in the {ses_baseline} folder.\nThe "
+                             f"DP-growth data file found in "
+                             f"{ses_baseline_retry} was used as a "
+                             f"replacement.\n"))
                 else:
-                    print(f"MISSING SESSION ERROR:\nThe {follow_ses} session "
-                          f"for {i} presents the following condition: "
-                          f"{follow_cond}. Instead, it should be: Condition "
-                          f"3B (right after the scan).\n")
+                    pass
 
-            elif init_cond.startswith("Condition 2"):
-                ls_48.append(ref_df.at[b, "session_id"])
+            if baseline_ref is None:
+                print(color.Fore.RED
+                      + (f"ERROR: No DP-growth baseline file was found for "
+                         f"{i} in the {ses_baseline} or the "
+                         f"{ses_baseline_retry} folders.\nThe DP-growth "
+                         f"data for the chronic phase of {i} will not be "
+                         f"processed.\n"))
+                stop_48 = True
 
-        #print(ls_prepost)
+        else:
+            pass
 
-        # extract the dataframes for each of the pre/post pairs
-        for c in ls_prepost:
-            #print("\n")
-            #print(c)
-            # path inside the prescan session folder
-            path_pre = os.path.join(path_ses, c[0])
-            #print(path_pre)
-            # path inside the postscan session folder
-            path_post = os.path.join(path_ses, c[1])
+        # Extract list of pre/post and 48h post scan session IDs
+        ls_prepost, ls_48 = report.extract_ses_ls(ses_ls_df, i, "OAE")
 
-            file_ls_pre = os.listdir(path_pre)
-            file_ls_pre.sort()
-            file_ls_post = os.listdir(path_post)
-            file_ls_post.sort()
+        # Production of the report regarding the accute phase effects
+        report_prepost(ls_prepost, i, path_ses, path_reports)
 
-            p = 0
-            while p < len(file_ls_pre):
-                if (file_ls_pre[p].find("DPGrowth") != -1
-                        and file_ls_pre[p].endswith(".tsv")):
-                    p += 1
-                else:
-                    file_ls_pre.pop(p)
+        if stop_48 is True:
+            pass
 
-            q = 0
-            while q < len(file_ls_post):
-                if (file_ls_post[q].find("DPGrowth") != -1
-                        and file_ls_post[q].endswith(".tsv")):
-                    q += 1
-                else:
-                    file_ls_post.pop(q)
+        else:
 
-            #print(file_ls_pre, "\n")
-            #print(file_ls_post, "\n")
+            # Path to the Baseline DPGrowth data file
+            filepath_ref = os.path.join(path_base_ses, baseline_ref)
+            df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
 
-            ls_df_pre = []
-            for r in file_ls_pre:
-                # path to each of the prescan session tsv files
-                tsv_filepath = os.path.join(path_pre, r)
-                growth_df = pd.read_csv(tsv_filepath,
-                                        sep="\t",
-                                        na_filter=False)
-                
-                if growth_df["freq2"][0] == 2002:
-                    df_pre2 = growth_df
-                    ls_df_pre.append(df_pre2)
-                elif growth_df["freq2"][0] == 4004:
-                    df_pre4 = growth_df
-                    ls_df_pre.append(df_pre4)
-                elif growth_df["freq2"][0] == 6006:
-                    df_pre6 = growth_df
-                    ls_df_pre.append(df_pre6)
-
-            ls_df_post = []
-            for s in file_ls_post:
-                # path to each of the postscan session tsv files
-                tsv_filepath = os.path.join(path_post, s)
-                growth_df = pd.read_csv(tsv_filepath,
-                                        sep="\t",
-                                        na_filter=False)
-                
-                if growth_df["freq2"][0] == 2002:
-                    df_post2 = growth_df
-                    ls_df_post.append(df_post2)
-                elif growth_df["freq2"][0] == 4004:
-                    df_post4 = growth_df
-                    ls_df_post.append(df_post4)
-                elif growth_df["freq2"][0] == 6006:
-                    df_post6 = growth_df
-                    ls_df_post.append(df_post6)
-
-            #print(ls_df_pre)
-            #print(ls_df_post)
-            #mega_ls = []
-
-            ls_diff_2L = []
-            ls_xpre_2L = []
-            ls_ypre_2L = []
-            ls_xpost_2L = []
-            ls_ypost_2L = []
-            ls_diff_2R = []
-            ls_xpre_2R = []
-            ls_ypre_2R = []
-            ls_xpost_2R = []
-            ls_ypost_2R = []
-            ls_diff_4L = []
-            ls_xpre_4L = []
-            ls_ypre_4L = []
-            ls_xpost_4L = []
-            ls_ypost_4L = []
-            ls_diff_4R = []
-            ls_xpre_4R = []
-            ls_ypre_4R = []
-            ls_xpost_4R = []
-            ls_ypost_4R = []
-            ls_diff_6L = []
-            ls_xpre_6L = []
-            ls_ypre_6L = []
-            ls_xpost_6L = []
-            ls_ypost_6L = []
-            ls_diff_6R = []
-            ls_xpre_6R = []
-            ls_ypre_6R = []
-            ls_xpost_6R = []
-            ls_ypost_6R = []
-            
-            for t in range(0, len(ls_df_pre)):
-                
-                for x in range(0, len(ls_df_pre[t])):
-                    value = (ls_df_post[t].at[x, "dp"]
-                             - ls_df_pre[t].at[x, "dp"])
-
-                    if ls_df_pre[t].at[x, "freq2"] == 2002:
-                        if ls_df_pre[t].at[x, "side"] == "L":
-                            ls_diff_2L.append(value)
-                            ls_xpre_2L.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_2L.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_2L.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_2L.append(ls_df_post[t].at[x, "dp"])
-                        elif ls_df_pre[t].at[x, "side"] == "R":
-                            ls_diff_2R.append(value)
-                            ls_xpre_2R.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_2R.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_2R.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_2R.append(ls_df_post[t].at[x, "dp"])
-
-                    elif ls_df_pre[t].at[x, "freq2"] == 4004:
-                        if ls_df_pre[t].at[x, "side"] == "L":
-                            ls_diff_4L.append(value)
-                            ls_xpre_4L.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_4L.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_4L.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_4L.append(ls_df_post[t].at[x, "dp"])
-                        elif ls_df_pre[t].at[x, "side"] == "R":
-                            ls_diff_4R.append(value)
-                            ls_xpre_4R.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_4R.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_4R.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_4R.append(ls_df_post[t].at[x, "dp"])
-
-                    elif ls_df_pre[t].at[x, "freq2"] == 6006:
-                        if ls_df_pre[t].at[x, "side"] == "L":
-                            ls_diff_6L.append(value)
-                            ls_xpre_6L.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_6L.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_6L.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_6L.append(ls_df_post[t].at[x, "dp"])
-                        elif ls_df_pre[t].at[x, "side"] == "R":
-                            ls_diff_6R.append(value)
-                            ls_xpre_6R.append(ls_df_pre[t].at[x, "l2"])
-                            ls_ypre_6R.append(ls_df_pre[t].at[x, "dp"])
-                            ls_xpost_6R.append(ls_df_post[t].at[x, "l2"])
-                            ls_ypost_6R.append(ls_df_post[t].at[x, "dp"])
-
-            #print(ls_ypre_2L)
-
-            ls_diff = [[ls_diff_2L, ls_diff_2R,
-                        np.array(ls_xpre_2L), np.array(ls_ypre_2L),
-                        np.array(ls_xpost_2L), np.array(ls_ypost_2L),
-                        np.array(ls_xpre_2R), np.array(ls_ypre_2R),
-                        np.array(ls_xpost_2R), np.array(ls_ypost_2R)],
-                       [ls_diff_4L, ls_diff_4R,
-                        np.array(ls_xpre_4L), np.array(ls_ypre_4L),
-                        np.array(ls_xpost_4L), np.array(ls_ypost_4L),
-                        np.array(ls_xpre_4R), np.array(ls_ypre_4R),
-                        np.array(ls_xpost_4R), np.array(ls_ypost_4R)],
-                       [ls_diff_6L, ls_diff_6R,
-                        np.array(ls_xpre_6L), np.array(ls_ypre_6L),
-                        np.array(ls_xpost_6L), np.array(ls_ypost_6L),
-                        np.array(ls_xpre_6R), np.array(ls_ypre_6R),
-                        np.array(ls_xpost_6R), np.array(ls_ypost_6R)]]
-            
-            ls_diff_tag = ["2", "4", "6"]
-
-            names_columns = ["l2_target", "diff_L", "diff_R"]
-
-            intensity_column = [65, 60, 55, 50, 45, 40, 35,
-                                "Mean", "Standard Deviation",
-                                "Reg_Pre_coef", "Reg_Pre_intercept",
-                                "Reg_Pre_MSE", "Reg_Pre_MAE",
-                                "Reg_Post_coef", "Reg_Post_intercept",
-                                "Reg_Post_MSE", "Reg_Post_MAE"]
-
-            for u in range(0, len(ls_diff)):
-                ls2df = []
-                
-                #print(ls_diff[u][2])
-                
-                # Linear regression values computation (a, b and mean errors)
-                model_pre_L = LinearRegression()
-                model_pre_R = LinearRegression()
-                model_post_L = LinearRegression()
-                model_post_R = LinearRegression()
-                
-                model_pre_L.fit(ls_diff[u][2].reshape(-1, 1),
-                                ls_diff[u][3])
-                model_pre_R.fit(ls_diff[u][6].reshape(-1, 1),
-                                ls_diff[u][7])
-                model_post_L.fit(ls_diff[u][4].reshape(-1, 1),
-                                 ls_diff[u][5])
-                model_post_R.fit(ls_diff[u][8].reshape(-1, 1),
-                                 ls_diff[u][9])
-                
-                # Linear regression values: Coefficient (a)
-                coef_pre_L = model_pre_L.coef_[0]
-                coef_pre_R = model_pre_R.coef_[0]
-                coef_post_L = model_post_L.coef_[0]
-                coef_post_R = model_post_R.coef_[0]
-                
-                #print("a_pre_L:", coef_pre_L)
-                #print("a_pre_R:", coef_pre_R)
-                #print("a_post_L:", coef_post_L)
-                #print("a_post_R:", coef_post_R)
-                
-                # Linear regression values: Intercept (b)
-                inter_pre_L = model_pre_L.intercept_
-                inter_pre_R = model_pre_R.intercept_
-                inter_post_L = model_post_L.intercept_
-                inter_post_R = model_post_R.intercept_
-                
-                #print("b_pre_L:", inter_pre_L)
-                #print("b_pre_R:", inter_pre_R)
-                #print("b_post_L:", inter_post_L)
-                #print("b_post_R:", inter_post_R)
-                
-                # Linear regression values: mean errors
-                pct_pre_L = model_pre_L.predict(ls_diff[u][2].reshape(-1, 1))
-                pct_pre_R = model_pre_R.predict(ls_diff[u][6].reshape(-1, 1))
-                pct_post_L = model_post_L.predict(ls_diff[u][4].reshape(-1, 1))
-                pct_post_R = model_post_R.predict(ls_diff[u][8].reshape(-1, 1))
-                
-                # Mean Squared Errors
-                mse_pre_L = mean_squared_error(ls_diff[u][3],
-                                               pct_pre_L)
-                mse_pre_R = mean_squared_error(ls_diff[u][7],
-                                               pct_pre_R)
-                mse_post_L = mean_squared_error(ls_diff[u][5],
-                                                pct_post_L)
-                mse_post_R = mean_squared_error(ls_diff[u][9],
-                                                pct_post_R)
-                
-                #print("mse_pre_L:", mse_pre_L)
-                #print("mse_pre_R:", mse_pre_R)
-                #print("mse_post_L:", mse_post_L)
-                #print("mse_post_R:", mse_post_R)
-                
-                # Mean Absolute Errors
-                mae_pre_L = mean_absolute_error(ls_diff[u][3],
-                                                pct_pre_L)
-                mae_pre_R = mean_absolute_error(ls_diff[u][7],
-                                                pct_pre_R)
-                mae_post_L = mean_absolute_error(ls_diff[u][5],
-                                                 pct_post_L)
-                mae_post_R = mean_absolute_error(ls_diff[u][9],
-                                                 pct_post_R)
-                
-                #print("mae_pre_L:", mae_pre_L)
-                #print("mae_pre_R:", mae_pre_R)
-                #print("mae_post_L:", mae_post_L)
-                #print("mae_post_R:", mae_post_R)
-                
-                #print(ls_diff[u])
-                for y in range(0, len(intensity_column)):
-                    row = []
-                    row.append(intensity_column[y])
-                    try:
-                        float(intensity_column[y])
-                    except:
-                        if intensity_column[y] == "Mean":
-                            row.append(stats.mean(ls_diff[u][0]))
-                            row.append(stats.mean(ls_diff[u][1]))
-                        elif intensity_column[y] == "Standard Deviation":
-                            row.append(stats.pstdev(ls_diff[u][0]))
-                            row.append(stats.pstdev(ls_diff[u][1]))
-                        elif intensity_column[y] == "Reg_Pre_coef":
-                            row.append(coef_pre_L)
-                            row.append(coef_pre_R)
-                        elif intensity_column[y] == "Reg_Pre_intercept":
-                            row.append(inter_pre_L)
-                            row.append(inter_pre_R)
-                        elif intensity_column[y] == "Reg_Pre_MSE":
-                            row.append(mse_pre_L)
-                            row.append(mse_pre_R)
-                        elif intensity_column[y] == "Reg_Pre_MAE":
-                            row.append(mae_pre_L)
-                            row.append(mae_pre_R)
-                        elif intensity_column[y] == "Reg_Post_coef":
-                            row.append(coef_post_L)
-                            row.append(coef_post_R)
-                        elif intensity_column[y] == "Reg_Post_intercept":
-                            row.append(inter_post_L)
-                            row.append(inter_post_R)
-                        elif intensity_column[y] == "Reg_Post_MSE":
-                            row.append(mse_post_L)
-                            row.append(mse_post_R)
-                        elif intensity_column[y] == "Reg_Post_MAE":
-                            row.append(mae_post_L)
-                            row.append(mae_post_R)
-                    else:
-                        row.append(ls_diff[u][0][y])
-                        row.append(ls_diff[u][1][y])
-                    ls2df.append(row)
-                
-                df_data = pd.DataFrame(data=ls2df, columns=names_columns)
-                #print(df_data)
-
-                name_to_save = (f"{i}_report-Growth{ls_diff_tag[u]}"
-                                + f"_{c[0]}_{c[1]}.tsv")
-                #print(name_to_save)
-                path_to_save = os.path.join(path_reports, name_to_save)
-                df_data.to_csv(path_to_save, sep="\t", index=False)
-
-#        df_ref.drop(columns=["order", "side"], inplace=True)
-#        df_ref.astype(int, copy=False, errors="ignore")
-
-#        for e in ls_48:
-#            path_48 = os.path.join(path_ses, e)
-
-#            file_ls_48 = os.listdir(path_48)
-#            file_ls_48.sort()
-
-#            for k in file_ls_48:
-#                if k.find("PTA") != -1 and k.endswith(".tsv"):
-#                    print(k)
-#                    file_48 = os.path.join(path_48, k)
-#                else:
-#                    pass
-
-#            df_48 = pd.read_csv(file_48,
-#                                sep="\t",
-#                                na_filter=False)
-
-#            df_48.drop(columns=["order", "side"], inplace=True)
-#            df_48.astype(int, copy=False, errors="ignore")
-
-#            columns = df_ref.columns
-
-#            for m in [0, 1]:
-#                ls_diff = []
-#                for y in columns:
-#                    if df_48.at[m, y] == "n/a":
-#                        pass
-#                    try:
-#                        float(df_48.at[m, y])
-#                    except:
-#                        pass
-#                    else:
-#                        df_48.at[m, y] = float(df_48.at[m, y])
-
-#                    try:
-#                        float(df_ref.at[m, y])
-#                    except:
-#                        pass
-#                    else:
-#                        df_ref.at[m, y] = float(df_ref.at[m, y])
-
-#                    if (df_48.at[m, y] == "n/a"
-#                            or df_48.at[m, y] == "n/a"):
-#                        value = "n/a"
-#                        ls_diff.append(value)
-
-#                    elif (df_48.at[m, y] != "No response"
-#                          and df_ref.at[m, y] != "No response"):
-#                        value = df_48.at[m, y] - df_ref.at[m, y]
-#                        ls_diff.append(value)
-
-#                    elif (df_48.at[m, y] == "No response"
-#                          and df_ref.at[m, y] != "No response"):
-#                        value_pre = df_ref.at[m, y]
-#                        value = f"Post = NR ({value_pre} before scan)"
-#                        ls_diff.append(value)
-
-#                    elif (df_48.at[m, y] != "No response"
-#                          and df_ref.at[m, y] == "No response"):
-#                        value_post = df_48.at[m, y]
-#                        value = f"Pre = NR ({value_post} after scan)"
-#                        ls_diff.append(value)
-
-#                    elif (df_48.at[m, y] == "No response"
-#                          and df_ref.at[m, y] == "No response"):
-#                        value = "Both = NR"
-#                        ls_diff.append(value)
-
-#                if r == 0:
-#                    ls_diff_R = ls_diff
-#                elif r == 1:
-#                    ls_diff_L = ls_diff
-
-#            ls_threshold = []
-
-#            for n in ls_diff_L:
-#                if n in ls_threshold:
-#                    pass
-#                else:
-#                    try:
-#                        float(n)
-#                    except:
-#                        pass
-#                    else:
-#                        ls_threshold.append(float(n))
-
-#            for f in ls_diff_R:
-#                if f in ls_threshold:
-#                    pass
-#                else:
-#                    try:
-#                        float(f)
-#                    except:
-#                        pass
-#                    else:
-#                        ls_threshold.append(float(f))
-
-#            ls_threshold.sort()
-
-#            data = []
-#            for g in range(0, len(ls_threshold)):
-#                data.append([])
-
-#            for h in range(0, len(data)):
-#                data[h].append(ls_threshold[h])
-#                data[h].append([])
-#                data[h].append([])
-#                for j in range(0, len(ls_diff_L)):
-#                    if ls_diff_L[j] == ls_threshold[h]:
-#                        data[h][1].append(columns[j])
-#                    else:
-#                        pass
-#                for w in range(0, len(ls_diff_R)):
-#                    if ls_diff_R[w] == ls_threshold[h]:
-#                        data[h][2].append(columns[w])
-#                    else:
-#                        pass
-
-#            names_columns = ["48post-baseline_diff", "freq_L", "freq_R"]
-#            df_data = pd.DataFrame(data=data, columns=names_columns)
-
-#            name_to_save = f"{i}_report-PTA_Baseline2_{e}.tsv"
-#            path_to_save = os.path.join(path_reports, name_to_save)
-#            df_data.to_csv(path_to_save, sep="\t")
+            # Production of the report regarding the chronic phase effects
+            report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
 
 
-fct_1(os.path.join("..", "results"))
+if __name__ == "__main__":
+    root_path = ".."
+    result_path = os.path.join(root_path, "results")
+    master_run(result_path)
+
+else:
+    pass
