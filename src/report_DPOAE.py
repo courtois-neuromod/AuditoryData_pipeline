@@ -146,7 +146,7 @@ def report_48(ls, ses_baseline, sub, df_ref, path_ses, path_reports):
     """
     This function takes a list of [48h, 7 days] sessions, calculates
     the response differences between these sessions and the baseline session,
-    generates and saves the results dataframe
+    generates and saves the results dataframes
     INPUTS:
     -ls: list of pre/post session couples
     -ses_baseline: session identifier for the reference/baseline session used
@@ -236,15 +236,42 @@ def master_run(result_path):
         path_base_ses = os.path.join(path_ses, ses_baseline)
         ls_folder_baseline = os.listdir(path_base_ses)
 
+        baseline_ref = None
+        stop_48 = False
+
         for a in ls_folder_baseline:
             if a.find("DPOAE") != -1 and a.endswith(".tsv"):
                 baseline_ref = a
             else:
                 pass
 
-        # Path to the Baseline #1 DPOAE data file
-        filepath_ref = os.path.join(path_base_ses, baseline_ref)
-        df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+        if baseline_ref is None:
+            ses_baseline_retry = ses_ls_df.at[1, "session_id"]
+
+            path_base_ses = os.path.join(path_ses, ses_baseline_retry)
+            ls_folder_baseline = os.listdir(path_base_ses)
+
+            for x in ls_folder_baseline:
+                if x.find("DPOAE") != -1 and x.endswith(".tsv"):
+                    baseline_ref = x
+                    print(color.Fore.YELLOW
+                          + (f"WARNING: No DPOAE data file was found for {i} "
+                             f"in the {ses_baseline} folder.\nThe DPOAE data "
+                             f"file found in {ses_baseline_retry} was used as "
+                             f"a replacement.\n"))
+                else:
+                    pass
+
+            if baseline_ref is None:
+                print(color.Fore.RED
+                      + (f"ERROR: No DPOAE baseline file was found for {i} in "
+                         f"the {ses_baseline} or the {ses_baseline_retry} "
+                         f"folders.\nThe DPOAE data for the chronic phase of "
+                         f"{i} will not be processed.\n"))
+                stop_48 = True
+
+        else:
+            pass
 
         # Extract list of pre/post and 48h post scan session IDs
         ls_prepost, ls_48 = report.extract_ses_ls(ses_ls_df, i, "OAE")
@@ -252,8 +279,17 @@ def master_run(result_path):
         # Production of the report regarding the accute phase effects
         report_prepost(ls_prepost, i, path_ses, path_reports)
 
-        # Production of the report regarding the chronic phase effects
-        report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
+        if stop_48 is True:
+            pass
+
+        else:
+
+            # Path to the Baseline DPOAE data file
+            filepath_ref = os.path.join(path_base_ses, baseline_ref)
+            df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+
+            # Production of the report regarding the chronic phase effects
+            report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
 
 
 if __name__ == "__main__":
