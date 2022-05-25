@@ -10,13 +10,6 @@ from src import json_sidecar_generator as jsg
 color.init(autoreset=True)
 
 
-if __name__ == "__main__":
-    print(color.Fore.RED
-          + ("ERROR: This script is not designed to be used as a standalone "
-             "script.\nPlease use main.py functionalities or "
-             "BIDS_formater.py to call it."))
-
-
 def result_location(result_path):
     """
     This function makes sure that the destination for the formated file
@@ -87,6 +80,7 @@ def result_location(result_path):
               "were created in the results/BIDS_sidecars_originals "
               "folder.\n")
 
+
 # List the available test results
 def retrieve_tests(subject_folder, ses_ID):
     """
@@ -148,6 +142,7 @@ def retrieve_tests(subject_folder, ses_ID):
 
     return ls_test
 
+
 # Single test sub-df extraction from each participant's sub-df
 def eliminate_columns(sub_df, columns_conditions, test_columns):
     """
@@ -165,6 +160,7 @@ def eliminate_columns(sub_df, columns_conditions, test_columns):
     df_test = sub_df[to_keep]
 
     return df_test
+
 
 def save_df(data_tosave_df, single_test_df, index,
             test, result_path, run="01"):
@@ -223,6 +219,7 @@ def save_df(data_tosave_df, single_test_df, index,
         copyfile(os.path.join(json_origin, "dpgrowth_run_level.json"),
                  os.path.join(path, file_name + ".json"))
 
+
 # Extraction of every single tympanometry test
 # The results are then sent to the save_df function to be saved
 def extract_tymp(single_test_df, ls_columns_1,
@@ -273,6 +270,7 @@ def extract_tymp(single_test_df, ls_columns_1,
             save_df(z, single_test_df, j, 'Tymp', path)
         else:
             continue
+
 
 # Extraction of every single stapedial reflex test
 # The results are then sent to the save_df function to be saved
@@ -325,6 +323,7 @@ def extract_reflex(single_test_df, ls_columns_1,
         else:
             continue
 
+
 # Extraction of every single pure-tone audiometry test
 # The results are then sent to the save_df function to be saved
 def extract_pta(single_test_df, ls_columns_1,
@@ -375,6 +374,7 @@ def extract_pta(single_test_df, ls_columns_1,
             save_df(z, single_test_df, j, 'PTA', path)
         else:
             continue
+
 
 # Extraction of every single matrix speech-in-noise perception test
 # The results are then sent to the save_df function to be saved
@@ -436,6 +436,7 @@ def extract_mtx(single_test_df, ls_columns_1,
             save_df(z, single_test_df, j, 'MTX', path)
         else:
             continue
+
 
 # Extraction of every single transient-evoked OAE test
 # The results are then sent to the save_df function to be saved
@@ -570,6 +571,7 @@ def extract_teoae(data_sub, data_oae_sub, oae_file_list,
             df_teoae.set_index("order", inplace=True)
 
             save_df(df_teoae, data_sub, j, 'TEOAE', result_path)
+
 
 # Extraction of every single distortion product OAE test
 # The results are then sent to the save_df function to be saved
@@ -729,6 +731,7 @@ def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
             df_dpoae.set_index("order", inplace=True)
 
             save_df(df_dpoae, data_sub, j, 'DPOAE', result_path)
+
 
 # Extraction of the distortion product OAE growth function tests
 # for the conditions 3A (pre-scan) and 3B (post-scan).
@@ -896,6 +899,7 @@ def growth_prepost(data_sub, i, oae_file_list,
             save_df(df_growth, data_sub, i,
                     'DPGrowth', result_path, run=run)
 
+
 # Extraction of the distortion product OAE growth function tests
 # for the other conditions (baseline and condition 2).
 # The results are then sent to the save_df function to be saved
@@ -1005,6 +1009,7 @@ def growth_others(data_sub, i, oae_file_list,
 
         save_df(df_growth, data_sub, i, 'DPGrowth', result_path)
 
+
 # Extraction of every single DP growth function OAE test
 # The results are then sent to the save_df function to be saved
 def extract_growth(data_sub, data_oae_sub, oae_file_list,
@@ -1036,3 +1041,13 @@ def extract_growth(data_sub, data_oae_sub, oae_file_list,
         elif condition in prepost:
             growth_prepost(data_sub, j, oae_file_list,
                            x_growth, data_path, result_path)
+
+
+if __name__ == "__main__":
+    print(color.Fore.RED
+          + ("ERROR: This script is not designed to be used as a standalone "
+             "script.\nPlease use main.py functionalities or "
+             "BIDS_formater.py to call it."))
+
+else:
+    pass
