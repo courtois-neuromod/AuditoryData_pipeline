@@ -376,15 +376,42 @@ def master_run(result_path):
         path_base_ses = os.path.join(path_ses, ses_baseline)
         ls_folder_baseline = os.listdir(path_base_ses)
 
+        baseline_ref = None
+        stop_48 = False
+
         for a in ls_folder_baseline:
             if a.find("PTA") != -1 and a.endswith(".tsv"):
                 baseline_ref = a
             else:
                 pass
 
-        # Path to the Baseline #1 PTA data file
-        filepath_ref = os.path.join(path_base_ses, baseline_ref)
-        df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+        if baseline_ref is None:
+            ses_baseline_retry = ses_ls_df.at[1, "session_id"]
+
+            path_base_ses = os.path.join(path_ses, ses_baseline_retry)
+            ls_folder_baseline = os.listdir(path_base_ses)
+
+            for x in ls_folder_baseline:
+                if x.find("PTA") != -1 and x.endswith(".tsv"):
+                    baseline_ref = x
+                    print(color.Fore.YELLOW
+                          + (f"WARNING: No PTA data file was found for {i} in "
+                             f"the {ses_baseline} folder.\nThe PTA data file "
+                             f"found in {ses_baseline_retry} was used as a "
+                             f"replacement.\n"))
+                else:
+                    pass
+
+            if baseline_ref is None:
+                print(color.Fore.RED
+                      + (f"ERROR: No PTA baseline file was found for {i} in "
+                         f"the {ses_baseline} or the {ses_baseline_retry} "
+                         f"folders.\nThe PTA data for the chronic phase of "
+                         f"{i} will not be processed.\n"))
+                stop_48 = True
+
+        else:
+            pass
 
         # Extract list of pre/post and 48h post scan session IDs
         ls_prepost, ls_48 = report.extract_ses_ls(ses_ls_df, i, "PTA")
@@ -392,8 +419,17 @@ def master_run(result_path):
         # Production of the reports regarding the accute phase effects
         report_prepost(ls_prepost, i, path_ses, path_reports)
 
-        # Production of the reports regarding the chronic phase effects
-        report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
+        if stop_48 is True:
+            pass
+
+        else:
+
+            # Path to the Baseline PTA data file
+            filepath_ref = os.path.join(path_base_ses, baseline_ref)
+            df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+
+            # Production of the reports regarding the chronic phase effects
+            report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
 
 
 if __name__ == "__main__":
