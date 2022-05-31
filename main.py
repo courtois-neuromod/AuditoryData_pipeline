@@ -1,27 +1,35 @@
 import os
 import colorama as color
+
+from src import report_PTA
+from src import report_DPOAE
+from src import report_DPGrowth
+
 from src import BIDS_formater as formater
 from src import json_sidecar_generator as jsg
 from src import MRI_session_design_generator as ses_design
 from src import graph_generator_BIDS as graph
 
+
 # Initialize colorama
 color.init(autoreset=True)
 
 # Available functions list
-ls_fct = ["BIDS format's json sidecars (test level) creation",
+ls_fct = ["BIDS format's json sidecars creation",
           "BIDS format's auditory data exporter",
-          "Pure-Tone Audiometry graph generator",
+          "Pure Tone Audiometry graph generator",
           "Matrix Speech-in-Noise Test graph generator",
           "Transient-evoked OAE test graph generator",
           "Distortion product OAE test graph generator",
           "Distortion product growth function test graph generator",
+          "Pure Tone Audiometry report generator",
+          "Distortion product OAE report generator",
+          "Distortion product growth function report generator",
           "MRI session design files generator",
           # "Dummy line",
           ]
 
 # Prompt text generation
-print("\nWelcome to the AuditoryData_pipeline.\n")
 prompt_instruction = ("Please enter the number of the pipeline "
                       "functionality you want to run:")
 
@@ -37,9 +45,13 @@ prompt_txt = prompt_instruction + prompt_options
 # While loop condition initialization
 loop_value = True
 
+# Show welcome message
+print("\nWelcome to the AuditoryData_pipeline.\n")
+
 # function selection prompt
 while loop_value:
 
+    # Show options and save the user selection
     value = input(prompt_txt)
     print("\n")
 
@@ -65,11 +77,13 @@ while loop_value:
                 # BIDS format functionalities
                 if ls_fct[value - 1].count("BIDS") == 1:
 
+                    # json sidecar files generation
                     if ls_fct[value - 1] == ("BIDS format's json sidecars "
-                                             "(test level) creation"):
+                                             "creation"):
                         jsg.create_sidecars(os.path.join(".", "results"))
                         print("\n")
 
+                    # BIDS compatible dataset formating
                     elif ls_fct[value - 1] == ("BIDS format's auditory "
                                                "data exporter"):
                         formater.master_run(os.path.join(".", "data"),
@@ -80,7 +94,7 @@ while loop_value:
                 elif ls_fct[value - 1].count("graph") == 1:
 
                     # PTA graph plotting
-                    if ls_fct[value - 1].count("Pure-Tone") == 1:
+                    if ls_fct[value - 1].count("Pure Tone") == 1:
                         graph.master_run(".", "PTA")
                         print("\n")
 
@@ -94,6 +108,7 @@ while loop_value:
                         graph.master_run(".", "TEOAE")
                         print("\n")
                     
+                    # Distortion product (DPOAE and DP Growth) OAEs
                     elif ls_fct[value - 1].count("Distortion"):
                         
                         # DPOAE graph plotting
@@ -108,7 +123,32 @@ while loop_value:
                                                    "graph generator"):
                             graph.master_run(".", "Growth")
                             print("\n")
-                            
+
+                # Report generation capabilities
+                elif ls_fct[value - 1].count("report") == 1:
+
+                    # PTA report generation
+                    if ls_fct[value - 1].count("Pure Tone") == 1:
+                        report_PTA.master_run(os.path.join(".", "results"))
+                        print("\n")
+
+                    # Distortion product (DPOAE and DP Growth) OAEs
+                    elif ls_fct[value - 1].count("Distortion"):
+                    
+                        # DPOAE report generation
+                        if ls_fct[value - 1] == ("Distortion product OAE "
+                                                 "report generator"):
+                            report_DPOAE.master_run(os.path.join(".",
+                                                                 "results"))
+                            print("\n")
+
+                        # DP Growth report generation
+                        elif ls_fct[value - 1] == ("Distortion product "
+                                                   "growth function report "
+                                                   "generator"):
+                            report_DPGrowth.master_run(os.path.join(".", 
+                                                                    "results"))
+                            print("\n")
 
                 # MRI sessions design files generation functionalities
                 elif ls_fct[value - 1].count("design files") == 1:
