@@ -91,6 +91,7 @@ def pta_graph(result_path, counter, save_error):
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
         ls_folders_ses.pop(-1)
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
@@ -210,6 +211,7 @@ def mtx_graph(result_path, counter, save_error):
         # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
@@ -368,6 +370,7 @@ def teoae_graph(result_path, counter, save_error):
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
         ls_folders_ses.pop(-1)
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
@@ -450,6 +453,7 @@ def dpoae_graph(result_path, counter, save_error):
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
         ls_folders_ses.pop(-1)
+        ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
@@ -531,6 +535,7 @@ def growth_graph(result_path, counter, save_error):
         # extract the list of session folders within a subject folder
         ls_folders_ses = os.listdir(path_sub)
         ls_folders_ses.sort()
+        ls_folders_ses.pop(-1)
         ls_folders_ses.pop(-1)
         #print("ses:", ls_folders_ses, "\n")
         
