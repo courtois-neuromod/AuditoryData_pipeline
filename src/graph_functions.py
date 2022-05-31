@@ -29,10 +29,10 @@ else:
         # -> destination of the created .html graph files:
         #    "[repository_root]/results/graphs/"
         if content_result_path.count("graphs") == 1:
-            print("The results/graphs/ folder is present.\n")
+            print("The [repo_root]/results/graphs/ folder is present.\n")
         else:
             os.mkdir(os.path.join(result_path, "graphs"))
-            print("The results/graphs/ folder was created.\n")
+            print("The [repo_root]/results/graphs/ folder was created.\n")
 
         subfolder_path = os.path.join(result_path, "graphs")
         
@@ -43,8 +43,6 @@ else:
         # subjects' subfolders
         for i in ls_subjects:
             common.create_folder_subjects(i, subfolder_path)
-
-        print("The subjects' subfolders are present in the graphs folder.\n")
 
     def eliminate_row(df, column_to_search, value_to_search):
         """
