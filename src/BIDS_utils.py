@@ -29,11 +29,11 @@ def result_location(result_path):
     # -> destination of the processed data from the database:
     #    "repository_root/results/BIDS_data/"
     if content_result_path.count("BIDS_data") == 1:
-        print("The results/BIDS_data folder is present.\n")
+        print("The [repo_root]/results/BIDS_data folder is present.\n")
         pass
     else:
         os.mkdir(os.path.join(result_path, "BIDS_data"))
-        print("The results/BIDS_data folder was created.\n")
+        print("The [repo_root]/results/BIDS_data folder was created.\n")
 
     # parent_path = os.path.join(result_path, "BIDS_data")
 
@@ -42,7 +42,8 @@ def result_location(result_path):
     #    processed data files:
     #    repository_root/results/BIDS_sidecars_originals/
     if content_result_path.count("BIDS_sidecars_originals") == 1:
-        print("The results/BIDS_sidecars_originals folder is present.\n")
+        print("The [repo_root]/results/BIDS_sidecars_originals folder is "
+              "present.\n")
 
         # Verification of the existence of the json sidecar originals
         sidecar_folder = os.path.join(result_path,
@@ -53,22 +54,31 @@ def result_location(result_path):
         if (sidecar_list.count("tymp_run_level.json") == 1
                 and sidecar_list.count("reflex_run_level.json") == 1
                 and sidecar_list.count("pta_run_level.json") == 1
-                and sidecar_list.count("mtx_run_level.json") == 1):
+                and sidecar_list.count("mtx_run_level.json") == 1
+                and sidecar_list.count("teoae_run_level.json") == 1
+                and sidecar_list.count("dpoae_run_level.json") == 1
+                and sidecar_list.count("dpgrowth_run_level.json") == 1
+                and sidecar_list.count("sessions_session_level.json") == 1):
 
             print("The run-level json sidecars for:\n - tymp\n - reflex\n"
                   " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
                   "are present.\n")
+            print("The session-level json sidecar for:\n - sessions\n"
+                  "is present.\n")
             pass
         else:
             # run json_sidecar_generator.py
             print("At least one of the target files is absent: we will "
-                  "create it for you.\n")
+                  "create it (them) for you.\n")
             jsg.create_sidecars(result_path)
             print("\n")
             print("The run-level json sidecars for:\n - tymp\n - reflex\n"
                   " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
-                  "were created in the results/BIDS_sidecars_originals "
-                  "folder.\n")
+                  "were created in the [repo_root]/results/"
+                  "BIDS_sidecars_originals/ folder.\n")
+            print("The session-level json sidecar for:\n - sessions\n"
+                  "was created in the [repo_root]/results/"
+                  "BIDS_sidecars_originals/ folder.\n")
     else:
         # run json_sidecar_generator.py
         print("The BIDS_sidecars_originals folder is absent: we will "
@@ -77,8 +87,11 @@ def result_location(result_path):
         print("\n")
         print("The run-level json sidecars for:\n - tymp\n - reflex\n"
               " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
-              "were created in the results/BIDS_sidecars_originals "
-              "folder.\n")
+              "were created in the [repo_root]/results/"
+              "BIDS_sidecars_originals folder.\n")
+        print("The session-level json sidecar for:\n - sessions\n"
+              "was created in the [repo_root]/results/"
+              "BIDS_sidecars_originals/ folder.\n")
 
 
 # List the available test results
