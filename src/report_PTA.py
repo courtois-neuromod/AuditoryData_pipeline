@@ -431,6 +431,8 @@ def master_run(result_path):
             # Production of the reports regarding the chronic phase effects
             report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
 
+        print(color.Fore.GREEN
+              + f"The PTA reports for {i} have been generated.\n")
 
 if __name__ == "__main__":
     root_path = ".."
