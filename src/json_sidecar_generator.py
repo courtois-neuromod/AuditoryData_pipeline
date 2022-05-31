@@ -6,10 +6,85 @@ from pathlib import Path
 utf = "UTF-8-SIG"
 
 long_order = "Order of acquisition"
+
 long_side = "Side of ear tested"
+
 lvl_order = {"1": "First sequence acquired",
              "2": "Second sequence acquired"}
+
 lvl_side = {"R": "Right ear", "L": "Left ear"}
+
+lvl_ses_name = {"Baseline 1": "Baseline at the beginning of the Projet "
+                              "Courtois NeuroMod",
+                "Baseline 2": "Baseline at the beginning of the auditory "
+                              "tests protocol",
+                "Baseline 3": "Baseline at the end of the auditory tests "
+                              "protocol",
+                "Month 1": "Experimental session 1",
+                "Month 2": "Experimental session 2",
+                "Month 3": "Experimental session 3",
+                "Month 4": "Experimental session 4",
+                "Month 5": "Experimental session 5",
+                "Month 6": "Experimental session 6",
+                "Month 7": "Experimental session 7",
+                "Month 8": "Experimental session 8",
+                "Month 9": "Experimental session 9",
+                "Month 10": "Experimental session 10",
+                "Month 11": "Experimental session 11",
+                "Month 12": "Experimental session 12",
+                "Suppl. PTA test": "Baseline at the beginning of the "
+                                   "supplementary pure tone audiometry "
+                                   "special protocol",
+                "Suppl. PTA test 1": "Supplementary PTA protocol session 1",
+                "Suppl. PTA test 2": "Supplementary PTA protocol session 2",
+                "Suppl. PTA test 3": "Supplementary PTA protocol session 3",
+                "Suppl. PTA test 4": "Supplementary PTA protocol session 4",
+                "Suppl. PTA test 5": "Supplementary PTA protocol session 5"}
+
+lvl_condition = {"Baseline": "Baseline: includes Tympanometry, Stapedial "
+                             "reflex, Pure tone audiometry, Matrix speech-in-"
+                             "noise perception test, Transient-evoked "
+                             "otoacoustic emissions, Distortion product "
+                             "otoacoustic emissions and Distortion product "
+                             "otoacoustic emissions' growth function at 4 kHz",
+                 "1A": "Hearing test session right before the scan: includes "
+                       "Tympanometry, Stapedial reflex, Pure tone audiometry "
+                       "and Matrix speech-in-noise perception test",
+                 "1B": "Hearing test session right after the scan: includes "
+                       "Pure tone audiometry and Matrix speech-in-noise "
+                       "perception test",
+                 "2": "Hearing test session 2-7 days post-scan: includes "
+                      "Tympanometry, Stapedial reflex, Pure tone audiometry, "
+                      "Matrix speech-in-noise perception test, "
+                      "Transient-evoked otoacoustic emissions, Distortion "
+                      "product otoacoustic emissions and Distortion product "
+                      "otoacoustic emissions' growth function at 4 kHz",
+                 "3A": "OAE test session right before the scan: includes "
+                       "Tympanometry, Stapedial reflex, Transient-evoked "
+                       "otoacoustic emissions, Distortion product otoacoustic "
+                       "emissions and Distortion product otoacoustic "
+                       "emissions' growth function at 2, 4 and 6 kHz",
+                 "3B": "OAE test session right after the scan: includes "
+                       "Transient-evoked otoacoustic emissions, Distortion "
+                       "product otoacoustic emissions and Distortion product "
+                       "otoacoustic emissions' growth function at 2, 4 and "
+                       "6 kHz",
+                 "Suppl. PTA (Baseline)": "Baseline: includes Tympanometry, "
+                                          "Stapedial reflex and Pure tone "
+                                          "audiometry",
+                 "Suppl. PTA A": "Hearing test session right before the "
+                                   "scan: includes Pure tone audiometry. May "
+                                   "also include Tympanometry and Stapedial "
+                                   "reflex",
+                 "Suppl. PTA B": "Hearing test session right after the "
+                                   "scan: includes Pure tone audiometry"}
+
+lvl_scan = {"No Scan": "Session not linked to a scan session",
+            "Anatomical": "Session linked to an anatomical MRI scan session",
+            "Functional": "Session linked to a functional MRI scan session"}
+
+lvl_ses_test = {"X": "Test data available for this type of test",
+                "": "No test data available for this type of test"}
 
 ls_task = ["Tymp", "Reflex", "PTA",
            "MTX", "TEOAE", "DPOAE",
@@ -40,6 +115,10 @@ keys_dpoae = ["order", "side", "freq1", "freq2", "l1",
 keys_growth = ["order", "side", "freq1", "freq2", "l1",
                "l2", "dp", "snr", "noise+2sd", "noise+1sd",
                "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
+
+keys_ses = ["session_id", "session_name", "condition", "scan_type",
+            "Tymp", "Reflex", "PTA", "MTX", "TEOAE", "DPOAE",
+            "DPGrowth_2kHz", "DPGrowth_4kHz", "DPGrowth_6kHz"]
 
 
 def gen_df_tymp():
@@ -521,7 +600,129 @@ def gen_df_growth():
     return df_growth
 
 
-def save_runlvl(df, save_folder, test):
+def gen_df_sessions():
+    """
+    This function generates the session-level sessions.tsv sidecar dataframe.
+    INPUTS:
+    -NO specific external input
+    OUTPUTS:
+    -returns a dataframe ready to be saved in a json format
+    """
+
+    df_sessions = pd.DataFrame(index=index, columns=keys_ses)
+
+    dict_longname_sessions = {keys_ses[0]: "Session identification number",
+                              keys_ses[1]: "Session name and/or type",
+                              keys_ses[2]: "Experimental condition",
+                              keys_ses[3]: "MRI scan type",
+                              keys_ses[4]: "Tympanometry",
+                              keys_ses[5]: "Stapedial reflex",
+                              keys_ses[6]: "Pure tone audiometry",
+                              keys_ses[7]: "Matrix speech-in-noise "
+                                           "perception test",
+                              keys_ses[8]: "Transient-evoked otoacoustic "
+                                           "emissions",
+                              keys_ses[9]: "Distortion product otoacoustic "
+                                           "emissions",
+                              keys_ses[10]: "Distortion product otoacoustic "
+                                            "emissions growth function at "
+                                            "2 kHz",
+                              keys_ses[11]: "Distortion product otoacoustic "
+                                            "emissions growth function at "
+                                            "4 kHz",
+                              keys_ses[12]: "Distortion product otoacoustic "
+                                            "emissions growth function at "
+                                            "6 kHz"}
+
+    dict_desc_sessions = {keys_ses[0]: "Identification number of the sessions "
+                                       "using the BIDS format (ses-XX, "
+                                       "starting with ses-01)",
+                          keys_ses[1]: "Type of session. Can be a baseline "
+                                       "session where reference values are "
+                                       "established for each of the hearing "
+                                       "tests or an experimental protocol "
+                                       "session (Month X) linked to a scan "
+                                       "session to investigate potential "
+                                       "changes in the auditory health of "
+                                       "the research participants.",
+                          keys_ses[2]: "Type of experimental condition. Can "
+                                       "either be a baseline (Baseline or "
+                                       "Suppl. PTA (Baseline)) or one of "
+                                       "the experimental conditions (1[A, B], "
+                                       "2, 3[A, B] or Suppl. PTA [A, B]). ",
+                          keys_ses[3]: "Type of MRI scan linked to the "
+                                       "acquisition session (anatomical, "
+                                       "functional or no scan in the case of "
+                                       "baseline sessions).",
+                          keys_ses[4]: "Tympanic membrane and middle ear "
+                                       "structures mobility test.",
+                          keys_ses[5]: "Test of the reactivity of the "
+                                       "stapedial reflex.",
+                          keys_ses[6]: "Behavioral measurement of the earing "
+                                       "thresholds using pure tones at "
+                                       "different frequencies.",
+                          keys_ses[7]: "Behavioral speech-in-noise perception "
+                                       "test using five words sentences built "
+                                       "from a matrix of words.",
+                          keys_ses[8]: "Otoacoustic emissions test using "
+                                       "brief transient stimuli",
+                          keys_ses[9]: "Otoacoustic emissions test using the "
+                                       "simultaneous presentation of two pure "
+                                       "tones (f1 and f2) with a f2/f1 ratio "
+                                       "of 1,22 and target intensities L1 = "
+                                       "65 dB SPL (for f1) and L2 = 55 dB "
+                                       "SPL (for f2).",
+                          keys_ses[10]: "Otoacoustic emissions test using the "
+                                        "simultaneous presentation of two "
+                                        "pure tones (f1 and f2) with a f2/f1 "
+                                        "ratio of 1,22 and where the target "
+                                        "f2 = 2 kHz. The pair of frequencies "
+                                        "f1-f2 is presented with decreasing "
+                                        "intensities.",
+                          keys_ses[11]: "Otoacoustic emissions test using the "
+                                        "simultaneous presentation of two "
+                                        "pure tones (f1 and f2) with a f2/f1 "
+                                        "ratio of 1,22 and where the target "
+                                        "f2 = 4 kHz. The pair of frequencies "
+                                        "f1-f2 is presented with decreasing "
+                                        "intensities.",
+                          keys_ses[12]: "Otoacoustic emissions test using the "
+                                        "simultaneous presentation of two "
+                                        "pure tones (f1 and f2) with a f2/f1 "
+                                        "ratio of 1,22 and where the target "
+                                        "f2 = 6 kHz. The pair of frequencies "
+                                        "f1-f2 is presented with decreasing "
+                                        "intensities."}
+
+    for k_ses in keys_ses:
+        if k_ses == keys_ses[0]:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+
+        elif k_ses == keys_ses[1]:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+            df_sessions.at[index[2], k_ses] = lvl_ses_name
+
+        elif k_ses == keys_ses[2]:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+            df_sessions.at[index[2], k_ses] = lvl_condition
+
+        elif k_ses == keys_ses[3]:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+            df_sessions.at[index[2], k_ses] = lvl_scan
+
+        else:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+            df_sessions.at[index[2], k_ses] = lvl_ses_test
+
+    return df_sessions
+
+
+def save_json(df, save_folder, test, level):
     """
     This function saves the provided dataframe in a json file and formats it
     to comply with BIDS standards.
@@ -530,12 +731,19 @@ def save_runlvl(df, save_folder, test):
     -save_folder: path to save the json file
     -test: string containing the name of the test to insert in the json
            file name.
+    -level: BIDS structure level where the json file will be used. Can only
+            take the following string values: -run
+                                              -session
     OUTPUTS:
     -prints a user feedback: Saved [name of the saved file]
     -NO specific return to the script
     """
 
-    filename = test + "_run_level.json"
+    if level == "run":
+        filename = test + "_run_level.json"
+    elif level == "session":
+        filename = test + "_session_level.json"
+
     df.to_json(os.path.join(save_folder, filename), indent=2)
 
     with open(os.path.join(save_folder, filename), "r") as origin:
@@ -582,14 +790,16 @@ def create_sidecars(results_folder):
     df_teoae = gen_df_teoae()
     df_dpoae = gen_df_dpoae()
     df_growth = gen_df_growth()
+    df_sessions = gen_df_sessions()
 
-    save_runlvl(df_tymp, save_folder, "tymp")
-    save_runlvl(df_reflex, save_folder, "reflex")
-    save_runlvl(df_pta, save_folder, "pta")
-    save_runlvl(df_mtx, save_folder, "mtx")
-    save_runlvl(df_teoae, save_folder, "teoae")
-    save_runlvl(df_dpoae, save_folder, "dpoae")
-    save_runlvl(df_growth, save_folder, "dpgrowth")
+    save_json(df_tymp, save_folder, "tymp", "run")
+    save_json(df_reflex, save_folder, "reflex", "run")
+    save_json(df_pta, save_folder, "pta", "run")
+    save_json(df_mtx, save_folder, "mtx", "run")
+    save_json(df_teoae, save_folder, "teoae", "run")
+    save_json(df_dpoae, save_folder, "dpoae", "run")
+    save_json(df_growth, save_folder, "dpgrowth", "run")
+    save_json(df_sessions, save_folder, "sessions", "session")
 
 
 if __name__ == "__main__":
