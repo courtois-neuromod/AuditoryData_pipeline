@@ -2,6 +2,8 @@ import os
 import pandas as pd
 # import glob
 
+from shutil import copyfile
+
 from src import BIDS_utils as utils
 from src import common_functions as common
 
@@ -367,9 +369,13 @@ def master_run(data_path, result_path):
 
         ref.set_index("session_id", inplace=True)
 
-        ref_name = 'sub-' + i.lstrip("Sub") + "_sessions.tsv"
-        ref_save_path = os.path.join(subject_folder_path, ref_name)
+        ref_name = 'sub-' + i.lstrip("Sub") + "_sessions"
+        ref_save_path = os.path.join(subject_folder_path, ref_name + ".tsv")
         ref.to_csv(ref_save_path, sep="\t")
+
+        json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
+        copyfile(os.path.join(json_origin, "sessions_session_level.json"),
+                 os.path.join(subject_folder_path, ref_name + ".json"))
 
         print(f"The tsv and json files for {i} have been created.\n")
 
