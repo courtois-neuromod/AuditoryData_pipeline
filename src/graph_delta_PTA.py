@@ -3,13 +3,25 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
+
 def trace_list(report_path, sub):
-    ls_doc = os.listdir(report_path)
+    """
+    This function [...]
+    INPUTS:
+    -report_path: 
+    -sub:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    path = os.path.join(report_path, sub)
+
+    ls_doc = os.listdir(path)
     
     ls = []
     for i in ls_doc:
         if (i.startswith(sub)
-                and i.find("delta") != -1
+                and i.find("report") != -1
                 and i.find("PTA") != -1):
             ls.append(i)
         else:
@@ -19,24 +31,67 @@ def trace_list(report_path, sub):
     
     return ls
 
+
 def file_name(sub, ear):
-    filename = sub.capitalize() + "_PTA_deltas_" + ear + ".html"
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    -ear:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    filename = sub + "_PTA-deltas_" + ear + ".html"
+
     return filename
 
+
 def savefile(result_path, fig, sub, ear):
+    """
+    This function [...]
+    INPUTS:
+    -result_path:
+    -fig:
+    -sub:
+    -ear:
+    OUTPUTS:
+    -returns [...]
+    """
+
     filename = file_name(sub, ear)
     save_path = os.path.join(result_path, "graphs", sub, filename)
     #print(save_path)
     fig.write_html(save_path)
+
     
 def graph_title(sub):
-    title = (sub.capitalize()
-             + ", Différences (Postscan - Préscan), Audiométrie par sons purs")
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    -condition:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    title = sub + ", Différences test-retest, Audiométrie par sons purs"
+
     return title
 
-def fct_1(result_path):
+def fig_generation(result_path):
+    """
+    This function [...]
+    INPUTS:
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -returns [...]
+    """
+
+    # Path inside the reports folder
     report_path = os.path.join(result_path, "reports")
     
+    # Build lists of all the reports to plot
     files_01 = trace_list(report_path, "sub-01")
     files_02 = trace_list(report_path, "sub-02")
     files_03 = trace_list(report_path, "sub-03")
@@ -52,16 +107,27 @@ def fct_1(result_path):
     
     for i in range(0, len(ls2do)):
         #print(ls2do[i])
-        filename_decomp_sub = ls2do[i][0].split("_")
-        #print(filename_decomp_sub)
-        sub = filename_decomp_sub[0]
+        decomp_sub = ls2do[i][0].split("_")
+        #print(filename_decomp)
+        sub = decomp_sub[0]
         #print(sub)
 
+        ls_ses = []
+        for a in range(0, len(ls2do[i])):
+            split_underscore = ls2do[i][a].split("_")
+            ses_post = split_underscore[3].split(".")
+            ls_ses.append(ses_post[0])
+
+        ls_ses.sort()
+        #print(ls_ses)
+        
+        # Figures' titles and axis informations
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Fréquence (Hz)",
                   "y": "\u0394 seuil de détection (dB HL)"}
-        
+
+        # Figures initialization and general parameters definition
         fig_L = go.Figure()
         fig_R = go.Figure()
 
@@ -70,7 +136,7 @@ def fct_1(result_path):
                             yaxis_title=labels["y"],
                             xaxis_type="log",
                             xaxis_range=[np.log10(100), np.log10(20000)],
-                            yaxis_range=[-20, 30],
+                            yaxis_range=[-25, 35],
                             yaxis_dtick=5,
                             xaxis_showline=True,
                             xaxis_linecolor="black",
@@ -85,7 +151,7 @@ def fct_1(result_path):
                             yaxis_title=labels["y"],
                             xaxis_type="log",
                             xaxis_range=[np.log10(100), np.log10(20000)],
-                            yaxis_range=[-20, 30],
+                            yaxis_range=[-25, 35],
                             yaxis_dtick=5,
                             xaxis_showline=True,
                             xaxis_linecolor="black",
@@ -95,32 +161,33 @@ def fct_1(result_path):
                             yaxis_zerolinewidth=1,
                             yaxis_zerolinecolor="black")
         
-        for a in range(0, len(ls2do[i])):
-            path_df = os.path.join(report_path, ls2do[i][a])
+        # Trace generations
+        for b in range(0, len(ls2do[i])):
+            path_df = os.path.join(report_path, sub, ls2do[i][b])
             df = pd.read_csv(path_df, sep="\t")
             #print(df)
             columns = list(df.columns)
 
-            filename_decomp_ses = ls2do[i][a].split("_")
-            #ses_pre = filename_decomp_ses[2]
-            ses_type = filename_decomp_ses[2]
-
+            decomp_ses = ls2do[i][b].split("_")
+            #print(decomp_ses)
+            ses_type = decomp_ses[2]
+            decomp_scan = decomp_ses[3].split(".")
+            ses_scan = decomp_scan[0]
+            
             file_ref = f"{sub}_sessions.tsv"
             path_df_ref = os.path.join(result_path, "BIDS_data", sub, file_ref)
             df_ref = pd.read_csv(path_df_ref, sep="\t")
 
-            #index = df_ref.index[df_ref["session_id"] == ses_pre].values
-            #print(index)
-            
-            if ses_type == "ses-01":
-                ses_name = "(48post - Bsl_1)"
-            else:
-                ses_name = "(post - pre)"
-            
-            #ses_name = df_ref.at[index[0], "session_name"]
+            scan = df_ref.loc[df_ref["session_id"] == ses_scan,
+                              "scan_type"].iloc[0].lower()[0:4]
+            #print(scan)
 
-            name = f"Session {a+1:02d} {ses_name}"
-            #print(name)
+            if ses_type == "ses-01":
+                ses_name = (f"48Post - Bsl_1 "
+                            f"(ses_{ls_ses.index(ses_scan)+1:02d}, {scan})")
+            else:
+                ses_name = (f"Post - Pre "
+                            f"(ses_{ls_ses.index(ses_scan)+1:02d}, {scan})")
             
             x_L = []
             x_R = []
@@ -148,7 +215,7 @@ def fct_1(result_path):
             #print(data_L)
             #print(x_R)
             #print(data_R)
-            
+
             fig_L.add_trace(go.Scatter(x=x_L,
                                        y=data_L,
                                        mode='lines+markers',
@@ -161,12 +228,12 @@ def fct_1(result_path):
                                        name=ses_name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.0f} dB HL"))
-            
+
         #fig_L.show()
         #fig_R.show()
         
         savefile(result_path, fig_L, sub, "L")
         savefile(result_path, fig_R, sub, "R")
-            
 
-fct_1(os.path.join("..", "results"))
+
+fig_generation(os.path.join("..", "results"))

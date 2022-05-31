@@ -5,28 +5,60 @@ import plotly.graph_objects as go
 
 
 def trace_list(report_path, sub):
-    ls_doc = os.listdir(report_path)
+    """
+    This function [...]
+    INPUTS:
+    -report_path:
+    -sub:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    path = os.path.join(report_path, sub)
+
+    ls_doc = os.listdir(path)
     
     ls = []
     for i in ls_doc:
         if (i.startswith(sub)
-                and i.find("delta") != -1
+                and i.find("report") != -1
                 and i.find("DPOAE") != -1):
             ls.append(i)
         else:
             pass
+
     ls.sort()
     
     return ls
 
 
 def file_name(sub, ear):
-    filename = sub.capitalize() + "_DPOAE_deltas_" + ear + ".html"
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    -ear:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    filename = sub + "_DPOAE_deltas_" + ear + ".html"
 
     return filename
 
 
 def savefile(result_path, fig, sub, ear):
+    """
+    This function [...]
+    INPUTS:
+    -result_path:
+    -fig:
+    -sub:
+    -ear:
+    OUTPUTS:
+    -returns [...]
+    """
+
     filename = file_name(sub, ear)
     save_path = os.path.join(result_path, "graphs", sub, filename)
     #print(save_path)
@@ -34,16 +66,33 @@ def savefile(result_path, fig, sub, ear):
 
 
 def graph_title(sub):
-    title = (sub.capitalize()
-             + (", Différences (Postscan - Préscan), Émissions "
-                "otoacoustiques par produits de distortion"))
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    title = sub + (", Différences test-retest, Émissions otoacoustiques par "
+                   "produits de distortion")
 
     return title
 
 
-def fct_1(result_path):
+def fig_generation(result_path):
+    """
+    This function [...]
+    INPUTS:
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -returns [...]
+    """
+
+    # Path inside the reports folder
     report_path = os.path.join(result_path, "reports")
     
+    # Build lists of all the reports to plot
     files_01 = trace_list(report_path, "sub-01")
     files_02 = trace_list(report_path, "sub-02")
     files_03 = trace_list(report_path, "sub-03")
@@ -59,15 +108,26 @@ def fct_1(result_path):
     
     for i in range(0, len(ls2do)):
         #print(ls2do[i])
-        filename_decomp = ls2do[i][0].split("_")
-        sub = filename_decomp[0]
+        decomp_sub = ls2do[i][0].split("_")
+        sub = decomp_sub[0]
         #print(sub)
+
+        ls_ses = []
+        for a in range(0, len(ls2do[i])):
+            split_underscore = ls2do[i][a].split("_")
+            ses_post = split_underscore[3].split(".")
+            ls_ses.append(ses_post[0])
+
+        ls_ses.sort()
+
+        # Figures' titles and axis informations
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Fréquence F2 (Hz)",
                   "y": "\u0394 amplitude émissions otoacoustiques (dB SPL)"}
         #print(labels["y"])
         
+        # Figures initialization and general parameters definition
         fig_L = go.Figure()
         fig_R = go.Figure()
 
@@ -101,25 +161,34 @@ def fct_1(result_path):
                             yaxis_zerolinewidth=1,
                             yaxis_zerolinecolor="black")
         
-        for a in range(0, len(ls2do[i])):
-            #print(ls2do[i][a])
-            ses_decomp = ls2do[i][a].split("_")
-            #print(ses_decomp)
-            ses_type = ses_decomp[2]
-            
-            if ses_type == "ses-01":
-                ses_name = "(48post - Bsl_1)"
-            else:
-                ses_name = "(post - pre)"
-                
-            name = f"Session {a+1:02d} {ses_name}"
-            #print(name)
-            path_df = os.path.join(report_path, ls2do[i][a])
+        # Trace generation
+        for b in range(0, len(ls2do[i])):
+            path_df = os.path.join(report_path, sub, ls2do[i][b])
             df = pd.read_csv(path_df, sep="\t")
             #print(df)
             columns = list(df.columns)
             #columns.remove("side")
-            
+
+            decomp_ses = ls2do[i][b].split("_")
+            #print(decomp_ses)
+            ses_type = decomp_ses[2]
+            decomp_scan = decomp_ses[3].split(".")
+            ses_scan = decomp_scan[0]
+
+            file_ref = f"{sub}_sessions.tsv"
+            path_df_ref = os.path.join(result_path, "BIDS_data", sub, file_ref)
+            df_ref = pd.read_csv(path_df_ref, sep="\t")
+
+            scan = df_ref.loc[df_ref["session_id"] == ses_scan,
+                              "scan_type"].iloc[0].lower()[0:4]
+
+            if ses_type == "ses-01":
+                ses_name = (f"48Post - Bsl_1 "
+                            f"(ses_{ls_ses.index(ses_scan)+1:02d}, {scan})")
+            else:
+                ses_name = (f"Post - Pre "
+                            f"(ses_{ls_ses.index(ses_scan)+1:02d}, {scan})")
+
             x_L = []
             x_R = []
             data_L = []
@@ -150,13 +219,13 @@ def fct_1(result_path):
             fig_L.add_trace(go.Scatter(x=x_L,
                                        y=data_L,
                                        mode='lines+markers',
-                                       name=name,
+                                       name=ses_name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.1f} dB SPL"))
             fig_R.add_trace(go.Scatter(x=x_R,
                                        y=data_R,
                                        mode='lines+markers',
-                                       name=name,
+                                       name=ses_name,
                                        hovertemplate="%{x:1.0f} Hz<br>" +
                                                      "%{y:1.1f} dB SPL"))
             
@@ -167,4 +236,4 @@ def fct_1(result_path):
         savefile(result_path, fig_R, sub, "R")
             
 
-fct_1(os.path.join("..", "results"))
+fig_generation(os.path.join("..", "results"))

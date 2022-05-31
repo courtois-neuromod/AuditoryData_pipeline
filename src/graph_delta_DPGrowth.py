@@ -5,7 +5,20 @@ import plotly.graph_objects as go
 
 
 def trace_list(report_path, sub, freq):
-    ls_doc = os.listdir(report_path)
+    """
+    This function [...]
+    INPUTS:
+    -report_path:
+    -sub:
+    -ear:
+    -freq:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    path = os.path.join(report_path, sub)
+
+    ls_doc = os.listdir(path)
     
     ls = []
     for i in ls_doc:
@@ -17,16 +30,38 @@ def trace_list(report_path, sub, freq):
             pass
 
     ls.sort()
+
     return ls
 
 
 def file_name(sub, ear, freq):
-    filename = sub.capitalize() + f"_Growth{freq}_deltas_" + ear + ".html"
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    -ear:
+    -freq:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    filename = sub + f"_Growth{freq}_deltas_" + ear + ".html"
 
     return filename
 
 
 def savefile(result_path, fig, sub, ear, freq):
+    """
+    This function [...]
+    INPUTS:
+    -result_path:
+    -sub:
+    -ear:
+    -freq:
+    OUTPUTS:
+    -returns [...]
+    """
+
     filename = file_name(sub, ear, freq)
     save_path = os.path.join(result_path, "graphs", sub, filename)
     #print(save_path)
@@ -34,17 +69,33 @@ def savefile(result_path, fig, sub, ear, freq):
 
 
 def graph_title(sub):
-    title = (sub.capitalize()
-             + (", Différences (Postscan - Préscan), Émissions "
-                "otoacoustiques par produits de distortion: "
-                "fonction de croissance"))
+    """
+    This function [...]
+    INPUTS:
+    -sub:
+    OUTPUTS:
+    -returns [...]
+    """
+
+    title = sub + (", Différences test-retest, Émissions otoacoustiques par "
+                   "produits de distortion: fonction de croissance")
 
     return title
 
 
-def fct_1(result_path):
+def fig_generation(result_path):
+    """
+    This function [...]
+    INPUTS:
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -returns [...]
+    """
+
+    # Path inside the reports folder
     report_path = os.path.join(result_path, "reports")
     
+    # Build lists of all the reports to plot
     files_01_2 = trace_list(report_path, "sub-01", 2)
     files_01_4 = trace_list(report_path, "sub-01", 4)
     files_01_6 = trace_list(report_path, "sub-01", 6)
@@ -75,17 +126,30 @@ def fct_1(result_path):
     #print(ls2do)
     
     for i in range(0, len(ls2do)):
-        #ls2do[i].sort()
         #print(ls2do[i])
-        filename_decomp = ls2do[i][0][0].split("_")
-        sub = filename_decomp[0]
+        decomp_sub = ls2do[i][0][0].split("_")
+        sub = decomp_sub[0]
         #print(sub)
+
+        ls_ses = []
+        for a in range(0, len(ls2do[i])):
+            #print(ls2do[i][a])
+            for x in range(0, len(ls2do[i][a])):
+                #print(ls2do[i][a][x])
+                split_underscore = ls2do[i][a][x].split("_")
+                ses_post = split_underscore[3].split(".")
+                ls_ses.append(ses_post[0])
+
+        ls_ses.sort
+
+        # Figures' titles and axis informations
         title = graph_title(sub)
         labels = {"title": title,
                   "x": "Niveau de présentation de F2 (dB SPL)",
                   "y": "\u0394 amplitude émissions otoacoustiques (dB SPL)"}
         #print(labels["y"])
-        
+
+        # Figures initialization and general parameters definition
         fig_L2 = go.Figure()
         fig_R2 = go.Figure()
         fig_L4 = go.Figure()
@@ -99,7 +163,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -115,7 +179,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -131,7 +195,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -147,7 +211,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -163,7 +227,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -179,7 +243,7 @@ def fct_1(result_path):
                              yaxis_title=labels["y"],
                              #xaxis_type="log",
                              xaxis_range=[30, 80],
-                             yaxis_range=[-35, 25],
+                             yaxis_range=[-35, 35],
                              yaxis_dtick=5,
                              xaxis_showline=True,
                              xaxis_linecolor="black",
@@ -189,15 +253,43 @@ def fct_1(result_path):
                              yaxis_zerolinewidth=1,
                              yaxis_zerolinecolor="black")
         
-        for a in range(0, len(ls2do[i])):
-            for x in range(0, len(ls2do[i][a])):
-                #print(ls2do[i][a][x])
-                path_df = os.path.join(report_path, ls2do[i][a][x])
+        # Trace generation
+        for b in range(0, len(ls2do[i])):
+            for y in range(0, len(ls2do[i][b])):
+                #print(ls2do[i][b][y])
+                path_df = os.path.join(report_path, sub, ls2do[i][b][y])
                 df = pd.read_csv(path_df, sep="\t")
                 #print(df)
                 columns = list(df.columns)
                 #columns.remove("side")
-            
+
+                decomp_ses = ls2do[i][b][y].split("_")
+                #print(decomp_ses)
+                ses_type = decomp_ses[2]
+                #print(ses_type)
+                decomp_scan = decomp_ses[3].split(".")
+                ses_scan = decomp_scan[0]
+
+                file_ref = f"{sub}_sessions.tsv"
+                path_df_ref = os.path.join(result_path, "BIDS_data",
+                                           sub, file_ref)
+                df_ref = pd.read_csv(path_df_ref, sep="\t")
+
+                scan = df_ref.loc[df_ref["session_id"] == ses_scan,
+                                  "scan_type"].iloc[0].lower()[0:4]
+
+                #print(ses_type, ses_type == "ses-01")
+
+                if ses_type == "ses-01":
+                    ses_name = (f"48Post - Bsl_1 "
+                                f"(ses_{ls_ses.index(ses_scan)+1:02d}, "
+                                f"{scan})")
+
+                else:
+                    ses_name = (f"Post - Pre "
+                                f"(ses_{ls_ses.index(ses_scan)+1:02d}, "
+                                f"{scan})")
+
                 x_L = []
                 x_R = []
                 data_L = []
@@ -225,29 +317,29 @@ def fct_1(result_path):
                 #print(x_R)
                 #print(data_R)
 
-                if ls2do[i][a][x].find("Growth2") != -1:
+                if ls2do[i][b][y].find("Growth2") != -1:
                     fig_L2.add_trace(go.Scatter(x=x_L,
                                                 y=data_L,
                                                 mode='lines+markers',
-                                                #name=title_run_L,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
-                                                               + " dB SPL<br>"
+                                                              + " dB SPL<br>"
                                                                + "%{y:1.1f}"
                                                                + " dB SPL")))
                     fig_R2.add_trace(go.Scatter(x=x_R,
                                                 y=data_R,
                                                 mode='lines+markers',
-                                                #name=title_run_R,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
                                                                + " dB SPL<br>"
                                                                + "%{y:1.1f}"
                                                                + " dB SPL")))
 
-                elif ls2do[i][a][x].find("Growth4") != -1:
+                elif ls2do[i][b][y].find("Growth4") != -1:
                     fig_L4.add_trace(go.Scatter(x=x_L,
                                                 y=data_L,
                                                 mode='lines+markers',
-                                                #name=title_run_L,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
                                                                + " dB SPL<br>"
                                                                + "%{y:1.1f}"
@@ -255,17 +347,17 @@ def fct_1(result_path):
                     fig_R4.add_trace(go.Scatter(x=x_R,
                                                 y=data_R,
                                                 mode='lines+markers',
-                                                #name=title_run_R,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
                                                                + " dB SPL<br>"
                                                                + "%{y:1.1f}"
                                                                + " dB SPL")))
 
-                elif ls2do[i][a][x].find("Growth6") != -1:
+                elif ls2do[i][b][y].find("Growth6") != -1:
                     fig_L6.add_trace(go.Scatter(x=x_L,
                                                 y=data_L,
                                                 mode='lines+markers',
-                                                #name=title_run_L,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
                                                                + " dB SPL<br>"
                                                                + "%{y:1.1f}"
@@ -273,7 +365,7 @@ def fct_1(result_path):
                     fig_R6.add_trace(go.Scatter(x=x_R,
                                                 y=data_R,
                                                 mode='lines+markers',
-                                                #name=title_run_R,
+                                                name=ses_name,
                                                 hovertemplate=("%{x:1.1f}"
                                                                + " dB SPL<br>"
                                                                + "%{y:1.1f}"
@@ -294,4 +386,4 @@ def fct_1(result_path):
         savefile(result_path, fig_R6, sub, "R", 6)
             
 
-fct_1(os.path.join("..", "results"))
+fig_generation(os.path.join("..", "results"))
