@@ -42,7 +42,7 @@ def file_name(sub, ear):
     -returns [...]
     """
 
-    filename = sub + "_DPOAE_deltas_" + ear + ".html"
+    filename = sub + "_DPOAE-deltas_" + ear + ".html"
 
     return filename
 
@@ -134,6 +134,7 @@ def fig_generation(result_path):
         fig_L.update_layout(title=labels["title"] + ", oreille gauche",
                             xaxis_title=labels["x"],
                             yaxis_title=labels["y"],
+                            showlegend=True,
                             xaxis_type="log",
                             xaxis_range=[np.log10(750), np.log10(11000)],
                             yaxis_range=[-45, 30],
@@ -149,6 +150,7 @@ def fig_generation(result_path):
         fig_R.update_layout(title=labels["title"] + ", oreille droite",
                             xaxis_title=labels["x"],
                             yaxis_title=labels["y"],
+                            showlegend=True,
                             xaxis_type="log",
                             xaxis_range=[np.log10(750), np.log10(11000)],
                             yaxis_range=[-45, 30],
