@@ -186,7 +186,7 @@ def save_df(data_tosave_df, single_test_df, index,
     -index: the line index (in single_test_df) linked with the data to save
             (data_tosave_df)
     -test: the selected test marker
-    -result_path: path to results (repository_root/results/)
+    -result_path: path to results ([repo_root]/results/)
     OUTPUTS:
     -saved tsv file
     -NO specific return to the script
@@ -194,7 +194,10 @@ def save_df(data_tosave_df, single_test_df, index,
     # Folder where to put each participants' folder
     parent_path = os.path.join(result_path, "BIDS_data")
 
-    sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
+    ID = single_test_df['Participant_ID'][index]
+
+    #sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
+    sub = single_test_df['Participant_ID'][index]
 
     ses = single_test_df["Session_ID"][index]
 
@@ -202,8 +205,8 @@ def save_df(data_tosave_df, single_test_df, index,
     # The last code section of BIDS_formater.py must then be activated
     ext = '.tsv'
 
-    path = os.path.join(parent_path, 'sub-' + sub, 'ses-' + ses)
-    file_name = ('sub-' + sub + '_ses-' + ses + '_task-'
+    path = os.path.join(parent_path, sub, 'ses-' + ses)
+    file_name = (sub + '_ses-' + ses + '_task-'
                  + test + '_run-' + run + "_beh")
 
     data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')

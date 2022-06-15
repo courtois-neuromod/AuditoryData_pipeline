@@ -67,7 +67,7 @@ else:
 
                     # The encased section contains the subscript calls.
                     # If functionality are to be added, here is where to
-                    # add them(Don't forget to also add them to the list
+                    # add them (Don't forget to also add them to the list
                     # of available functions: ls_fct).
                     ###########################################################
 
@@ -124,7 +124,7 @@ else:
         This function creates by-subject folders in a specified folder
         INPUTS:
         -subject: subject ID used by the script or the database's
-                  dataframe (format: Sub0X)
+                  dataframe (format: sub-0X or Sub0X)
         -parent_path: path to get inside the specified folder
         OUTPUTS:
         -folder for the provided subject ID in the BIDS_data/ folder

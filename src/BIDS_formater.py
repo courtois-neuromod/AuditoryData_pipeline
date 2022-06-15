@@ -9,7 +9,7 @@ from src import common_functions as common
 
 
 # Create a list of the subjects and a reference path for the results
-subjects = ['Sub01', 'Sub02', 'Sub03', 'Sub04', 'Sub05', 'Sub06']
+subjects = ['sub-01', 'sub-02', 'sub-03', 'sub-04', 'sub-05', 'sub-06']
 
 # Specify the columns to be used for each test
 # -> Subject and session settings data
@@ -112,15 +112,21 @@ def create_folder_session(subject, session_count, parent_path):
     """
     This function creates by-session folders in the BIDS_data/sub-0*/ folder
     INPUTS:
-    -subject: subject ID used in the database's dataframe (format: Sub0X)
+    -subject: subject ID used in the database's dataframe (format: Sub0X or
+              sub-0x)
     -session_count: number of line(s) in the by-subject dataframe
     OUTPUTS:
     -folders for each session in the provided subject's folder
     -returns the list of the session folder names
     """
 
-    sub_ID = subject.lstrip("Sub")
-    children_path = os.path.join(parent_path, f"sub-{sub_ID}")
+    if subject.startswith("Sub"):
+        sub_ID = subject.lstrip("Sub")
+        children_path = os.path.join(parent_path, f"sub-{sub_ID}")
+
+    elif subject.startswith("sub-"):
+        children_path = os.path.join(parent_path, subject)
+
     dir_content = os.listdir(children_path)
 
     ls_ses = []
@@ -296,7 +302,9 @@ def master_run(data_path, result_path):
                              x_growth, auditory_test_path, result_path)
 
         # .tsv session-level reference file creation
-        column_reference = ["session_id", "session_name", "condition", "scan_type"]
+        column_reference = ["session_id", "session_name",
+                            "condition", "scan_type"]
+
         for w in ls_test:
             column_reference.append(w)
 
@@ -369,7 +377,7 @@ def master_run(data_path, result_path):
 
         ref.set_index("session_id", inplace=True)
 
-        ref_name = 'sub-' + i.lstrip("Sub") + "_sessions"
+        ref_name = i + "_sessions"
         ref_save_path = os.path.join(subject_folder_path, ref_name + ".tsv")
         ref.to_csv(ref_save_path, sep="\t")
 
