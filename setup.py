@@ -9,5 +9,7 @@ setup(name="AuditoryDataPipeline",
       url="https://github.com/eddyfortier/AuditoryData_pipeline",
       install_requires=["numpy", "pandas",
                         "plotly", "matplotlib",
-                        "sklearn", "colorama"],
+                        "sklearn", "colorama",
+                        "seaborn", "notebook"
+                        ],
       packages=find_packages())
