@@ -13,7 +13,7 @@ subjects = ['sub-01', 'sub-02', 'sub-03', 'sub-04', 'sub-05', 'sub-06']
 
 # Specify the columns to be used for each test
 # -> Subject and session settings data
-columns_conditions = ["Participant_ID", "DATE",
+columns_conditions = ["Participant_ID", "Date",
                       "Session_ID", "Protocol name",
                       "Protocol condition", "Scan type"]
 

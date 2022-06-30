@@ -471,7 +471,7 @@ def extract_teoae(data_sub, data_oae_sub, oae_file_list,
 
     for j in range(0, len(data_sub)):
         subject = data_sub["Participant_ID"][j]
-        date = data_sub["DATE"][j]
+        date = data_sub["Date"][j]
         condition = data_sub["Protocol condition"][j]
 
         if condition in no_oae:
@@ -606,7 +606,7 @@ def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
 
     for j in range(0, len(data_sub)):
         subject = data_sub["Participant_ID"][j]
-        date = data_sub["DATE"][j]
+        date = data_sub["Date"][j]
         condition = data_sub["Protocol condition"][j]
 
         if condition in no_oae:
@@ -756,7 +756,7 @@ def growth_prepost(data_sub, i, oae_file_list,
                    x_growth, data_path, result_path):
 
     subject = data_sub["Participant_ID"][i]
-    date = data_sub["DATE"][i]
+    date = data_sub["Date"][i]
     condition = data_sub["Protocol condition"][i]
 
     if condition.find("Condition 3A") != -1:
@@ -923,7 +923,7 @@ def growth_others(data_sub, i, oae_file_list,
                   x_growth, data_path, result_path):
 
     subject = data_sub["Participant_ID"][i]
-    date = data_sub["DATE"][i]
+    date = data_sub["Date"][i]
     condition = data_sub["Protocol condition"][i]
 
     growth_R_file = None
