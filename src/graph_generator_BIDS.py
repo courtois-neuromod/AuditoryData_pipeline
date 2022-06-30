@@ -10,7 +10,7 @@ from src import graph_DPGrowth as growth
 from src import common_functions as common
 
 
-subjects = ["Sub01", "Sub02", "Sub03", "Sub04", "Sub05", "Sub06"]
+subjects = ["sub-01", "sub-02", "sub-03", "sub-04", "sub-05", "sub-06"]
 
 #ls_columns_common = ["Participant_ID", "DATE", "Protocol name",
 #                     "Protocol condition", "Scan type"]
