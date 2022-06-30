@@ -331,6 +331,9 @@ def report_48(ls, ses_baseline, sub, df_ref, path_ses, path_reports):
 
 def master_run(result_path):
 
+    # Prompt the user for the baseline session to use as reference
+    bsl_index = common.baseline_ID()
+
     # path to the BIDS formated dataset
     bids_path = os.path.join(result_path, "BIDS_data")
 
@@ -369,10 +372,10 @@ def master_run(result_path):
         ref_filename = ls_ses.pop(filename_index)
         ses_ls_df = pd.read_csv(os.path.join(path_ses, ref_filename), sep="\t")
 
-        # Extract reference data: ses-01 (Baseline #1)
-        ses_baseline = ses_ls_df.at[0, "session_id"]
+        # Extract reference data
+        ses_baseline = ses_ls_df.at[bsl_index, "session_id"]
 
-        # Path inside the Baseline #1 folder
+        # Path inside the Baseline folder
         path_base_ses = os.path.join(path_ses, ses_baseline)
         ls_folder_baseline = os.listdir(path_base_ses)
 
