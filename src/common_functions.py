@@ -136,9 +136,9 @@ else:
 
         dir_content = os.listdir(parent_path)
         dir_content.sort()
-        
+
         sub_ID = ""
-        
+
         for i in subject:
             if i.isdigit():
                 sub_ID += i
@@ -151,7 +151,10 @@ else:
             os.mkdir(os.path.join(parent_path, f"sub-{sub_ID}"))
             print(f"The subject's subfolder for sub-{sub_ID} was created.\n")
 
+###############################################################################
+
     def graph_trace_color(color_qty):
+        # THIS FUNCTION IS INCOMPLETE AND DOESN'T WORK YET!!!
         """
         INPUTS:
         -color_qty: the amount of different colors to pick from the colormap
@@ -167,3 +170,68 @@ else:
         ls_value = np.linspace(0, 1, color_qty, endpoint=True)
 
         return color_ls_prepost, color_ls_48
+
+###############################################################################
+
+    def baseline_ID():
+        """
+        This function prompt the user with a list of possible baseline
+        sessions to be used as a reference and returns the index value of the
+        selected session
+        INPUTS:
+        -NO specific input
+        OUTPUTS:
+        -returns the index of the selected baseline session (for the
+         sub-0X_sessions.tsv file)
+        """
+
+        ls_baseline = ["Baseline #1 (November 2018 - July 2019)",
+                       "Baseline #2 (January - February 2021)"]
+
+        prompt_instruction = ("Please select which one of the available "
+                              "baseline sessions you want to use as "
+                              "reference.")
+
+        prompt_options = ""
+
+        for i in range(0, len(ls_baseline)):
+            prompt_options += ("\n" + str(i+1) + "-" + ls_baseline[i])
+
+        prompt_text = prompt_instruction + prompt_options + "\n"
+
+        loop_value = True
+
+        while loop_value:
+            value = input(prompt_text)
+            print("\n")
+
+            if value.isdigit():
+                value = int(value)
+
+                # Is it within the range of the options?
+                if value > 0 and value < len(ls_baseline) + 1:
+
+                    if ls_baseline[value - 1].startswith("Baseline #1"):
+                        bsl_ID = 0
+                    elif ls_baseline[value - 1].startswith("Baseline #2"):
+                        bsl_ID = 1
+
+                    print("\n")
+                    loop_value = False
+
+                else:
+
+                    # If it is not within range, restart the loop
+                    print(color.Fore.RED
+                          + ("The provided value is not valid (out of "
+                             "bound).\n"))
+                    continue
+
+            else:
+
+                # If it is not a number, restart the loop
+                print(color.Fore.RED
+                      + "The provided value is not valid (not a digit).\n")
+                continue
+
+        return bsl_ID
