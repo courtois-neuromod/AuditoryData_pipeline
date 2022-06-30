@@ -10,6 +10,6 @@ setup(name="AuditoryDataPipeline",
       install_requires=["numpy", "pandas",
                         "plotly", "matplotlib",
                         "sklearn", "colorama",
-                        "seaborn", "notebook"
-                        ],
+                        "seaborn", "notebook",
+                       ],
       packages=find_packages())
