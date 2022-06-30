@@ -238,4 +238,12 @@ def fig_generation(result_path):
         savefile(result_path, fig_R, sub, "R")
 
 
-fig_generation(os.path.join("..", "results"))
+if __name__ == "__main__":
+    root_path = ".."
+    result_path = os.path.join(root_path, "results")
+
+    fig_generation(result_path)
+    print("\n")
+
+else:
+    pass
