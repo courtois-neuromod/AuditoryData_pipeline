@@ -26,8 +26,35 @@ def report_df(ls_f2, ls_R, ls_L):
 
     ls_f2.append("Mean")
     ls_f2.append("Standard Deviation")
-
     columns = ["freq2", "diff_L", "diff_R"]
+
+    try:
+        stats.mean(a for a in ls_L if a is not None)
+    except stats.StatisticsError:
+        mean_L = None
+    else:
+        mean_L = stats.mean(a for a in ls_L if a is not None)
+
+    try:
+        stats.mean(b for b in ls_R if b is not None)
+    except stats.StatisticsError:
+        mean_R = None
+    else:
+        mean_R = stats.mean(b for b in ls_R if b is not None)
+
+    try:
+        stats.pstdev(c for c in ls_L if c is not None)
+    except stats.StatisticsError:
+        stdev_L = None
+    else:
+        stdev_L = stats.pstdev(c for c in ls_L if c is not None)
+
+    try:
+        stats.pstdev(d for d in ls_R if d is not None)
+    except stats.StatisticsError:
+        stdev_R = None
+    else:
+        stdev_R = stats.pstdev(d for d in ls_R if d is not None)
 
     ls2df = []
 
@@ -39,11 +66,11 @@ def report_df(ls_f2, ls_R, ls_L):
             float(ls_f2[i])
         except ValueError:
             if ls_f2[i] == "Mean":
-                row.append(stats.mean(ls_L))
-                row.append(stats.mean(ls_R))
+                row.append(mean_L)
+                row.append(mean_R)
             elif ls_f2[i] == "Standard Deviation":
-                row.append(stats.pstdev(ls_L))
-                row.append(stats.pstdev(ls_R))
+                row.append(stdev_L)
+                row.append(stdev_R)
         else:
             row.append(ls_L[i])
             row.append(ls_R[i])
@@ -73,7 +100,15 @@ def extract_diff(df_1, df_2):
     ls_f2 = []
 
     for i in range(0, len(df_1)):
-        value = df_2.at[i, "dp"] - df_1.at[i, "dp"]
+        value_pre = df_1.at[i, "dp"]
+        noise_pre = df_1.at[i, "noise+2sd"]
+        value_post = df_2.at[i, "dp"]
+        noise_post = df_2.at[i, "noise+2sd"]
+
+        if (value_pre > noise_pre and value_post > noise_post):
+            value = value_post - value_pre
+        else:
+            value = None
 
         if df_1.at[i, "side"] == "R":
             ls_R.append(value)
@@ -296,6 +331,7 @@ def master_run(result_path):
 
         print(color.Fore.GREEN
               + f"The DPOAE reports for {i} have been generated.\n")
+
 
 if __name__ == "__main__":
     root_path = ".."
