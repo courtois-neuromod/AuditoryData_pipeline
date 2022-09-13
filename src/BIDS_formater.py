@@ -153,7 +153,6 @@ def master_run(data_path, result_path):
     # - existence of the run-level json sidecar originals
     #   (tymp, reflex, PTA, MTX)
     # If not, creates them.
-
     utils.result_location(result_path)
 
     parent_path = os.path.join(result_path, "BIDS_data")
