@@ -1,9 +1,9 @@
 import pandas as pd
 import os
 import colorama as color
-# import glob
 
 from shutil import copyfile
+
 from src import json_sidecar_generator as jsg
 
 # Initialize colorama
@@ -194,9 +194,6 @@ def save_df(data_tosave_df, single_test_df, index,
     # Folder where to put each participants' folder
     parent_path = os.path.join(result_path, "BIDS_data")
 
-    ID = single_test_df['Participant_ID'][index]
-
-    #sub = single_test_df['Participant_ID'][index].lstrip('Sub_')
     sub = single_test_df['Participant_ID'][index]
 
     ses = single_test_df["Session_ID"][index]
