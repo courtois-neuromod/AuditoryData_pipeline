@@ -2,6 +2,7 @@ import os
 import colorama as color
 
 from src import report_PTA
+from src import report_MTX
 from src import report_DPOAE
 from src import report_DPGrowth
 
@@ -23,6 +24,7 @@ ls_fct = ["BIDS format's json sidecars creation",
           "Distortion product OAE test graph generator",
           "Distortion product growth function test graph generator",
           "Pure Tone Audiometry report generator",
+          "Matrix Speech-in-Noise Test report generator",
           "Distortion product OAE report generator",
           "Distortion product growth function report generator",
           "MRI session design files generator",
@@ -107,16 +109,16 @@ while loop_value:
                     elif ls_fct[value - 1].count("Transient") == 1:
                         graph.master_run(".", "TEOAE")
                         print("\n")
-                    
+
                     # Distortion product (DPOAE and DP Growth) OAEs
                     elif ls_fct[value - 1].count("Distortion"):
-                        
+
                         # DPOAE graph plotting
                         if ls_fct[value - 1] == ("Distortion product OAE "
                                                  "test graph generator"):
                             graph.master_run(".", "DPOAE")
                             print("\n")
-                        
+
                         # DP Growth graph plotting
                         elif ls_fct[value - 1] == ("Distortion product "
                                                    "growth function test "
@@ -132,9 +134,14 @@ while loop_value:
                         report_PTA.master_run(os.path.join(".", "results"))
                         print("\n")
 
+                    # MTX report generation
+                    elif ls_fct[value - 1].count("Matrix") == 1:
+                        report_MTX.master_run(os.path.join(".", "results"))
+                        print("\n")
+
                     # Distortion product (DPOAE and DP Growth) OAEs
                     elif ls_fct[value - 1].count("Distortion"):
-                    
+
                         # DPOAE report generation
                         if ls_fct[value - 1] == ("Distortion product OAE "
                                                  "report generator"):
@@ -146,7 +153,7 @@ while loop_value:
                         elif ls_fct[value - 1] == ("Distortion product "
                                                    "growth function report "
                                                    "generator"):
-                            report_DPGrowth.master_run(os.path.join(".", 
+                            report_DPGrowth.master_run(os.path.join(".",
                                                                     "results"))
                             print("\n")
 
