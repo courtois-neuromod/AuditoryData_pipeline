@@ -9,6 +9,17 @@ from src import json_sidecar_generator as jsg
 # Initialize colorama
 color.init(autoreset=True)
 
+"""
+SCRIPT DESCRIPTION:
+
+This script contains multiple functions that are used during the
+transformation of the test data saved as .csv (OAE tests) or placed in a
+spreadsheet (other tests).
+
+It is not designed to be used as a standalone script, but rather as a slave to
+the BIDS_formater.py script.
+"""
+
 
 def result_location(result_path):
     """
@@ -94,7 +105,6 @@ def result_location(result_path):
               "BIDS_sidecars_originals/ folder.\n")
 
 
-# List the available test results
 def retrieve_tests(subject_folder, ses_ID):
     """
     This function lists the test data available in a specified
@@ -187,10 +197,12 @@ def save_df(data_tosave_df, single_test_df, index,
             (data_tosave_df)
     -test: the selected test marker
     -result_path: path to results ([repo_root]/results/)
+    -run: run indexer value (Default = 01)
     OUTPUTS:
     -saved tsv file
     -NO specific return to the script
     """
+
     # Folder where to put each participants' folder
     parent_path = os.path.join(result_path, "BIDS_data")
 
@@ -233,10 +245,22 @@ def save_df(data_tosave_df, single_test_df, index,
                  os.path.join(path, file_name + ".json"))
 
 
-# Extraction of every single tympanometry test
-# The results are then sent to the save_df function to be saved
 def extract_tymp(single_test_df, ls_columns_1,
                  ls_columns_2, x, path):
+    """
+    This function extracts every single tympanometry test and send the results
+    to be saved by the save_df function.
+    INPUTS:
+    -single_test_df: df containing only the lines containing tympanometry tests
+                     and from which the useless columns have been removed
+    -ls_columns_1: list of right ear test data column names
+    -ls_columns_2: list of left ear test data column names
+    -x: list of column names to use in the reconstructed, BIDS formated df
+    -path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     for j in range(0, len(single_test_df)):
         y = [[], []]
@@ -285,10 +309,22 @@ def extract_tymp(single_test_df, ls_columns_1,
             continue
 
 
-# Extraction of every single stapedial reflex test
-# The results are then sent to the save_df function to be saved
 def extract_reflex(single_test_df, ls_columns_1,
                    ls_columns_2, x, path):
+    """
+    This function extracts every single stapedial reflex test and send the
+    results to be saved by the save_df function.
+    INPUTS:
+    -single_test_df: df containing only the lines containing reflex tests and
+                     from which the useless columns have been removed
+    -ls_columns_1: list of right ear test data column names
+    -ls_columns_2: list of left ear test data column names
+    -x: list of column names to use in the reconstructed, BIDS formated df
+    -path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     for j in range(0, len(single_test_df)):
         y = [[], []]
@@ -337,10 +373,22 @@ def extract_reflex(single_test_df, ls_columns_1,
             continue
 
 
-# Extraction of every single pure-tone audiometry test
-# The results are then sent to the save_df function to be saved
 def extract_pta(single_test_df, ls_columns_1,
                 ls_columns_2, x, path):
+    """
+    This function extracts every single pure-tone audiometry test and send the
+    results to be saved by the save_df function.
+    INPUTS:
+    -single_test_df: df containing only the lines containing PTA tests and from
+                     which the useless columns have been removed
+    -ls_columns_1: list of right ear test data column names
+    -ls_columns_2: list of left ear test data column names
+    -x: list of column names to use in the reconstructed, BIDS formated df
+    -path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     for j in range(0, len(single_test_df)):
         y = [[], []]
@@ -389,10 +437,22 @@ def extract_pta(single_test_df, ls_columns_1,
             continue
 
 
-# Extraction of every single matrix speech-in-noise perception test
-# The results are then sent to the save_df function to be saved
 def extract_mtx(single_test_df, ls_columns_1,
                 ls_columns_2, x, path):
+    """
+    This function extracts every single matrix speech-in-noise perception test
+    and send the results to be saved by the save_df function.
+    INPUTS:
+    -single_test_df: df containing only the lines containing MTX tests and from
+                     which the useless columns have been removed
+    -ls_columns_1: list of right ear test data column names
+    -ls_columns_2: list of left ear test data column names
+    -x: list of column names to use in the reconstructed, BIDS formated df
+    -path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     for j in range(0, len(single_test_df)):
         y = [[], []]
@@ -451,10 +511,26 @@ def extract_mtx(single_test_df, ls_columns_1,
             continue
 
 
-# Extraction of every single transient-evoked OAE test
-# The results are then sent to the save_df function to be saved
 def extract_teoae(data_sub, data_oae_sub, oae_file_list,
                   x_teoae, data_path, result_path):
+    """
+    This function extracts every single transient-evoked otoacoustic emissions
+    test and send the results to be saved by the save_df function.
+    INPUTS:
+    -data_sub: df containing the subject-specific session informations (from
+               the db spreadsheet)
+    -data_oae_sub: df containing the subject-specific available test data files
+                   breakdown informations
+    -oae_file_list: list of all the available OAE test filenames
+    -x_teoae: list of column names to use in the reconstructed, BIDS formated
+              df
+    -data_path: path inside the auditory_tests data folder
+                ([repo_root]/data/auditory_tests/)
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     data_path = os.path.join(data_path, "OAE")
 
@@ -580,16 +656,32 @@ def extract_teoae(data_sub, data_oae_sub, oae_file_list,
                                  "OAE (dB)", "Noise (dB)", "snr",
                                  "Confidence (%)"]]
 
-            df_teoae.set_axis(x_teoae, axis=1, inplace=True)
+            df_teoae = df_teoae.set_axis(x_teoae, axis=1, copy=False)
             df_teoae.set_index("order", inplace=True)
 
             save_df(df_teoae, data_sub, j, 'TEOAE', result_path)
 
 
-# Extraction of every single distortion product OAE test
-# The results are then sent to the save_df function to be saved
 def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
                   x_dpoae, data_path, result_path):
+    """
+    This function extracts every single distortion product otoacoustic
+    emissions test and send the results to be saved by the save_df function.
+    INPUTS:
+    -data_sub: df containing the subject-specific session informations (from
+               the db spreadsheet)
+    -data_oae_sub: df containing the subject-specific available test data files
+                   breakdown informations
+    -oae_file_list: list of all the available OAE test filenames
+    -x_dpoae: list of column names to use in the reconstructed, BIDS formated
+              df
+    -data_path: path inside the auditory_tests data folder
+                ([repo_root]/data/auditory_tests/)
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     data_path = os.path.join(data_path, "OAE")
 
@@ -740,17 +832,32 @@ def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
                                  "2F2-F1 (dB)", "3F1-2F2 (dB)",
                                  "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
 
-            df_dpoae.set_axis(x_dpoae, axis=1, inplace=True)
+            df_dpoae = df_dpoae.set_axis(x_dpoae, axis=1, copy=False)
             df_dpoae.set_index("order", inplace=True)
 
             save_df(df_dpoae, data_sub, j, 'DPOAE', result_path)
 
 
-# Extraction of the distortion product OAE growth function tests
-# for the conditions 3A (pre-scan) and 3B (post-scan).
-# The results are then sent to the save_df function to be saved
 def growth_prepost(data_sub, i, oae_file_list,
                    x_growth, data_path, result_path):
+    """
+    This function extracts the conditions 3A (pre-scan) and 3B (post-scan)
+    distortion product otoacoustic emissions' growth function tests and send
+    the results to be saved by the save_df function.
+    INPUTS:
+    -data_sub: df containing the subject-specific session informations (from
+               the db spreadsheet)
+    -i: index of the line to use in data_sub
+    -oae_file_list: list of all the available OAE test filenames
+    -x_growth: list of column names to use in the reconstructed, BIDS formated
+               df
+    -data_path: path inside the OAE test data folder
+                ([repo_root]/data/auditory_tests/OAE/)
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     subject = data_sub["Participant_ID"][i]
     date = data_sub["Date"][i]
@@ -897,7 +1004,7 @@ def growth_prepost(data_sub, i, oae_file_list,
                                    "2F2-F1 (dB)", "3F1-2F2 (dB)",
                                    "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
 
-            df_growth.set_axis(x_growth, axis=1, inplace=True)
+            df_growth = df_growth.set_axis(x_growth, axis=1, copy=False)
             df_growth.set_index("order", inplace=True)
 
             if d == 0:
@@ -913,11 +1020,26 @@ def growth_prepost(data_sub, i, oae_file_list,
                     'DPGrowth', result_path, run=run)
 
 
-# Extraction of the distortion product OAE growth function tests
-# for the other conditions (baseline and condition 2).
-# The results are then sent to the save_df function to be saved
 def growth_others(data_sub, i, oae_file_list,
                   x_growth, data_path, result_path):
+    """
+    This function extracts the baseline and condition 2 sessions' distortion
+    product otoacoustic emissions' growth function tests and send the results
+    to be saved by the save_df function.
+    INPUTS:
+    -data_sub: df containing the subject-specific session informations (from
+               the db spreadsheet)
+    -i: index of the line to use in data_sub
+    -oae_file_list: list of all the available OAE test filenames
+    -x_growth: list of column names to use in the reconstructed, BIDS formated
+               df
+    -data_path: path inside the OAE test data folder
+                ([repo_root]/data/auditory_tests/OAE/)
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the save_df function
+    """
 
     subject = data_sub["Participant_ID"][i]
     date = data_sub["Date"][i]
@@ -1017,16 +1139,33 @@ def growth_others(data_sub, i, oae_file_list,
                                "2F2-F1 (dB)", "3F1-2F2 (dB)",
                                "3F2-2F1 (dB)", "4F1-3F2 (dB)"]]
 
-        df_growth.set_axis(x_growth, axis=1, inplace=True)
+        df_growth = df_growth.set_axis(x_growth, axis=1, copy=False)
         df_growth.set_index("order", inplace=True)
 
         save_df(df_growth, data_sub, i, 'DPGrowth', result_path)
 
 
-# Extraction of every single DP growth function OAE test
-# The results are then sent to the save_df function to be saved
 def extract_growth(data_sub, data_oae_sub, oae_file_list,
                    x_growth, data_path, result_path):
+    """
+    This function extracts every DP growth function OAE test and separate them
+    according to the experimental condition in which they were acquired.
+    It then calls the proper function for processing.
+    INPUTS:
+    -data_sub: df containing the subject-specific session informations (from
+               the db spreadsheet)
+    -data_oae_sub: df containing the subject-specific available test data files
+                   breakdown informations
+    -oae_file_list: list of all the available OAE test filenames
+    -x_growth: list of column names to use in the reconstructed, BIDS formated
+               df
+    -data_path: path inside the auditory_tests data folder
+                ([repo_root]/data/auditory_tests/)
+    -result_path: path inside the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script
+    -activates the growth_prepost and growth_others functions
+    """
 
     data_path = os.path.join(data_path, "OAE")
 

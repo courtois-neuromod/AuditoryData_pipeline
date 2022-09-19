@@ -7,6 +7,20 @@ from shutil import copyfile
 from src import BIDS_utils as utils
 from src import common_functions as common
 
+"""
+SCRIPT DESCRIPTION:
+
+This script transforms the auditory test data saved as .csv (OAE tests) or
+placed in a properly formatted spreadsheet (other tests).
+Template available here:
+[ https://docs.google.com/spreadsheets/d/
+  1aKakQJvJnvPUouTUciGm3FMlnNAGIX8NXhulbhjq9d4/edit?usp=sharing ]
+
+This script uses the BIDS_formater.py and common_functions.py scripts to be
+able to process data and generate a BIDS-format compatible dataset out of
+auditory test data.
+"""
+
 
 # Create a list of the subjects and a reference path for the results
 subjects = ['sub-01', 'sub-02', 'sub-03', 'sub-04', 'sub-05', 'sub-06']
@@ -50,7 +64,7 @@ ls_test = ["Tymp", "Reflex", "PTA", "MTX", "TEOAE", "DPOAE",
 def fetch_db(data_path):
     """This function retrieves a database to work on.
     INPUTS:
-    -data_path: path to the [repo_root]/data folder
+    -data_path: path to the [repo_root]/data/ folder
     OUTPUTS:
     -returns a dataframe containing the database to use
     """
@@ -64,12 +78,18 @@ def fetch_db(data_path):
 
 
 def fetch_oae_data(data_path):
-    """This function [...]
+    """This function retrieves the list of OAE test data files
     INPUTS:
-    -data_path:
+    -data_path: path to the [repo_root]/data/auditory_tests/ folder
     OUTPUTS
-    -returns [...]
+    -returns: - the list of all the OAE test data filenames
+              - a dataframe containing a by-test breakdown information:
+                  - the participant ID
+                  - the session experimental condition and date
+                  - the type of test
+                  - the tested ear
     """
+
     path = os.path.join(data_path, "OAE")
     ls_file = os.listdir(path)
 
@@ -142,6 +162,15 @@ def create_folder_session(subject, session_count, parent_path):
 
 
 def master_run(data_path, result_path):
+    """
+    This is the master function that activates the others.
+    INPUTS:
+    -data_path: path to the data folder ([repo_root]/data/)
+    -result_path: path to the results folder ([repo_root]/results/)
+    OUTPUTS:
+    -NO specific return to the script (highest function level)
+    -prints some feedback to the user in the terminal
+    """
 
     # retrieve a database
     df = fetch_db(data_path)
