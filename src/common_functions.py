@@ -7,6 +7,27 @@ import colorama as color
 # Initialize colorama
 color.init(autoreset=True)
 
+"""
+SCRIPT DESCRIPTION:
+
+This script contains general use functions that are used by multiple scripts
+during a variety of different tasks:
+    - BIDS-compatible dataset generation
+    - test data graph generation
+    - data analysis reports
+
+It is not designed to be used as a standalone script, but rather as a slave to
+multiple scripts:
+    - BIDS_formater.py
+    - graph_generator.py
+    - graph_generator_BIDS.py
+    - graph_functions.py
+    - report_PTA.py
+    - report_MTX.py
+    - report_TEOAE.py
+    - report_DPOAE.py
+    - report_DPGrowth.py
+"""
 
 if __name__ == "__main__":
     print(color.Fore.RED
@@ -18,11 +39,13 @@ else:
         """
         This function gives the user a choice on how to retrieve the database.
         Available options are:
-            -> The user supplies a URL to a properly formated
+            -> The user manually supplies a URL to a properly formated
                Google Spreadsheet
-            -> The user provides the URL in the URL.tsv file in the data folder
-            -> The user provides a properly formated database in an .xlsx file
-               in the data folder
+            -> The user provides the URL through the use of a URL.tsv file
+               in the data folder ([repo_root]/data/URL.tsv)
+            -> The user provides a properly formated database in a
+               test_database.xlsx file in the data folder
+               ([repo_root]/data/test_database.xlsx)
         INPUTS:
         -data_path: path to the [repo_root]/data folder
         OUTPUTS:
@@ -154,7 +177,13 @@ else:
 ###############################################################################
 
     def graph_trace_color(color_qty):
-        # THIS FUNCTION IS INCOMPLETE AND DOESN'T WORK YET!!!
+
+        #########################################################
+        #                                                       #
+        #  THIS FUNCTION IS INCOMPLETE AND DOESN'T WORK YET!!!  #
+        #                                                       #
+        #########################################################
+
         """
         INPUTS:
         -color_qty: the amount of different colors to pick from the colormap
@@ -162,14 +191,14 @@ else:
         -returns the color values in two lists of equal length
         """
 
-        color_ls_prepost = []
-        color_ls_48 = []
+        #color_ls_prepost = []
+        #color_ls_48 = []
 
-        cmap = cm.get_cmap("viridis")
+        #cmap = cm.get_cmap("viridis")
 
-        ls_value = np.linspace(0, 1, color_qty, endpoint=True)
+        #ls_value = np.linspace(0, 1, color_qty, endpoint=True)
 
-        return color_ls_prepost, color_ls_48
+        #return color_ls_prepost, color_ls_48
 
 ###############################################################################
 
