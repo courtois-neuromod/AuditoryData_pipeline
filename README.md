@@ -84,7 +84,7 @@ Gorgolewski, K. J., Auer, T., Calhoun, V. D., Craddock, R. C., Das, S., Duff, E.
 
 ### Screen capture of a section of the results obtained with this pipeline
 
-![fortier_project_BIDS_structure.png](data/fortier_project_BIDS_structure.png)
+![NeuroMod_BIDS_structure.png](data/NeuroMod_BIDS_structure.png)
 
 
 ## Graph generation (Pure-tone audiometry, Matrix speech-in-noise perception test)
