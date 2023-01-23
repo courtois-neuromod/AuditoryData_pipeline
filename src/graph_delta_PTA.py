@@ -108,7 +108,6 @@ def fig_generation(result_path):
     for i in range(0, len(ls2do)):
         #print(ls2do[i])
         decomp_sub = ls2do[i][0].split("_")
-        #print(filename_decomp)
         sub = decomp_sub[0]
         #print(sub)
 
