@@ -28,6 +28,17 @@ def linreg_values(x_pre, y_pre, x_post, y_post):
      ([["before" values], ["after" values]])
     """
 
+    ls2do = [x_pre, y_pre, x_post, y_post]
+    
+    for i in range(0, len(ls2do)):
+        ls2do[i] = ls2do[i][ls2do[i] != None]
+
+    #print(ls2do)
+
+    x_pre, y_pre, x_post, y_post = ls2do
+    
+    #print(y_pre)
+    
     # Linear regression values computation (a, b and mean errors)
     model_pre = LinearRegression()
     model_post = LinearRegression()
@@ -59,6 +70,8 @@ def linreg_values(x_pre, y_pre, x_post, y_post):
     ls_post = [a_post, b_post, mse_post, mae_post]
 
     ls_of_ls = [ls_pre, ls_post]
+    
+    #print(ls_of_ls)
 
     return ls_of_ls
 
@@ -84,6 +97,11 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
     -returns a report dataframe ready to be saved into .tsv format
     """
 
+    #print("ls_diff", ls_diff)
+    
+    ls_diff_no_none_0 = list(filter(lambda i: i != None, ls_diff[0]))
+    ls_diff_no_none_1 = list(filter(lambda i: i != None, ls_diff[1]))
+
     names_columns = ["l2_target", "diff_L", "diff_R"]
 
     intensity_column = [65, 60, 55, 50, 45, 40, 35,
@@ -94,24 +112,51 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
                         "Reg_Post_MSE", "Reg_Post_MAE"]
 
     # Linear model computations and value extractions (a, b, mse, mae)
-    values_L = linreg_values(ls_xpre[0], ls_ypre[0], ls_xpost[0], ls_ypost[0])
-    values_R = linreg_values(ls_xpre[1], ls_ypre[1], ls_xpost[1], ls_ypost[1])
+    if len(ls_diff_no_none_0) < 1:
+        values_L = [[None, None, None, None], [None, None, None, None]]
+    else:
+        values_L = linreg_values(ls_xpre[0], ls_ypre[0],
+                                 ls_xpost[0], ls_ypost[0])
+    if len(ls_diff_no_none_1) < 1:
+        values_R = [[None, None, None, None], [None, None, None, None]]
+    else:
+        values_R = linreg_values(ls_xpre[1], ls_ypre[1],
+                                 ls_xpost[1], ls_ypost[1])
 
     ls2df = []
+
+    #print("values_L", values_L)
+    #print("values_R", values_R)
 
     for i in range(0, len(intensity_column)):
         row = []
         row.append(intensity_column[i])
-
+        
         try:
             float(intensity_column[i])
         except ValueError:
             if intensity_column[i] == "Mean":
-                row.append(stats.mean(ls_diff[0]))
-                row.append(stats.mean(ls_diff[1]))
+                if len(ls_diff_no_none_0) < 1:
+                    row.append(None)
+                else:
+                    row.append(stats.mean(ls_diff_no_none_0))
+                #print(row)
+                if len(ls_diff_no_none_1) < 1:
+                    row.append(None)
+                else:
+                    row.append(stats.mean(ls_diff_no_none_1))
+                #print(row)
             elif intensity_column[i] == "Standard Deviation":
-                row.append(stats.pstdev(ls_diff[0]))
-                row.append(stats.pstdev(ls_diff[1]))
+                if len(ls_diff_no_none_0) < 1:
+                    row.append(None)
+                else:
+                    row.append(stats.pstdev(ls_diff_no_none_0))
+                #print(row)
+                if len(ls_diff_no_none_1) < 1:
+                    row.append(None)
+                else:
+                    row.append(stats.pstdev(ls_diff_no_none_1))
+                #print(row)
             elif intensity_column[i] == "Reg_Pre_coef":
                 row.append(values_L[0][0])
                 row.append(values_R[0][0])
@@ -141,7 +186,11 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
             row.append(ls_diff[1][i])
         ls2df.append(row)
 
+    #print("ls2df", ls2df)
+
     df = pd.DataFrame(data=ls2df, columns=names_columns)
+
+    print(df)
 
     return df
 
@@ -175,20 +224,49 @@ def list_builder(df_1, df_2):
     ypost_R = []
 
     for i in range(0, len(df_1)):
-        value = df_2.at[i, "dp"] - df_1.at[i, "dp"]
+        value_pre = df_1.at[i, "dp"]
+        noise_pre = df_1.at[i, "noise+2sd"]
+        value_post = df_2.at[i, "dp"]
+        noise_post = df_2.at[i, "noise+2sd"]
+        
+        if (value_pre > noise_pre and value_post > noise_post):
+            value = value_post - value_pre
+        else:
+            value = None
 
         if df_1.at[i, "side"] == "L":
             diff_L.append(value)
-            xpre_L.append(df_1.at[i, "l2"])
-            ypre_L.append(df_1.at[i, "dp"])
-            xpost_L.append(df_2.at[i, "l2"])
-            ypost_L.append(df_2.at[i, "dp"])
+            
+            if value_pre > noise_pre:
+                xpre_L.append(df_1.at[i, "l2"])
+                ypre_L.append(df_1.at[i, "dp"])
+            else:
+                xpre_L.append(None)
+                ypre_L.append(None)
+
+            if value_post > noise_post:
+                xpost_L.append(df_2.at[i, "l2"])
+                ypost_L.append(df_2.at[i, "dp"])
+            else:
+                xpost_L.append(None)
+                ypost_L.append(None)
+
         elif df_1.at[i, "side"] == "R":
             diff_R.append(value)
-            xpre_R.append(df_1.at[i, "l2"])
-            ypre_R.append(df_1.at[i, "dp"])
-            xpost_R.append(df_2.at[i, "l2"])
-            ypost_R.append(df_2.at[i, "dp"])
+
+            if value_pre > noise_pre:
+                xpre_R.append(df_1.at[i, "l2"])
+                ypre_R.append(df_1.at[i, "dp"])
+            else:
+                xpre_R.append(None)
+                ypre_R.append(None)
+
+            if value_post > noise_post:
+                xpost_R.append(df_2.at[i, "l2"])
+                ypost_R.append(df_2.at[i, "dp"])
+            else:
+                xpost_R.append(None)
+                ypost_R.append(None)
 
     ls_of_ls = [diff_L, xpre_L, xpost_L, ypre_L, ypost_L,
                 diff_R, xpre_R, xpost_R, ypre_R, ypost_R]
@@ -287,6 +365,8 @@ def report_prepost(ls, sub, path_ses, path_reports):
         ls_diff = [[ls_2[0], ls_2[5]],
                    [ls_4[0], ls_4[5]],
                    [ls_6[0], ls_6[5]]]
+
+        #print(ls_diff)
 
         # Test data formating for the linear regression models
         ls_xpre = [[np.array(ls_2[1]), np.array(ls_2[6])],
