@@ -176,7 +176,7 @@ else:
 
 ###############################################################################
 
-    def graph_trace_color(color_qty):
+    #def graph_trace_color(color_qty):
 
         #########################################################
         #                                                       #
@@ -184,12 +184,12 @@ else:
         #                                                       #
         #########################################################
 
-        """
-        INPUTS:
-        -color_qty: the amount of different colors to pick from the colormap
-        OUTPUTS:
-        -returns the color values in two lists of equal length
-        """
+        #"""
+        #INPUTS:
+        #-color_qty: the amount of different colors to pick from the colormap
+        #OUTPUTS:
+        #-returns the color values in two lists of equal length
+        #"""
 
         #color_ls_prepost = []
         #color_ls_48 = []

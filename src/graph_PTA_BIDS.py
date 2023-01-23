@@ -31,9 +31,8 @@ else:
 
         sub = "sub-" + ID
         folder = os.path.join(path, "graphs", sub)
-        filename = ("Sub-" + ID + "_PTA_Session-" + session
+        filename = ("sub-" + ID + "_PTA_ses-" + session
                     + "_(" + ear + ").html")
-        #print(folder, "\n", filename)
 
         save_path = os.path.join(folder, filename)
 
@@ -54,17 +53,13 @@ else:
         """
 
         ls_filename = filename.split("_")
-        #print(ls_filename)
         ls_sub = ls_filename[0].split("-")
-        #print(ls_sub)
         ls_ses = ls_filename[1].split("-")
-        #print(ls_ses)
 
         ID = "Sub" + ls_sub[1]
         name = "Session " + ls_ses[1]
 
         title = (ID + " - " + name + ": PTA (" + ear + ")")
-        #print(title)
 
         return title, ls_sub[1], ls_ses[1]
 
@@ -85,7 +80,6 @@ else:
         mask = df["side"] == row
         df_mask = df[mask].reset_index(drop=True)
         df_mask.drop(columns=["order", "side"], inplace=True)
-        #print(mask, "\n", df_mask, "\n", df)
 
         columns = df_mask.columns
 
@@ -95,8 +89,6 @@ else:
                 y.append(df_mask[columns[i]][0])
             else:
                 continue
-
-        #print(x, y)
 
         return x, y
 
@@ -143,7 +135,6 @@ else:
 
         if side == "R":
             frequency_R, value_R = data_to_plot(df, "R")
-            #print(value_R)
 
             fig.add_trace(go.Scatter(x=frequency_R,
                                      y=value_R,
@@ -155,7 +146,6 @@ else:
 
         elif side == "L":
             frequency_L, value_L = data_to_plot(df, "L")
-            #print(value_L)
 
             fig.add_trace(go.Scatter(x=frequency_L,
                                      y=value_L,
@@ -167,9 +157,7 @@ else:
 
         elif side == "Both":
             frequency_R, value_R = data_to_plot(df, "R")
-            #print(value_R)
             frequency_L, value_L = data_to_plot(df, "L")
-            #print(value_L)
 
             fig.add_trace(go.Scatter(x=frequency_R,
                                      y=value_R,
@@ -194,26 +182,13 @@ else:
         else:
             return False
 
-#    def plot_pta_subject(path, df, display=False):
-#        """
-#        INPUTS
-#        -df: pandas dataframe containing the data to plot
-#        OUTPUTS
-#        -saves pta graph in .html
-#        """
-
-#    def plot_boxplot_pta(path, df, ear, display=False):
-#        """
-#        INPUTS
-#        -df: pandas dataframe containing the data to plot
-#        OUTPUTS
-#        -saves pta graph in .html
-#        """
-
-#        if ear == "Right ear":
-#            strip = "RE_"
-#        elif ear == "Left ear":
-#            strip = "LE_"
+    def plot_pta_subject(path, df, display=False):
+        """
+        INPUTS
+        -df: pandas dataframe containing the data to plot
+        OUTPUTS
+        -saves the one-subject/all-sessions pta graph in .html
+        """
 
 #        title_graph = gf.generate_title_graph(df, "PTA")
 #        labels = {"title": title_graph,
@@ -237,98 +212,33 @@ else:
 #                          yaxis_zerolinewidth=1,
 #                          yaxis_zerolinecolor="black")
 
-#        conditions = df["Protocol condition"]
+#        for i in range(0, len(df)):
+#            run_R_x, run_R_y = data_to_plot_PTA(df.loc[[i]], "RE_")
+#            run_L_x, run_L_y = data_to_plot_PTA(df.loc[[i]], "LE_")
 
-#        df_toplot = gf.eliminate_column(df, strip)
-#        column_names = df_toplot.columns
-#        column_names_int = []
+#            title_run_R = generate_title_run_PTA(df, "Right Ear", i)
+#            title_run_L = generate_title_run_PTA(df, "Left Ear", i)
 
-#        for a in range(0, len(column_names)):
-#            column_names_int.append(int(column_names[a].lstrip(strip)))
+#            fig.add_trace(go.Scatter(x=run_R_x,
+#                                     y=run_R_y,
+#                                     line_color="red",
+#                                     mode='lines+markers',
+#                                     name=title_run_R,
+#                                     hovertemplate="%{x:1.0f} Hz<br>" +
+#                                                   "%{y:1.0f} dB HL"))
 
-#        df_toplot.columns = column_names_int
-
-#        rows = []
-
-#        for d in range(0, len(df_toplot)):
-#            for e in df_toplot.columns:
-#                rows.append([e, df_toplot[e][d], conditions[d]])
-
-#        new_df = pd.DataFrame(rows,
-#                              columns=["Frequency (Hz)",
-#                                       "Hearing Threshold (dB HL)",
-#                                       "Protocol condition"])
-
-#        new_df = gf.eliminate_row(new_df,
-#                                  "Hearing Threshold (dB HL)",
-#                                  130)
-
-#        baseline = ["Baseline",
-#                    "Supplementary PTA test (Baseline)"]
-#        pre = ["Condition 1A (right before the scan)",
-#               "Suppl. PTA test (right before the scan)"]
-#        post = ["Condition 1B (right after the scan)",
-#                "Suppl. PTA test (right after the scan)"]
-#        post48 = "Condition 2 (2-7 days post-scan)"
-
-#        new_df["Protocol condition"].replace(baseline,
-#                                             "Baseline",
-#                                             inplace=True)
-#        new_df["Protocol condition"].replace(pre,
-#                                             "Prescan",
-#                                             inplace=True)
-#        new_df["Protocol condition"].replace(post,
-#                                             "Postscan",
-#                                             inplace=True)
-#        new_df["Protocol condition"].replace(post48,
-#                                             "48h+ Postscan",
-#                                             inplace=True)
-
-#        fig.add_trace(go.Violin(
-#            x=(new_df["Frequency (Hz)"]
-#               [new_df["Protocol condition"] == "Baseline"]),
-#            y=(new_df["Hearing Threshold (dB HL)"]
-#               [new_df["Protocol condition"] == "Baseline"]),
-#            name="Baseline",
-#            legendgroup="Baseline")
-#            )
-
-#        fig.add_trace(go.Violin(
-#            x=(new_df["Frequency (Hz)"]
-#               [new_df["Protocol condition"] == "Prescan"]),
-#            y=(new_df["Hearing Threshold (dB HL)"]
-#               [new_df["Protocol condition"] == "Prescan"]),
-#            name="Prescan",
-#            legendgroup="Prescan")
-#            )
-
-#        fig.add_trace(go.Violin(
-#            x=(new_df["Frequency (Hz)"]
-#               [new_df["Protocol condition"] == "Postscan"]),
-#            y=(new_df["Hearing Threshold (dB HL)"]
-#               [new_df["Protocol condition"] == "Postscan"]),
-#            name="Postscan",
-#            legendgroup="Postscan")
-#            )
-
-#        fig.add_trace(go.Violin(
-#            x=(new_df["Frequency (Hz)"]
-#               [new_df["Protocol condition"] == "48h+ Postscan"]),
-#            y=(new_df["Hearing Threshold (dB HL)"]
-#               [new_df["Protocol condition"] == "48h+ Postscan"]),
-#            name="48h+ Postscan",
-#            legendgroup="48h+ Postscan")
-#            )
-
-#        if ear == "Right ear":
-#            save_parameter = "boxplot_R"
-#        elif ear == "Left ear":
-#            save_parameter = "boxplot_L"
+#            fig.add_trace(go.Scatter(x=run_L_x,
+#                                     y=run_L_y,
+#                                     line_color="blue",
+#                                     mode='lines+markers',
+#                                     name=title_run_L,
+#                                     hovertemplate="%{x:1.0f} Hz<br>" +
+#                                                   "%{y:1.0f} dB HL"))
 
 #        if display is True:
 #            fig.show()
-#       else:
-#           completed = save_graph_PTA(path, fig, df, save_parameter)
+#        else:
+#            completed = save_graph_PTA(path, fig, df, "All_runs")
 
 #            if completed is True:
 #                return True

@@ -19,6 +19,9 @@ Template available here:
 This script uses the BIDS_formater.py and common_functions.py scripts to be
 able to process data and generate a BIDS-format compatible dataset out of
 auditory test data.
+
+It can either be used as a standalone script or be used through the UI master
+script, main.py.
 """
 
 
