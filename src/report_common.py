@@ -50,7 +50,7 @@ def extract_ses_ls(ref_df, sub, test_type):
             ls_48.append(ref_df.at[i, "session_id"])
 
         # Verification for pre/post conditions: PTA
-        elif test_type == "PTA":
+        elif test_type == "PTA" or test_type == "MTX":
             if init_cond.startswith("Condition 1A"):
                 prepost.append(ref_df.at[i, "session_id"])
 
