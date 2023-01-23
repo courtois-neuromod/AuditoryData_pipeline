@@ -18,8 +18,8 @@ color.init(autoreset=True)
 # Available functions list
 ls_fct = ["BIDS format's json sidecars creation",
           "BIDS format's auditory data exporter",
-          "Pure Tone Audiometry graph generator",
-          "Matrix Speech-in-Noise Test graph generator",
+          "Pure Tone Audiometry interactive graph generator",
+          "Matrix Speech-in-Noise Test interactive graph generator",
           "Transient-evoked OAE test graph generator",
           "Distortion product OAE test graph generator",
           "Distortion product growth function test graph generator",
@@ -27,7 +27,7 @@ ls_fct = ["BIDS format's json sidecars creation",
           "Matrix Speech-in-Noise Test report generator",
           "Distortion product OAE report generator",
           "Distortion product growth function report generator",
-          "MRI session design files generator",
+          "MRI session design files generator (in development)",
           # "Dummy line",
           ]
 
