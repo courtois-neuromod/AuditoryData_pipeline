@@ -32,8 +32,10 @@ ls_fct = ["BIDS format's json sidecars creation",
           ]
 
 # Prompt text generation
-prompt_instruction = ("Please enter the number of the pipeline "
-                      "functionality you want to run:")
+prompt_instruction = (color.Style.BRIGHT
+                      + "Please enter the number of the pipeline "
+                        "functionality you want to run:"
+                      + color.Style.RESET_ALL)
 
 prompt_options = ""
 
@@ -48,7 +50,9 @@ prompt_txt = prompt_instruction + prompt_options
 loop_value = True
 
 # Show welcome message
-print("\nWelcome to the AuditoryData_pipeline.\n")
+print(color.Style.BRIGHT
+      + color.Fore.YELLOW
+      + "\nWelcome to the AuditoryData_pipeline.\n")
 
 # function selection prompt
 while loop_value:
@@ -183,4 +187,6 @@ while loop_value:
         continue
 
 # Exit message
-print("Thanks for using the AuditoryData_pipeline.\n")
+print(color.Style.BRIGHT
+      + color.Fore.YELLOW
+      + "Thanks for using the AuditoryData_pipeline.\n")
