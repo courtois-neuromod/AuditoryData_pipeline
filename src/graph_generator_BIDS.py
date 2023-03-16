@@ -4,63 +4,13 @@ import pandas as pd
 from src import graph_functions as gf
 from src import graph_PTA_BIDS as pta
 from src import graph_MTX_BIDS as mtx
-from src import graph_TEOAE as teoae
-from src import graph_DPOAE as dpoae
-from src import graph_DPGrowth as growth
+from src import graph_TEOAE_BIDS as teoae
+from src import graph_DPOAE_BIDS as dpoae
+from src import graph_DPGrowth_BIDS as growth
 from src import common_functions as common
 
 
 subjects = ["sub-01", "sub-02", "sub-03", "sub-04", "sub-05", "sub-06"]
-
-#ls_columns_common = ["Participant_ID", "DATE", "Protocol name",
-#                     "Protocol condition", "Scan type"]
-
-#ls_columns_pta = ["RE_250", "RE_500", "RE_1000",
-#                  "RE_2000", "RE_3000", "RE_4000",
-#                  "RE_6000", "RE_8000", "RE_9000",
-#                  "RE_10000", "RE_11200", "RE_12500",
-#                  "RE_14000", "RE_16000", "RE_18000",
-#                  "RE_20000", "LE_250", "LE_500",
-#                  "LE_1000", "LE_2000", "LE_3000",
-#                  "LE_4000", "LE_6000", "LE_8000",
-#                  "LE_9000", "LE_10000", "LE_11200",
-#                  "LE_12500", "LE_14000", "LE_16000",
-#                  "LE_18000", "LE_20000"]
-
-#ls_columns_MTX1 = ["MTX1_LANG", "MTX1_L_L", "MTX1_L_Bin",
-#                   "MTX1_Bin_Bin", "MTX1_R_Bin", "MTX1_R_R"]
-#ls_columns_MTX2 = ["MTX2_LANG", "MTX2_L_L", "MTX2_L_Bin",
-#                   "MTX2_Bin_Bin", "MTX2_R_Bin", "MTX2_R_R"]
-
-
-#def eliminate_row_mtx(data_mtx, language):
-#    data_mtx = gf.eliminate_row(data_mtx,
-#                                "Protocol name",
-#                                "Baseline 1")
-#    data_mtx = gf.eliminate_row(data_mtx,
-#                                "Protocol condition",
-#                                "Condition 3A (OAEs right before the scan)")
-#    data_mtx = gf.eliminate_row(data_mtx,
-#                                "Protocol condition",
-#                                "Supplementary PTA test (Baseline)")
-#    data_mtx = gf.eliminate_row(data_mtx,
-#                                "Protocol condition",
-#                                "Suppl. PTA test (right before the scan)")
-#    data_mtx = gf.eliminate_row(data_mtx,
-#                                "Protocol condition",
-#                                "Suppl. PTA test (right after the scan)")
-#    if language == 1:
-#        pass
-
-#    elif language == 2:
-#        data_mtx = gf.eliminate_row(data_mtx,
-#                                    "Protocol condition",
-#                                    "Condition 1A (right before the scan)")
-#        data_mtx = gf.eliminate_row(data_mtx,
-#                                    "Protocol condition",
-#                                    "Condition 1B (right after the scan)")
-
-#    return data_mtx
 
 
 def pta_graph(result_path, counter, save_error):
@@ -111,15 +61,12 @@ def pta_graph(result_path, counter, save_error):
                 else:
                     pass
             
-            #print(ls_pta)
-            
             if len(ls_pta) == 0:
                 continue
             else:
                 for m in ls_pta:
                     df = pd.read_csv(os.path.join(path_ses, m),
                                      sep="\t")
-                    #print(df)
                     
                     # PTA, Right ear
                     mask_R = df["side"] == "R"
@@ -149,40 +96,8 @@ def pta_graph(result_path, counter, save_error):
                     else:
                         save_error = save_error + 1 
                     
-                    #print(df, "\n", df_R, "\n", df_L, "\n")
-
     return counter, save_error
 
-#    # PTA, All results for one participant in one graph
-#    for k in subjects:
-#        one_subject = gf.extract_subject(data_pta, k)
-#        action_k = pta.plot_pta_subject(result_path, one_subject)
-#        if action_k is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
-
-#    # PTA, Box plot graph, Right ear
-#    for r in subjects:
-#        one_subject = gf.extract_subject(data_pta_R, r)
-#        action_r = pta.plot_boxplot_pta(result_path, one_subject, "Right ear")
-#        if action_r is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
-
-#    # PTA, Box plot graph, Left ear
-#    for s in subjects:
-#        one_subject = gf.extract_subject(data_pta_L, s)
-#        action_s = pta.plot_boxplot_pta(result_path, one_subject, "Left ear")
-#        if action_s is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
-
-#    return counter, save_error
-
-###############################################################################
 
 def mtx_graph(result_path, counter, save_error):
     """
@@ -281,65 +196,6 @@ def mtx_graph(result_path, counter, save_error):
         #print(ls_mtx_all)
 
     return counter, save_error
-
-###############################################################################
-
-#    data_mtx_L1 = master_data[ls_columns_common + ls_columns_MTX1]
-
-#    data_mtx_L2 = master_data[ls_columns_common + ls_columns_MTX2]
-
-#    # Elimination of the lines that are irrelevant to each of the tests:
-#    # Matrix speech perception test
-#    # L1
-#    data_mtx_L1 = eliminate_row_mtx(data_mtx_L1, 1)
-
-#    # L2
-#    data_mtx_L2 = eliminate_row_mtx(data_mtx_L2, 2)
-
-#    # MTX, L1
-#    for m in range(0, len(data_mtx_L1)):
-#        action_m = mtx.plot_mtx(result_path, data_mtx_L1.loc[[m]], "L1")
-#        if action_m is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
-
-#    # MTX, L2
-#    for n in range(0, len(data_mtx_L2)):
-#        df_line = data_mtx_L2.loc[[n]]
-
-#        # Participant Sub-06 can't do the second language test
-#        if df_line["Participant_ID"][n] == "Sub06":
-#            continue
-#        else:
-#            action_n = mtx.plot_mtx(result_path, data_mtx_L2.loc[[n]], "L2")
-#            if action_n is True:
-#                counter = counter + 1
-#            else:
-#                save_error = save_error + 1
-
-#    # MTX, L1, All results for one participant in one graph
-#    for p in subjects:
-#        one_subject = gf.extract_subject(data_mtx_L1, p)
-#        action_p = mtx.plot_mtx_subject(result_path, one_subject, "L1")
-#        if action_p is True:
-#            counter = counter + 1
-#        else:
-#            save_error = save_error + 1
-
-#    # MTX, L2, All results for one participant in one graph
-#    for q in subjects:
-#        if q == "Sub06":
-#            continue
-#        else:
-#            one_subject = gf.extract_subject(data_mtx_L2, q)
-#            action_q = mtx.plot_mtx_subject(result_path, one_subject, "L2")
-#            if action_q is True:
-#                counter = counter + 1
-#            else:
-#                save_error = save_error + 1
-
-#    return counter, save_error
 
 
 def teoae_graph(result_path, counter, save_error):
