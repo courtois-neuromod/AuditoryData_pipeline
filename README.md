@@ -205,7 +205,7 @@ To create a Python virtual environment already equiped with all the necessary li
  2. Navigate to the AuditoryData_pipeline folder
  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
 
-    `$ python3 -m venv [name of your new virtual environment folder]`
+    `$ python3 -m venv *name of your new virtual environment folder*`
 
 Your terminal should now install the virtual environment.
 When the process is done, a new folder named in accord with what you specified in the command should have been created at the root of your AuditoryData_pipeline folder.
@@ -217,7 +217,7 @@ To activate your Python virtual environment, follow these steps:
  2. Navigate to the AuditoryData_pipeline folder
  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
 
-    `$ source [name of the virtual environment folder]/bin/activate`
+    `$ source *name of the virtual environment folder*/bin/activate`
 
 Your virtual environment should now be activated (the name of your environment should now show between parenthesis in front of the name of your system's name in the terminal command line).
 
