@@ -74,6 +74,11 @@ def fetch_db(data_path):
 
     df = common.retrieve_db(data_path)
 
+#    if df == "break":
+#        quit()
+#    else:
+#        pass
+
     # Manage the empty boxes
     df.fillna(value='n/a', inplace=True)
 
@@ -420,10 +425,10 @@ def master_run(data_path, result_path):
 
     # This code section is present if, for any reason, the .tsv files are not
     # properly saved. You will first need to activate the "import glob" line
-    # (line 2). It is then possible to replace the variable "ext"'s value in
+    # (line 3). It is then possible to replace the variable "ext"'s value in
     # the save_df function (BIDS_utils.py) with ".csv" and rerun the script
-    # with this section to rename all the files with the correct ".tsv"
-    # file extansion.
+    # with this section to rename all the files with the correct ".tsv" file
+    # extension.
 
     # file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
 
