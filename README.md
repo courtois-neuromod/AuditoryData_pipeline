@@ -38,7 +38,7 @@ Baseline data were acquired for each of these tests when the participants joined
 Three different combinations of those tests were then designed as experimental conditions and a random sequence of conditions was assigned to each participant.
 The specific dataset used in this pipeline includes results from the tympanometry test, the stapedial reflex test, the pure-tone audiometry, the otoacoustic emission tests and the Matrix speech-in-noise perception test.
 
-FOR MORE INFORMATION REGARDING THE EXPERIMENTAL PROTOCOL, PLEASE CONSULT THE FOLLOWING PREPRINT:
+#### FOR MORE INFORMATION REGARDING THE EXPERIMENTAL PROTOCOL, PLEASE CONSULT THE FOLLOWING PREPRINT:
 
 Fortier, E., Bellec, P., Boyle, J. A., & Fuente, A. (2023). MRI noise and auditory health: Can one hundred scans be linked to hearing loss?. PsyArXiv. https://doi.org/10.31234/osf.io/7xkng
 
@@ -62,7 +62,7 @@ Gorgolewski, K. J., Auer, T., Calhoun, V. D., Craddock, R. C., Das, S., Duff, E.
 
 ![NeuroMod_BIDS_structure.png](data/NeuroMod_BIDS_structure.png)
 
-### Graph generation (Pure-tone audiometry, Matrix speech-in-noise perception test)
+### Graph generation (Pure-tone audiometry, Matrix speech-in-noise perception test and OAE tests)
 
 For some of these tests, such as the pure-tone audiometry test, the data is more easily interpreted when rendered into graphic displays.
 The second task to be done is to build python scripts to generate the interactive html graphs using the Plot.ly library.
@@ -95,7 +95,7 @@ In the current state of this repository, it is possible to find a serie of Pytho
 
  - setup.py ("[repo_root]/"):
  - requirements.txt ("[repo_root]/"):
- - \__init\__.py ("[repo_root]/src/"):
+ - \__init__.py ("[repo_root]/src/"):
 
 #### Multi-purposes script
 
@@ -162,7 +162,8 @@ To be able to be processed by this pipeline, data from different types of audito
          - Sequence #3 (Stimulus: right, Noise: bilateral)
          - Sequence #4 (Stimulus: left, Noise: left)
          - Sequence #5 (Stimulus: right, Noise: right)
-To OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported as .csv files from the acquisition software (i.e., ILOv6) and saved in the "[repo_root]/data/auditory_tests/OAE/" folder. Each file name should include the following informations (separated by underscores):
+
+The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported as .csv files from the acquisition software (i.e., ILOv6) and saved in the "[repo_root]/data/auditory_tests/OAE/" folder. Each file name should include the following informations (separated by underscores):
  - The participant's ID: sub-XX (01 to 06)
  - The test date and condition:
      - Baseline: YYYY-MM-DD-Baseline
@@ -177,6 +178,7 @@ To OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported as
      - Left ear: L
      - Right ear: R
  - Finish with the file extension: .csv
+
 The overall filename should look like this: **sub-01_1900-01-01-Baseline_DPOAE_L.csv**.
 
 ### Required Python libraries
@@ -191,6 +193,7 @@ You will need the following libraries (and their dependencies):
  - plotly
  - seaborn
  - scikit-learn
+
 If needed, a virtual environment setup procedure including all the required libraries is available in the next section.
 
 ### Virtual environment
@@ -201,7 +204,9 @@ To create a Python virtual environment already equiped with all the necessary li
  1. Open your terminal
  2. Navigate to the AuditoryData_pipeline folder
  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+
     `$ python3 -m venv [name of your new virtual environment folder]`
+
 Your terminal should now install the virtual environment.
 When the process is done, a new folder named in accord with what you specified in the command should have been created at the root of your AuditoryData_pipeline folder.
 
@@ -211,16 +216,21 @@ To activate your Python virtual environment, follow these steps:
  1. Open your terminal
  2. Navigate to the AuditoryData_pipeline folder
  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+
     `$ source [name of the virtual environment folder]/bin/activate`
+
 Your virtual environment should now be activated (the name of your environment should now show between parenthesis in front of the name of your system's name in the terminal command line).
 
 To deactivate your virtual environment, simply input the following command and press enter
+
     `$ deactivate`
 
 ### Run the Auditory_pipeline
 
 To run the software, simply navigate to the root of your repository, input the following command and press enter
+
     `$ python main.py`
+
 You will see the pipeline's main menu appear and will be able to choose which functionality you wish to use.
 
 ## About the pipeline creators
@@ -248,7 +258,7 @@ You will see the pipeline's main menu appear and will be able to choose which fu
 
 While working on the development of this processing pipeline, Mr. Fortier was a Master student in Psychology at Université de Montréal.
 He was also part of the auditory perception and protection branch of the Projet Courtois NeuroMod (Centre de recherche de l'Institut universitaire de gériatrie de Montréal).
-Before that, he did undergrad studies in Music writing (B. Mus.) and in Cognitive neuroscience (B. Sc.).
+Before that, he did undergraduate studies in Music writing (B. Mus.) and in Cognitive neuroscience (B. Sc.).
 Having backgrounds in both of these fields, his research interests include auditory perception, music perception and creation, and noise pollution's effects on perception and health (physical and mental).
 
 ### Lili El Khalil's personal Backgroung
