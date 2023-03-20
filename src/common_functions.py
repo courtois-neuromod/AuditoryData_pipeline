@@ -67,10 +67,10 @@ else:
         for i in range(0, len(ls_fct)):
             prompt_options += ("\n " + str(i+1) + "-" + ls_fct[i])
 
-        prompt_options += ("\n ")
-#                           + str(len(ls_fct)+1)
-#                           + "-Return to the main menu\n"
-#                          )
+        prompt_options += ("\n "
+                           + str(len(ls_fct)+1)
+                           + "-Return to the main menu\n"
+                          )
 
         prompt_txt = prompt_instruction + prompt_options
 
@@ -89,13 +89,11 @@ else:
                 value = int(value)
 
                 # Is it within the range of the options?
-                if value > 0 and value <= len(ls_fct):
+                if value > 0 and value <= len(ls_fct) + 1:
 
-#                if value > 0 and value <= len(ls_fct) + 1:
-#                    # Loop breaks if the "Exit" option is selected
-#                    if value == len(ls_fct) + 1:
-#                        return "break"
-#                        #break
+                    # Loop breaks if the "Exit" option is selected
+                    if value == len(ls_fct) + 1:
+                        raise RuntimeError("Return to the main menu")
 
                     # The encased section contains the subscript calls.
                     # If functionality are to be added, here is where to
@@ -103,45 +101,45 @@ else:
                     # of available functions: ls_fct).
                     ###########################################################
 
-#                    else:
+                    else:
 
-                    # User is to supply a URL
-                    if ls_fct[value - 1].count("user supplied URL") == 1:
-                        url_share = input("Enter the Google "
-                                          "Spreadsheet URL: ")
-                        print("\n")
-                        url_csv = url_share.replace("/edit#gid=",
-                                                    "/export?"
-                                                    "format=csv&gid=")
-                        df = pd.read_csv(url_csv, sep=',', na_filter=True)
-                        return df
+                        # User is to supply a URL
+                        if ls_fct[value - 1].count("user supplied URL") == 1:
+                            url_share = input("Enter the Google "
+                                              "Spreadsheet URL: ")
+                            print("\n")
+                            url_csv = url_share.replace("/edit#gid=",
+                                                        "/export?"
+                                                        "format=csv&gid=")
+                            df = pd.read_csv(url_csv, sep=',', na_filter=True)
+                            return df
 
-                    # Use the URL.tsv file
-                    elif ls_fct[value - 1].count("URL.tsv") == 1:
-                        filename = os.path.join(data_path, "URL.tsv")
-                        df_URL = pd.read_csv(filename, sep="\t")
-                        url_share = df_URL["test_database"][0]
-                        url_csv = url_share.replace("/edit#gid=",
-                                                    "/export?"
-                                                    "format=csv&gid=")
-                        df = pd.read_csv(url_csv, sep=',', na_filter=True)
-                        return df
+                        # Use the URL.tsv file
+                        elif ls_fct[value - 1].count("URL.tsv") == 1:
+                            filename = os.path.join(data_path, "URL.tsv")
+                            df_URL = pd.read_csv(filename, sep="\t")
+                            url_share = df_URL["test_database"][0]
+                            url_csv = url_share.replace("/edit#gid=",
+                                                        "/export?"
+                                                        "format=csv&gid=")
+                            df = pd.read_csv(url_csv, sep=',', na_filter=True)
+                            return df
 
-                    # MRI sessions design files generation functionalities
-                    elif (ls_fct[value - 1].count("test_database.xlsx")
-                          == 1):
-                        filename = os.path.join(data_path,
-                                                "test_database.xlsx")
-                        df = pd.read_excel(filename, na_filter=True)
-                        print(df)
-                        return df
+                        # MRI sessions design files generation functionalities
+                        elif (ls_fct[value - 1].count("test_database.xlsx")
+                              == 1):
+                            filename = os.path.join(data_path,
+                                                    "test_database.xlsx")
+                            df = pd.read_excel(filename, na_filter=True)
+                            print(df)
+                            return df
 
-                    # Test Dummy
-                    elif ls_fct[value - 1].count("Dummy") == 1:
-                        print("This is just a test line:",
-                              ls_fct[value - 1], "\n")
+                        # Test Dummy
+                        elif ls_fct[value - 1].count("Dummy") == 1:
+                            print("This is just a test line:",
+                                  ls_fct[value - 1], "\n")
 
-                ###########################################################
+                    ###########################################################
 
                 else:
                     # If it is not within range, restart the loop
@@ -211,9 +209,14 @@ else:
         prompt_options = ""
 
         for i in range(0, len(ls_baseline)):
-            prompt_options += ("\n" + str(i+1) + "-" + ls_baseline[i])
+            prompt_options += ("\n " + str(i+1) + "-" + ls_baseline[i])
 
-        prompt_text = prompt_instruction + prompt_options + "\n"
+        prompt_options += ("\n "
+                           + str(len(ls_baseline)+1)
+                           + "-Return to the main menu\n"
+                          )
+
+        prompt_text = prompt_instruction + prompt_options
 
         loop_value = True
 
@@ -225,15 +228,20 @@ else:
                 value = int(value)
 
                 # Is it within the range of the options?
-                if value > 0 and value < len(ls_baseline) + 1:
+                if value > 0 and value <= len(ls_baseline) + 1:
 
-                    if ls_baseline[value - 1].startswith("Baseline #1"):
-                        bsl_ID = 0
-                    elif ls_baseline[value - 1].startswith("Baseline #2"):
-                        bsl_ID = 1
+                    # Loop breaks if the "Exit" option is selected
+                    if value == len(ls_baseline) + 1:
+                        raise RuntimeError("Return to the main menu")
 
-                    print("\n")
-                    loop_value = False
+                    else:
+                        if ls_baseline[value - 1].startswith("Baseline #1"):
+                            bsl_ID = 0
+                        elif ls_baseline[value - 1].startswith("Baseline #2"):
+                            bsl_ID = 1
+
+                        print("\n")
+                        loop_value = False
 
                 else:
 
