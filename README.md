@@ -83,7 +83,7 @@ The second task to be done is to build python scripts to generate the interactiv
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FMTX_sample_figure_generator.ipynb)
 
-## Actual capabilities
+## Current capabilities
 
 In the current state of this repository, it is possible to find a serie of Python 3 scripts used for different functions of the pipeline.
 
