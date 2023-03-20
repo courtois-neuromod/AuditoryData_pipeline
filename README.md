@@ -257,7 +257,7 @@ For the software to be able to properly retrieve the data, it has to be located 
 As mentionned in the "Raw data format" section, the AuditoryData_pipeline uses two types of raw data files: .csv files for the OAE tests and a spreadsheet for the other tests.
 
  - The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.
- - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.
+ - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can be automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.
 
 ### Run the AuditoryData_pipeline
 
