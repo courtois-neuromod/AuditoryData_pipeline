@@ -233,21 +233,31 @@ $ deactivate
 
 ### Library and pipeline software installation
 
-In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer according to your needs).
-To do so, you will first need to copy/paste the following code line at the root of the AuditoryData_pipeline folder to install the dependencies and press enter
+In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer's system according to your needs).
+To do so, follow these steps:
+ 1. Open your terminal
+ 2. Navigate to the AuditoryData_pipeline folder
+ 3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter
 
 ```
 $ pip install -r requirements.txt
 ```
 
-The second step will be to install the AuditoryData_pipeline software.
-You will need to copy/paste the following code line at the root of the AuditoryData_pipeline folder and press enter
+ 4. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter
 
 ```
 $ pip install .
 ```
 
 It will run the setup.py script and install the AuditoryData_pipeline as a local package.
+
+### Data placement
+
+For the software to be able to properly retrieve the data, it has to be located at the right place.
+As mentionned in the "Raw data format" section, the AuditoryData_pipeline uses two types of raw data files: .csv files for the OAE tests and a spreadsheet for the other tests.
+
+ - The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.
+ - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can manually or automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) input.
 
 ### Run the AuditoryData_pipeline
 
