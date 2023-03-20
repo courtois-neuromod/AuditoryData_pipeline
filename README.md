@@ -40,7 +40,7 @@ The specific dataset used in this pipeline includes results from the tympanometr
 
 #### FOR MORE INFORMATION REGARDING THE EXPERIMENTAL PROTOCOL, PLEASE CONSULT THE FOLLOWING PREPRINT:
 
-Fortier, E., Bellec, P., Boyle, J. A., & Fuente, A. (2023). MRI noise and auditory health: Can one hundred scans be linked to hearing loss?. PsyArXiv. https://doi.org/10.31234/osf.io/7xkng
+Fortier, E., Bellec, P., Boyle, J. A., & Fuente, A. (2023). *MRI noise and auditory health: Can one hundred scans be linked to hearing loss?*. PsyArXiv. https://doi.org/10.31234/osf.io/7xkng
 
 ### Data formating (BIDS format)
 
@@ -179,7 +179,7 @@ The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported a
      - Right ear: R
  - Finish with the file extension: .csv
 
-The overall filename should look like this: **sub-01_1900-01-01-Baseline_DPOAE_L.csv**.
+**The overall filename should look like this: *sub-01_1900-01-01-Baseline_DPOAE_L.csv*.**
 
 ### Required Python libraries
 
@@ -231,6 +231,24 @@ To deactivate your virtual environment, simply input the following command and p
 $ deactivate
 ```
 
+#### Library and pipeline software installation
+
+In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer according to your needs).
+To do so, you will first need to copy/paste the following code line at the root of the AuditoryData_pipeline folder to install the dependencies and press enter
+
+```
+$ pip install -r requirements.txt
+```
+
+The second step will be to install the AuditoryData_pipeline software.
+You will need to copy/paste the following code line at the root of the AuditoryData_pipeline folder and press enter
+
+```
+$ pip install .
+```
+
+It will run the setup.py script and install the AuditoryData_pipeline as a local package.
+
 ### Run the Auditory_pipeline
 
 To run the software, simply navigate to the root of your repository, input the following command and press enter
@@ -271,7 +289,7 @@ Having backgrounds in both of these fields, his research interests include audit
 
 ### Lili El Khalil's personal Backgroung
 
-Miss El Khalil is a Master student in Psychology at Université de Montréal.
+Ms. El Khalil is a Master student in Psychology at Université de Montréal.
 She is a research assistant with Marie Audrey Lavoie in the visual neurocognition laboratory.
 She helped to jumpstart the pipeline's development during her time as a participant at the 2021 BrainHack School.
 
