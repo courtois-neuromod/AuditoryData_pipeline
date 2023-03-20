@@ -231,7 +231,7 @@ To deactivate your virtual environment, simply input the following command and p
 $ deactivate
 ```
 
-#### Library and pipeline software installation
+### Library and pipeline software installation
 
 In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer according to your needs).
 To do so, you will first need to copy/paste the following code line at the root of the AuditoryData_pipeline folder to install the dependencies and press enter
