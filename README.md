@@ -249,12 +249,12 @@ $ pip install .
 
 It will run the setup.py script and install the AuditoryData_pipeline as a local package.
 
-### Run the Auditory_pipeline
+### Run the AuditoryData_pipeline
 
 To run the software, simply navigate to the root of your repository, input the following command and press enter
 
 ```
-$ python main.py
+$ python AuditoryData_pipeline.py
 ```
 
 You will see the pipeline's main menu appear and will be able to choose which functionality you wish to use.
