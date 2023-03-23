@@ -62,20 +62,18 @@ def result_location(result_path):
         sidecar_list = os.listdir(sidecar_folder)
         sidecar_list.sort()
         # Making sure that they are all present (tymp, reflex, PTA, MTX)
-        if (sidecar_list.count("tymp_run_level.json") == 1
-                and sidecar_list.count("reflex_run_level.json") == 1
-                and sidecar_list.count("pta_run_level.json") == 1
-                and sidecar_list.count("mtx_run_level.json") == 1
-                and sidecar_list.count("teoae_run_level.json") == 1
-                and sidecar_list.count("dpoae_run_level.json") == 1
-                and sidecar_list.count("dpgrowth_run_level.json") == 1
-                and sidecar_list.count("sessions_session_level.json") == 1):
+        if (sidecar_list.count("task-Tymp_beh.json") == 1
+                and sidecar_list.count("task-Reflex_beh.json") == 1
+                and sidecar_list.count("task-PTA_beh.json") == 1
+                and sidecar_list.count("task-MTX_beh.json") == 1
+                and sidecar_list.count("task-TEOAE_beh.json") == 1
+                and sidecar_list.count("task-DPOAE_beh.json") == 1
+                and sidecar_list.count("task-DPGrowth_beh.json") == 1
+                and sidecar_list.count("sessions.json") == 1):
 
-            print("The run-level json sidecars for:\n - tymp\n - reflex\n"
+            print("The json sidecars for:\n - tymp\n - reflex\n"
                   " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
-                  "are present.\n")
-            print("The session-level json sidecar for:\n - sessions\n"
-                  "is present.\n")
+                  " - sessions\nare present.\n")
             pass
         else:
             # run json_sidecar_generator.py
@@ -83,12 +81,9 @@ def result_location(result_path):
                   "create it (them) for you.\n")
             jsg.create_sidecars(result_path)
             print("\n")
-            print("The run-level json sidecars for:\n - tymp\n - reflex\n"
-                  " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
+            print("The json sidecars for:\n - tymp\n - reflex\n - PTA\n"
+                  " - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n - sessions\n"
                   "were created in the [repo_root]/results/"
-                  "BIDS_sidecars_originals/ folder.\n")
-            print("The session-level json sidecar for:\n - sessions\n"
-                  "was created in the [repo_root]/results/"
                   "BIDS_sidecars_originals/ folder.\n")
     else:
         # run json_sidecar_generator.py
@@ -96,13 +91,10 @@ def result_location(result_path):
               "create it for you.\n")
         jsg.create_sidecars(result_path)
         print("\n")
-        print("The run-level json sidecars for:\n - tymp\n - reflex\n"
+        print("The json sidecars for:\n - tymp\n - reflex\n"
               " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
-              "were created in the [repo_root]/results/"
+              " - sessions\nwere created in the [repo_root]/results/"
               "BIDS_sidecars_originals folder.\n")
-        print("The session-level json sidecar for:\n - sessions\n"
-              "was created in the [repo_root]/results/"
-              "BIDS_sidecars_originals/ folder.\n")
 
 
 def retrieve_tests(subject_folder, ses_ID):
@@ -220,29 +212,29 @@ def save_df(data_tosave_df, single_test_df, index,
 
     data_tosave_df.to_csv(os.path.join(path, file_name + ext), sep='\t')
 
-    json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
+#    json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
 
-    if test == "Tymp":
-        copyfile(os.path.join(json_origin, "tymp_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "Reflex":
-        copyfile(os.path.join(json_origin, "reflex_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "PTA":
-        copyfile(os.path.join(json_origin, "pta_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "MTX":
-        copyfile(os.path.join(json_origin, "mtx_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "TEOAE":
-        copyfile(os.path.join(json_origin, "teoae_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "DPOAE":
-        copyfile(os.path.join(json_origin, "dpoae_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
-    elif test == "DPGrowth":
-        copyfile(os.path.join(json_origin, "dpgrowth_run_level.json"),
-                 os.path.join(path, file_name + ".json"))
+#    if test == "Tymp":
+#        copyfile(os.path.join(json_origin, "tymp_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "Reflex":
+#        copyfile(os.path.join(json_origin, "reflex_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "PTA":
+#        copyfile(os.path.join(json_origin, "pta_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "MTX":
+#        copyfile(os.path.join(json_origin, "mtx_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "TEOAE":
+#        copyfile(os.path.join(json_origin, "teoae_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "DPOAE":
+#        copyfile(os.path.join(json_origin, "dpoae_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
+#    elif test == "DPGrowth":
+#        copyfile(os.path.join(json_origin, "dpgrowth_run_level.json"),
+#                 os.path.join(path, file_name + ".json"))
 
 
 def extract_tymp(single_test_df, ls_columns_1,

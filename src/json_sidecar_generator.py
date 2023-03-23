@@ -116,14 +116,14 @@ keys_growth = ["order", "side", "freq1", "freq2", "l1",
                "l2", "dp", "snr", "noise+2sd", "noise+1sd",
                "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
 
-keys_ses = ["session_id", "session_name", "condition", "scan_type",
-            "Tymp", "Reflex", "PTA", "MTX", "TEOAE", "DPOAE",
-            "DPGrowth_2kHz", "DPGrowth_4kHz", "DPGrowth_6kHz"]
+keys_ses = ["session_id", "session_name", "condition", "delay",
+            "scan_type", "Tymp", "Reflex", "PTA", "MTX", "TEOAE",
+            "DPOAE", "DPGrowth_2kHz", "DPGrowth_4kHz", "DPGrowth_6kHz"]
 
 
 def gen_df_tymp():
     """
-    This function generates the run-level tympanometry test (Tymp)
+    This function generates the tympanometry test (Tymp)
     sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -199,7 +199,7 @@ def gen_df_tymp():
 
 def gen_df_reflex():
     """
-    This function generates the run-level stapedial reflex test (Reflex)
+    This function generates the stapedial reflex test (Reflex)
     sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -241,7 +241,7 @@ def gen_df_reflex():
 
 def gen_df_pta():
     """
-    This function generates the run-level pure-tone audiometry test (PTA)
+    This function generates the pure-tone audiometry test (PTA)
     sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -275,7 +275,7 @@ def gen_df_pta():
 
 def gen_df_mtx():
     """
-    This function generates the run-level matrix speech-in-noise perception
+    This function generates the matrix speech-in-noise perception
     test (MTX) sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -334,14 +334,14 @@ def gen_df_mtx():
                                           f"correct answers with these "
                                           f"conditions: "
                                           f"{dict_desc_mtx[k_mtx]}.")
-            df_mtx.at[index[3], k_mtx] = "dB"
+            df_mtx.at[index[3], k_mtx] = "dB SNR"
 
     return df_mtx
 
 
 def gen_df_teoae():
     """
-    This function generates the run-level transient-evoked otoacoustic
+    This function generates the transient-evoked otoacoustic
     emissions test (TEOAE) sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -402,7 +402,7 @@ def gen_df_teoae():
 
 def gen_df_dpoae():
     """
-    This function generates the run-level distortion product otoacoustic
+    This function generates the distortion product otoacoustic
     emissions test (DPOAE) sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -470,7 +470,7 @@ def gen_df_dpoae():
                         keys_dpoae[3]: "Hz",
                         keys_dpoae[4]: "dB SPL",
                         keys_dpoae[5]: "dB SPL",
-                        keys_dpoae[6]: "dB",
+                        keys_dpoae[6]: "dB SPL",
                         keys_dpoae[7]: "dB",
                         keys_dpoae[8]: "dB",
                         keys_dpoae[9]: "dB",
@@ -502,7 +502,7 @@ def gen_df_dpoae():
 
 def gen_df_growth():
     """
-    This function generates the run-level distortion product otoacoustic
+    This function generates the distortion product otoacoustic
     emissions growth function test (DP-Growth) sidecar dataframe.
     INPUTS:
     -NO specific external input
@@ -569,8 +569,8 @@ def gen_df_growth():
     dict_units_growth = {keys_growth[2]: "Hz",
                          keys_growth[3]: "Hz",
                          keys_growth[4]: "dB SPL",
-                         keys_growth[5]: "dB sPL",
-                         keys_growth[6]: "dB",
+                         keys_growth[5]: "dB SPL",
+                         keys_growth[6]: "dB SPL",
                          keys_growth[7]: "dB",
                          keys_growth[8]: "dB",
                          keys_growth[9]: "dB",
@@ -614,23 +614,25 @@ def gen_df_sessions():
     dict_longname_sessions = {keys_ses[0]: "Session identification number",
                               keys_ses[1]: "Session name and/or type",
                               keys_ses[2]: "Experimental condition",
-                              keys_ses[3]: "MRI scan type",
-                              keys_ses[4]: "Tympanometry",
-                              keys_ses[5]: "Stapedial reflex",
-                              keys_ses[6]: "Pure tone audiometry",
-                              keys_ses[7]: "Matrix speech-in-noise "
+                              keys_ses[3]: "Number of days since the first "
+                                           "baseline",
+                              keys_ses[4]: "MRI scan type",
+                              keys_ses[5]: "Tympanometry",
+                              keys_ses[6]: "Stapedial reflex",
+                              keys_ses[7]: "Pure tone audiometry",
+                              keys_ses[8]: "Matrix speech-in-noise "
                                            "perception test",
-                              keys_ses[8]: "Transient-evoked otoacoustic "
-                                           "emissions",
-                              keys_ses[9]: "Distortion product otoacoustic "
+                              keys_ses[9]: "Transient-evoked otoacoustic "
                                            "emissions",
                               keys_ses[10]: "Distortion product otoacoustic "
-                                            "emissions growth function at "
-                                            "2 kHz",
+                                            "emissions",
                               keys_ses[11]: "Distortion product otoacoustic "
                                             "emissions growth function at "
-                                            "4 kHz",
+                                            "2 kHz",
                               keys_ses[12]: "Distortion product otoacoustic "
+                                            "emissions growth function at "
+                                            "4 kHz",
+                              keys_ses[13]: "Distortion product otoacoustic "
                                             "emissions growth function at "
                                             "6 kHz"}
 
@@ -650,43 +652,48 @@ def gen_df_sessions():
                                        "Suppl. PTA (Baseline)) or one of "
                                        "the experimental conditions (1[A, B], "
                                        "2, 3[A, B] or Suppl. PTA [A, B]). ",
-                          keys_ses[3]: "Type of MRI scan linked to the "
+                          keys_ses[3]: "Delay (in days) between a specific "
+                                       "test session and the first auditory "
+                                       "test session (baseline #1) acquired "
+                                       "with the participant when they joined "
+                                       "the study.",
+                          keys_ses[4]: "Type of MRI scan linked to the "
                                        "acquisition session (anatomical, "
                                        "functional or no scan in the case of "
                                        "baseline sessions).",
-                          keys_ses[4]: "Tympanic membrane and middle ear "
+                          keys_ses[5]: "Tympanic membrane and middle ear "
                                        "structures mobility test.",
-                          keys_ses[5]: "Test of the reactivity of the "
+                          keys_ses[6]: "Test of the reactivity of the "
                                        "stapedial reflex.",
-                          keys_ses[6]: "Behavioral measurement of the earing "
+                          keys_ses[7]: "Behavioral measurement of the earing "
                                        "thresholds using pure tones at "
                                        "different frequencies.",
-                          keys_ses[7]: "Behavioral speech-in-noise perception "
+                          keys_ses[8]: "Behavioral speech-in-noise perception "
                                        "test using five words sentences built "
                                        "from a matrix of words.",
-                          keys_ses[8]: "Otoacoustic emissions test using "
+                          keys_ses[9]: "Otoacoustic emissions test using "
                                        "brief transient stimuli",
-                          keys_ses[9]: "Otoacoustic emissions test using the "
-                                       "simultaneous presentation of two pure "
-                                       "tones (f1 and f2) with a f2/f1 ratio "
-                                       "of 1,22 and target intensities L1 = "
-                                       "65 dB SPL (for f1) and L2 = 55 dB "
-                                       "SPL (for f2).",
                           keys_ses[10]: "Otoacoustic emissions test using the "
+                                        "simultaneous presentation of two pure "
+                                        "tones (f1 and f2) with a f2/f1 ratio "
+                                        "of 1,22 and target intensities L1 = "
+                                        "65 dB SPL (for f1) and L2 = 55 dB "
+                                        "SPL (for f2).",
+                          keys_ses[11]: "Otoacoustic emissions test using the "
                                         "simultaneous presentation of two "
                                         "pure tones (f1 and f2) with a f2/f1 "
                                         "ratio of 1,22 and where the target "
                                         "f2 = 2 kHz. The pair of frequencies "
                                         "f1-f2 is presented with decreasing "
                                         "intensities.",
-                          keys_ses[11]: "Otoacoustic emissions test using the "
+                          keys_ses[12]: "Otoacoustic emissions test using the "
                                         "simultaneous presentation of two "
                                         "pure tones (f1 and f2) with a f2/f1 "
                                         "ratio of 1,22 and where the target "
                                         "f2 = 4 kHz. The pair of frequencies "
                                         "f1-f2 is presented with decreasing "
                                         "intensities.",
-                          keys_ses[12]: "Otoacoustic emissions test using the "
+                          keys_ses[13]: "Otoacoustic emissions test using the "
                                         "simultaneous presentation of two "
                                         "pure tones (f1 and f2) with a f2/f1 "
                                         "ratio of 1,22 and where the target "
@@ -712,6 +719,11 @@ def gen_df_sessions():
         elif k_ses == keys_ses[3]:
             df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
             df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
+            df_sessions.at[index[3], k_ses] = "days"
+
+        elif k_ses == keys_ses[4]:
+            df_sessions.at[index[0], k_ses] = dict_longname_sessions[k_ses]
+            df_sessions.at[index[1], k_ses] = dict_desc_sessions[k_ses]
             df_sessions.at[index[2], k_ses] = lvl_scan
 
         else:
@@ -722,7 +734,7 @@ def gen_df_sessions():
     return df_sessions
 
 
-def save_json(df, save_folder, test, level):
+def save_json(df, save_folder, test):
     """
     This function saves the provided dataframe in a json file and formats it
     to comply with BIDS standards.
@@ -731,18 +743,15 @@ def save_json(df, save_folder, test, level):
     -save_folder: path to save the json file
     -test: string containing the name of the test to insert in the json
            file name.
-    -level: BIDS structure level where the json file will be used. Can only
-            take the following string values: -run
-                                              -session
     OUTPUTS:
     -prints a user feedback: Saved [name of the saved file]
     -NO specific return to the script
     """
 
-    if level == "run":
-        filename = test + "_run_level.json"
-    elif level == "session":
-        filename = test + "_session_level.json"
+    if test == "sessions":
+        filename = test + ".json"
+    else:
+        filename = "task-" + test + "_beh.json"
 
     df.to_json(os.path.join(save_folder, filename), indent=2)
 
@@ -792,14 +801,14 @@ def create_sidecars(results_folder):
     df_growth = gen_df_growth()
     df_sessions = gen_df_sessions()
 
-    save_json(df_tymp, save_folder, "tymp", "run")
-    save_json(df_reflex, save_folder, "reflex", "run")
-    save_json(df_pta, save_folder, "pta", "run")
-    save_json(df_mtx, save_folder, "mtx", "run")
-    save_json(df_teoae, save_folder, "teoae", "run")
-    save_json(df_dpoae, save_folder, "dpoae", "run")
-    save_json(df_growth, save_folder, "dpgrowth", "run")
-    save_json(df_sessions, save_folder, "sessions", "session")
+    save_json(df_tymp, save_folder, "Tymp")
+    save_json(df_reflex, save_folder, "Reflex")
+    save_json(df_pta, save_folder, "PTA")
+    save_json(df_mtx, save_folder, "MTX")
+    save_json(df_teoae, save_folder, "TEOAE")
+    save_json(df_dpoae, save_folder, "DPOAE")
+    save_json(df_growth, save_folder, "DPGrowth")
+    save_json(df_sessions, save_folder, "sessions")
 
 
 if __name__ == "__main__":

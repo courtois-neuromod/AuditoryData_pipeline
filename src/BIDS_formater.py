@@ -2,6 +2,7 @@ import os
 import pandas as pd
 # import glob
 
+from datetime import datetime as date
 from shutil import copyfile
 
 from src import BIDS_utils as utils
@@ -193,6 +194,26 @@ def master_run(data_path, result_path):
     utils.result_location(result_path)
 
     parent_path = os.path.join(result_path, "BIDS_data")
+    
+    # Add the .json sidecar files in the BIDS_data folder
+    json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
+
+    copyfile(os.path.join(json_origin, "sessions.json"),
+             os.path.join(parent_path, "sessions.json"))
+    copyfile(os.path.join(json_origin, "task-Tymp_beh.json"),
+             os.path.join(parent_path, "task-Tymp_beh.json"))
+    copyfile(os.path.join(json_origin, "task-Reflex_beh.json"),
+             os.path.join(parent_path, "task-Reflex_beh.json"))
+    copyfile(os.path.join(json_origin, "task-PTA_beh.json"),
+             os.path.join(parent_path, "task-PTA_beh.json"))
+    copyfile(os.path.join(json_origin, "task-MTX_beh.json"),
+             os.path.join(parent_path, "task-MTX_beh.json"))
+    copyfile(os.path.join(json_origin, "task-TEOAE_beh.json"),
+             os.path.join(parent_path, "task-TEOAE_beh.json"))
+    copyfile(os.path.join(json_origin, "task-DPOAE_beh.json"),
+             os.path.join(parent_path, "task-DPOAE_beh.json"))
+    copyfile(os.path.join(json_origin, "task-DPGrowth_beh.json"),
+             os.path.join(parent_path, "task-DPGrowth_beh.json"))
 
     # Initialize empty lists to be filled with the proper column titles
     # for each test
@@ -339,7 +360,7 @@ def master_run(data_path, result_path):
 
         # .tsv session-level reference file creation
         column_reference = ["session_id", "session_name",
-                            "condition", "scan_type"]
+                            "condition", "delay", "scan_type"]
 
         for w in ls_test:
             column_reference.append(w)
@@ -350,10 +371,22 @@ def master_run(data_path, result_path):
 
         ls_name = []
         ls_condition = []
+        ls_delay = []
         ls_scan = []
         for y in range(0, len(data_sub)):
+
+            # Calculation of the number of days since Baseline #1
+            index_date_bsl = data_sub.index[(data_sub["Protocol name"]
+                                             == "Baseline 1")].tolist()
+            date_bsl = date.strptime(data_sub.at[index_date_bsl[0], "Date"],
+                                     "%Y-%m-%d")
+            date_ses = date.strptime(data_sub.at[y, "Date"],
+                                     "%Y-%m-%d")
+            value_delay = date_ses - date_bsl
+
             ls_name.append(data_sub.at[y, "Protocol name"])
             ls_condition.append(data_sub.at[y, "Protocol condition"])
+            ls_delay.append(value_delay.days)
             ls_scan.append(data_sub.at[y, "Scan type"])
 
         ref = pd.DataFrame(index=index_reference, columns=column_reference)
@@ -362,6 +395,7 @@ def master_run(data_path, result_path):
             ref.at[a, "session_id"] = ls_ses[a]
             ref.at[a, "session_name"] = ls_name[a]
             ref.at[a, "condition"] = ls_condition[a]
+            ref.at[a, "delay"] = ls_delay[a]
             ref.at[a, "scan_type"] = ls_scan[a]
 
             ls_data = utils.retrieve_tests(subject_folder_path, ls_ses[a])
@@ -416,10 +450,6 @@ def master_run(data_path, result_path):
         ref_name = i + "_sessions"
         ref_save_path = os.path.join(subject_folder_path, ref_name + ".tsv")
         ref.to_csv(ref_save_path, sep="\t")
-
-        json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
-        copyfile(os.path.join(json_origin, "sessions_session_level.json"),
-                 os.path.join(subject_folder_path, ref_name + ".json"))
 
         print(f"The tsv and json files for {i} have been created.\n")
 
