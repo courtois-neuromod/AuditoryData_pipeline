@@ -65,13 +65,10 @@ else:
 
         prompt_options = ""
 
-        for i in range(0, len(ls_fct)):
-            prompt_options += ("\n " + str(i+1) + "-" + ls_fct[i])
+        for i, element_i in enumerate(ls_fct):
+            prompt_options += f"\n {str(i+1)}-{element_i}"
 
-        prompt_options += ("\n "
-                           + str(len(ls_fct)+1)
-                           + "-Return to the main menu\n"
-                          )
+        prompt_options += f"\n {str(len(ls_fct)+1)}-Return to the main menu\n"
 
         prompt_txt = prompt_instruction + prompt_options
 
@@ -211,13 +208,12 @@ else:
 
         prompt_options = ""
 
-        for i in range(0, len(ls_baseline)):
-            prompt_options += ("\n " + str(i+1) + "-" + ls_baseline[i])
+        for i, element_i in enumerate(ls_baseline):
+            prompt_options += f"\n {str(i+1)}-{element_i}"
 
-        prompt_options += ("\n "
-                           + str(len(ls_baseline)+1)
-                           + "-Return to the main menu\n"
-                          )
+        prompt_options += (
+            f"\n {str(len(ls_baseline)+1)}-Return to the main menu\n"
+        )
 
         prompt_text = prompt_instruction + prompt_options
 
