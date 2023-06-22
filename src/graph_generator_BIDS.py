@@ -7,7 +7,6 @@ from src import graph_MTX_BIDS as mtx
 from src import graph_TEOAE_BIDS as teoae
 from src import graph_DPOAE_BIDS as dpoae
 from src import graph_DPGrowth_BIDS as growth
-from src import common_functions as common
 
 
 subjects = ["sub-01", "sub-02", "sub-03", "sub-04", "sub-05", "sub-06"]
@@ -32,8 +31,7 @@ def pta_graph(result_path, counter, save_error):
     # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
-    #print("sub:", ls_folders_sub, "\n")
-    
+
     for i in ls_folders_sub:
         path_sub = os.path.join(data_path, i)
         
@@ -42,7 +40,6 @@ def pta_graph(result_path, counter, save_error):
         ls_folders_ses.sort()
         ls_folders_ses.pop(-1)
         ls_folders_ses.pop(-1)
-        #print("ses:", ls_folders_ses, "\n")
         
         for j in ls_folders_ses:
             path_ses = os.path.join(path_sub, j)
@@ -50,7 +47,6 @@ def pta_graph(result_path, counter, save_error):
             # extract the list of data files within a session folder
             ls_files_test = os.listdir(path_ses)
             ls_files_test.sort()
-            #print("tests:", ls_files_test, "\n")
             
             ls_pta = []
             
@@ -94,7 +90,7 @@ def pta_graph(result_path, counter, save_error):
                     if action_both is True:
                         counter = counter + 1
                     else:
-                        save_error = save_error + 1 
+                        save_error = save_error + 1
                     
     return counter, save_error
 
@@ -214,7 +210,7 @@ def teoae_graph(result_path, counter, save_error):
     print("Generating TEOAE graphs...\n")
     data_path = os.path.join(result_path, "BIDS_data")
 
-    # extract the list of subject folders        
+    # extract the list of subject folders
     ls_folders_sub = os.listdir(data_path)
     ls_folders_sub.sort()
     #print("sub:", ls_folders_sub, "\n")
@@ -329,15 +325,12 @@ def dpoae_graph(result_path, counter, save_error):
                 else:
                     pass
             
-            #print(ls_dpoae)
-            
             if len(ls_dpoae) == 0:
                 continue
             else:
                 for m in ls_dpoae:
                     df = pd.read_csv(os.path.join(path_ses, m),
                                      sep="\t")
-                    #print(df)
                     
                     # DPOAE, Right ear
                     mask_R = df["side"] == "R"
@@ -359,9 +352,7 @@ def dpoae_graph(result_path, counter, save_error):
                     else:
                         save_error = save_error + 1                    
                     
-                    #print(df, "\n", df_R, "\n", df_L, "\n")
-
-    return counter, save_error 
+    return counter, save_error
 
 
 def growth_graph(result_path, counter, save_error):
@@ -449,9 +440,6 @@ def growth_graph(result_path, counter, save_error):
 
 def master_run(root_path, test_type="all"):
     result_path = os.path.join(root_path, "results")
-    data_path = os.path.join(root_path, "data")
-    
-    #master_data = common.retrieve_db(data_path)
     
     # Verifications:
     # - existence of the "graphs" folder

@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 
 from src import common_functions as common
 
@@ -35,7 +34,7 @@ else:
             print("The [repo_root]/results/graphs/ folder was created.\n")
 
         subfolder_path = os.path.join(result_path, "graphs")
-        
+
         content_subfolder = os.listdir(subfolder_path)
         content_subfolder.sort()
 
