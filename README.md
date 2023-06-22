@@ -20,19 +20,19 @@ Following that first development milestone, other functionalities were gradually
 
 The dataset used for this project has been acquired through multiple sessions with each participant between November 2018 and June 2022.
 Multiple clinical tests were performed including:
--  Otoscopic inspection of the external auditory canal and tympanic membrane
--  Tympanometry
--  Stapedial reflex test
--  Pure-tone audiometry
-    -  Regular/clinical frequency range (250 Hz - 8 kHz)
-    -  Extended/Ultra-high frequency range (9 - 20 kHz)
--  Matrix speech-in-noise perception test
-    -  Primary language of the participant: French or English (for all participants)
-    -  Secondary language of the participant: French or English (for 5 out of the 6 participants)
--  Otoacoustic emissions
-    -  Transiant-evoked otoacoustic emissions (TEOAE)
-    -  Distortion product otoacoustic emissions (DPOAE) with an L1/L2 ratio of 65/55 dB SPL
-    -  DPOAE Growth function (DP Growth) for 2 kHz, 4 kHz and 6 kHz
+  -Otoscopic inspection of the external auditory canal and tympanic membrane
+  -Tympanometry
+  -Stapedial reflex test
+  -Pure-tone audiometry
+      -Regular/clinical frequency range (250 Hz - 8 kHz)
+      -Extended/Ultra-high frequency range (9 - 20 kHz)
+  -Matrix speech-in-noise perception test
+      -Primary language of the participant: French or English (for all participants)
+      -Secondary language of the participant: French or English (for 5 out of the 6 participants)
+  -Otoacoustic emissions
+      -Transiant-evoked otoacoustic emissions (TEOAE)
+      -Distortion product otoacoustic emissions (DPOAE) with an L1/L2 ratio of 65/55 dB SPL
+      -DPOAE Growth function (DP Growth) for 2 kHz, 4 kHz and 6 kHz
 
 Baseline data were acquired for each of these tests when the participants joined the project (November 2018 - July 2019) and at the beginning of the monitoring protocol (January - February 2021).
 Three different combinations of those tests were then designed as experimental conditions and a random sequence of conditions was assigned to each participant.
