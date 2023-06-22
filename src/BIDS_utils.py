@@ -914,7 +914,6 @@ def growth_prepost(data_sub, i, oae_file_list,
         print(color.Fore.RED
               + (f"ERROR: At least one of {subject}'s DP-growth csv files "
                  f"for the {date} session ({condition}) is missing.\n"))
-        pass
 
     else:
         df_2k_L = pd.read_csv(os.path.join(data_path, g2k_L_file),
@@ -1038,18 +1037,18 @@ def growth_others(data_sub, i, oae_file_list,
     growth_R_file = None
     growth_L_file = None
 
-    for m in range(0, len(oae_file_list)):
-        if oae_file_list[m].find("PostScan") != -1:
+    for m, element_m in enumerate(oae_file_list):
+        if element_m.find("PostScan") != -1:
             pass
 
-        elif (oae_file_list[m].startswith(subject) and
-              oae_file_list[m].find(date) != -1):
+        elif (element_m.startswith(subject) and
+              element_m.find(date) != -1):
 
-            if oae_file_list[m].endswith("4000_R.csv"):
-                growth_R_file = oae_file_list[m]
+            if element_m.endswith("4000_R.csv"):
+                growth_R_file = element_m
 
-            elif oae_file_list[m].endswith("4000_L.csv"):
-                growth_L_file = oae_file_list[m]
+            elif element_m.endswith("4000_L.csv"):
+                growth_L_file = element_m
 
             else:
                 pass
