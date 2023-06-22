@@ -1037,18 +1037,18 @@ def growth_others(data_sub, i, oae_file_list,
     growth_R_file = None
     growth_L_file = None
 
-    for m, element_m in enumerate(oae_file_list):
-        if element_m.find("PostScan") != -1:
+    for m in oae_file_list:
+        if m.find("PostScan") != -1:
             pass
 
-        elif (element_m.startswith(subject) and
-              element_m.find(date) != -1):
+        elif (m.startswith(subject) and
+              m.find(date) != -1):
 
-            if element_m.endswith("4000_R.csv"):
-                growth_R_file = element_m
+            if m.endswith("4000_R.csv"):
+                growth_R_file = m
 
-            elif element_m.endswith("4000_L.csv"):
-                growth_L_file = element_m
+            elif m.endswith("4000_L.csv"):
+                growth_L_file = m
 
             else:
                 pass

@@ -17,7 +17,7 @@ def trace_list(report_path, sub):
     path = os.path.join(report_path, sub)
 
     ls_doc = os.listdir(path)
-    
+
     ls = []
     for i in ls_doc:
         if (i.startswith(sub)
@@ -103,17 +103,13 @@ def fig_generation(result_path):
              files_03, files_04,
              files_05, files_06]
 
-    #print(ls2do)
-    
     for i in range(0, len(ls2do)):
-        #print(ls2do[i])
         decomp_sub = ls2do[i][0].split("_")
         sub = decomp_sub[0]
-        #print(sub)
 
         ls_ses = []
-        for a in range(0, len(ls2do[i])):
-            split_underscore = ls2do[i][a].split("_")
+        for a, element_a in enumerate(ls2do[i]):
+            split_underscore = element_a.split("_")
             ses_post = split_underscore[3].split(".")
             ls_ses.append(ses_post[0])
 
@@ -163,14 +159,14 @@ def fig_generation(result_path):
                             yaxis_zerolinecolor="black")
         
         # Trace generations
-        for b in range(0, len(ls2do[i])):
-            path_df = os.path.join(report_path, sub, ls2do[i][b])
+        for b, element_b in enumerate(ls2do[i]):
+            path_df = os.path.join(report_path, sub, element_b)
             df = pd.read_csv(path_df, sep="\t")
-            #print(df)
+
             columns = list(df.columns)
 
-            decomp_ses = ls2do[i][b].split("_")
-            #print(decomp_ses)
+            decomp_ses = element_b.split("_")
+
             ses_type = decomp_ses[2]
             decomp_scan = decomp_ses[3].split(".")
             ses_scan = decomp_scan[0]
@@ -181,7 +177,6 @@ def fig_generation(result_path):
 
             scan = df_ref.loc[df_ref["session_id"] == ses_scan,
                               "scan_type"].iloc[0].lower()[0:4]
-            #print(scan)
 
             if ses_type == "ses-01":
                 ses_name = (f"48Post - Bsl_1 "
@@ -198,7 +193,7 @@ def fig_generation(result_path):
             for x in range(0, len(df)):
                 try:
                     int(float(df.at[x, "diff_L"]))
-                except:
+                except ValueError:
                     pass
                 else:
                     x_L.append(df.at[x, "freq"])
@@ -206,7 +201,7 @@ def fig_generation(result_path):
                 
                 try:
                     int(float(df.at[x, "diff_R"]))
-                except:
+                except ValueError:
                     pass
                 else:
                     x_R.append(df.at[x, "freq"])
