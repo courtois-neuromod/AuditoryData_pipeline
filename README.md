@@ -163,6 +163,7 @@ The goal is to generate the design files needed for the pure_tones.py task from 
 
 <ul>
     <li>MRI_session_design_generator.py ("[repo_root]/src/"):</li>
+</ul>
 
 Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
 
