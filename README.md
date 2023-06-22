@@ -20,19 +20,19 @@ Following that first development milestone, other functionalities were gradually
 
 The dataset used for this project has been acquired through multiple sessions with each participant between November 2018 and June 2022.
 Multiple clinical tests were performed including:
-- Otoscopic inspection of the external auditory canal and tympanic membrane
-- Tympanometry
-- Stapedial reflex test
-- Pure-tone audiometry
-    - Regular/clinical frequency range (250 Hz - 8 kHz)
-    - Extended/Ultra-high frequency range (9 - 20 kHz)
-- Matrix speech-in-noise perception test
-    - Primary language of the participant: French or English (for all participants)
-    - Secondary language of the participant: French or English (for 5 out of the 6 participants)
-- Otoacoustic emissions
-    - Transiant-evoked otoacoustic emissions (TEOAE)
-    - Distortion product otoacoustic emissions (DPOAE) with an L1/L2 ratio of 65/55 dB SPL
-    - DPOAE Growth function (DP Growth) for 2 kHz, 4 kHz and 6 kHz
+  - Otoscopic inspection of the external auditory canal and tympanic membrane
+  - Tympanometry
+  - Stapedial reflex test
+  - Pure-tone audiometry
+      - Regular/clinical frequency range (250 Hz - 8 kHz)
+      - Extended/Ultra-high frequency range (9 - 20 kHz)
+  - Matrix speech-in-noise perception test
+      - Primary language of the participant: French or English (for all participants)
+      - Secondary language of the participant: French or English (for 5 out of the 6 participants)
+  - Otoacoustic emissions
+      - Transiant-evoked otoacoustic emissions (TEOAE)
+      - Distortion product otoacoustic emissions (DPOAE) with an L1/L2 ratio of 65/55 dB SPL
+      - DPOAE Growth function (DP Growth) for 2 kHz, 4 kHz and 6 kHz
 
 Baseline data were acquired for each of these tests when the participants joined the project (November 2018 - July 2019) and at the beginning of the monitoring protocol (January - February 2021).
 Three different combinations of those tests were then designed as experimental conditions and a random sequence of conditions was assigned to each participant.
@@ -89,56 +89,56 @@ In the current state of this repository, it is possible to find a serie of Pytho
 
 #### User interface script (master script)
 
- - main.py ("[repo_root]/"):
+  - main.py ("[repo_root]/"):
 
 #### Virtual environment setup required scripts
 
- - setup.py ("[repo_root]/"):
- - requirements.txt ("[repo_root]/"):
- - \__init__.py ("[repo_root]/src/"):
+  - setup.py ("[repo_root]/"):
+  - requirements.txt ("[repo_root]/"):
+  - \__init__.py ("[repo_root]/src/"):
 
 #### Multi-purposes script
 
- - common_functions.py ("[repo_root]/src/"):
+  - common_functions.py ("[repo_root]/src/"):
 
 #### Data format transformation (BIDS format) scripts
 
- - BIDS_formater.py: takes as input a spreadsheet containing the tests data and returns .tsv files for each of the tests in a file structure compatible with the BIDS standards.
- - BIDS_utils.py:
- - json_sidecar_generator.py: an early draft of a .json file generator for the BIDS format's metadata files.
+  - BIDS_formater.py: takes as input a spreadsheet containing the tests data and returns .tsv files for each of the tests in a file structure compatible with the BIDS standards.
+  - BIDS_utils.py:
+  - json_sidecar_generator.py: an early draft of a .json file generator for the BIDS format's metadata files.
 
 #### Graph generation scripts (test results)
 
- - graph_generator_BIDS.py ("[repo_root]/src/"): a first iteration of a master script to process data and generate interactive graphs (single test and test overview).
- - graph_functions.py ("[repo_root]/src/"): a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.
- - graph_DPGrowth_BIDS.py ("[repo_root]/src/"):
- - graph_DPOAE_BIDS.py ("[repo_root]/src/"):
- - graph_MTX_BIDS.py ("[repo_root]/src/"):
- - graph_PTA_BIDS.py ("[repo_root]/src/"):
- - graph_TEOAE_BIDS.py ("[repo_root]/src/"):
+  - graph_generator_BIDS.py ("[repo_root]/src/"): a first iteration of a master script to process data and generate interactive graphs (single test and test overview).
+  - graph_functions.py ("[repo_root]/src/"): a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.
+  - graph_DPGrowth_BIDS.py ("[repo_root]/src/"):
+  - graph_DPOAE_BIDS.py ("[repo_root]/src/"):
+  - graph_MTX_BIDS.py ("[repo_root]/src/"):
+  - graph_PTA_BIDS.py ("[repo_root]/src/"):
+  - graph_TEOAE_BIDS.py ("[repo_root]/src/"):
 
 #### Test-retest-differences comparison report scripts
 
- - report_common.py ("[repo_root]/src/"):
- - report_DPGrowth.py ("[repo_root]/src/"):
- - report_DPOAE.py ("[repo_root]/src/"):
- - report_MTX.py ("[repo_root]/src/"):
- - report_PTA.py ("[repo_root]/src/"):
- - report_TEOAE.py ("[repo_root]/src/"):
+  - report_common.py ("[repo_root]/src/"):
+  - report_DPGrowth.py ("[repo_root]/src/"):
+  - report_DPOAE.py ("[repo_root]/src/"):
+  - report_MTX.py ("[repo_root]/src/"):
+  - report_PTA.py ("[repo_root]/src/"):
+  - report_TEOAE.py ("[repo_root]/src/"):
 
 #### Test-retest-differences graphs generation scripts (in development)
 
- - graph_delta_DPGrowth.py ("[repo_root]/src/"):
- - graph_delta_DPOAE.py ("[repo_root]/src/"):
- - graph_delta_MTX.py ("[repo_root]/src/"):
- - graph_delta_PTA.py ("[repo_root]/src/"):
- - graph_delta_TEOAE.py ("[repo_root]/src/"):
+  - graph_delta_DPGrowth.py ("[repo_root]/src/"):
+  - graph_delta_DPOAE.py ("[repo_root]/src/"):
+  - graph_delta_MTX.py ("[repo_root]/src/"):
+  - graph_delta_PTA.py ("[repo_root]/src/"):
+  - graph_delta_TEOAE.py ("[repo_root]/src/"):
 
 #### An MRI pure-tone detection task's required file generator (in development)
 
 This functionality is in development and not yet fully functional.
 The goal is to generate the design files needed for the pure_tones.py task from the [task_stimuli repository](https://github.com/courtois-neuromod/task_stimuli).
- - MRI_session_design_generator.py ("[repo_root]/src/"):
+  - MRI_session_design_generator.py ("[repo_root]/src/"):
 
 Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
 
@@ -147,37 +147,37 @@ Two jupyter notebooks are also available to be used in a Binder platform to demo
 ### Raw data format
 
 To be able to be processed by this pipeline, data from different types of auditory tests must be regrouped in a spreadsheet ([a Google spreadsheet template is available here](https://docs.google.com/spreadsheets/d/1aKakQJvJnvPUouTUciGm3FMlnNAGIX8NXhulbhjq9d4/edit?usp=sharing): PLEASE START BY MAKING YOUR OWN COPY / DO NOT EDIT THIS TEMPLATE!!!). The pipeline supports the use of a link to a Google spreadsheet (manually input when prompted or stored in the cell right below "test_database" in a .tsv file: "[repo_root]/data/URL.tsv") or the use of an Office Excel spreadsheet file version of the template: "[repo_root]/data/test_database.xlsx". This spreadsheet covers the following tests:
- - Tympanometry
- - Stapedial reflex test
- - Pure-tone audiometry
-     - Regular/clinical frequency range (250 and 500 Hz, 1, 2, 3, 4, 6 and 8 kHz)
-     - Extended/Ultra-high frequency range (9, 10, 11.2, 12.5, 14, 16, 18 and 20 kHz)
- - Matrix speech-in-noise perception test
-     - Primary language (French or English)
-     - Secondary language (French or English)
-     - Conditions:
-         - Practice sequence (Stimulus: bilateral, Noise: bilateral)
-         - Sequence #1 (Stimulus: bilateral, Noise: bilateral)
-         - Sequence #2 (Stimulus: left, Noise: bilateral)
-         - Sequence #3 (Stimulus: right, Noise: bilateral)
-         - Sequence #4 (Stimulus: left, Noise: left)
-         - Sequence #5 (Stimulus: right, Noise: right)
+  - Tympanometry
+  - Stapedial reflex test
+  - Pure-tone audiometry
+      - Regular/clinical frequency range (250 and 500 Hz, 1, 2, 3, 4, 6 and 8 kHz)
+      - Extended/Ultra-high frequency range (9, 10, 11.2, 12.5, 14, 16, 18 and 20 kHz)
+  - Matrix speech-in-noise perception test
+      - Primary language (French or English)
+      - Secondary language (French or English)
+      - Conditions:
+          - Practice sequence (Stimulus: bilateral, Noise: bilateral)
+          - Sequence #1 (Stimulus: bilateral, Noise: bilateral)
+          - Sequence #2 (Stimulus: left, Noise: bilateral)
+          - Sequence #3 (Stimulus: right, Noise: bilateral)
+          - Sequence #4 (Stimulus: left, Noise: left)
+          - Sequence #5 (Stimulus: right, Noise: right)
 
 The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported as .csv files from the acquisition software (i.e., ILOv6) and saved in the "[repo_root]/data/auditory_tests/OAE/" folder. Each file name should include the following informations (separated by underscores):
- - The participant's ID: sub-XX (01 to 06)
- - The test date and condition:
-     - Baseline: YYYY-MM-DD-Baseline
-     - Pre-scan condition: YYYY-MM-DD-PreScan
-     - Post-scan condition: YYYY-MM-DD-PostScan
-     - Delayed condition: YYYY-MM-DD-2POST
- - The type of test:
-     - TEOAE: TE
-     - DPOAE: DPOAE6555
-     - DPOAE Growth function: DPGrowth-X000 (2000, 4000 or 6000)
- - The tested ear:
-     - Left ear: L
-     - Right ear: R
- - Finish with the file extension: .csv
+  - The participant's ID: sub-XX (01 to 06)
+  - The test date and condition:
+      - Baseline: YYYY-MM-DD-Baseline
+      - Pre-scan condition: YYYY-MM-DD-PreScan
+      - Post-scan condition: YYYY-MM-DD-PostScan
+      - Delayed condition: YYYY-MM-DD-2POST
+  - The type of test:
+      - TEOAE: TE
+      - DPOAE: DPOAE6555
+      - DPOAE Growth function: DPGrowth-X000 (2000, 4000 or 6000)
+  - The tested ear:
+      - Left ear: L
+      - Right ear: R
+  - Finish with the file extension: .csv
 
 **The overall filename should look like this: *sub-01_1900-01-01-Baseline_DPOAE_L.csv*.**
 
@@ -185,14 +185,14 @@ The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported a
 
 In addition to Python 3, several free libraries are necessary for the pipeline to work.
 You will need the following libraries (and their dependencies):
- - colorama
- - matplotlib
- - notebook
- - numpy
- - pandas
- - plotly
- - seaborn
- - scikit-learn
+  - colorama
+  - matplotlib
+  - notebook
+  - numpy
+  - pandas
+  - plotly
+  - seaborn
+  - scikit-learn
 
 If needed, a virtual environment setup procedure including all the required libraries is available in the next section.
 
@@ -201,9 +201,9 @@ If needed, a virtual environment setup procedure including all the required libr
 #### Initial setup
 
 To create a Python virtual environment already equiped with all the necessary libraries, follow these steps:
- 1. Open your terminal
- 2. Navigate to the AuditoryData_pipeline folder
- 3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+  1. Open your terminal
+  2. Navigate to the AuditoryData_pipeline folder
+  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
 
 ```
 $ python3 -m venv [name of your new virtual environment folder]
@@ -215,9 +215,9 @@ When the process is done, a new folder named in accord with what you specified i
 #### Environment activation and deactivation
 
 To activate your Python virtual environment, follow these steps:
- 1. Open your terminal
- 2. Navigate to the AuditoryData_pipeline folder
- 3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+  1. Open your terminal
+  2. Navigate to the AuditoryData_pipeline folder
+  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
 
 ```
 $ source [name of the virtual environment folder]/bin/activate
@@ -235,15 +235,15 @@ $ deactivate
 
 In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer's system according to your needs).
 To do so, follow these steps:
- 1. Open your terminal
- 2. Navigate to the AuditoryData_pipeline folder
- 3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter
+  1. Open your terminal
+  2. Navigate to the AuditoryData_pipeline folder
+  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter
 
 ```
 $ pip install -r requirements.txt
 ```
 
- 4. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter
+  4. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter
 
 ```
 $ pip install .
@@ -256,8 +256,8 @@ It will run the setup.py script and install the AuditoryData_pipeline as a local
 For the software to be able to properly retrieve the data, it has to be located at the right place.
 As mentionned in the "Raw data format" section, the AuditoryData_pipeline uses two types of raw data files: .csv files for the OAE tests and a spreadsheet for the other tests.
 
- - The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.
- - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can be automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.
+  - The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.
+  - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can be automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.
 
 ### Run the AuditoryData_pipeline
 
@@ -306,14 +306,14 @@ She helped to jumpstart the pipeline's development during her time as a particip
 ## Conclusion
 
 This project includes:
-- a README.md file presenting the project
-- a LICENSE file
-- a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks
-- python scripts to generate interactive graph figures
-- two Jupyter Notebooks to be loaded using a Binder platform
-- python scripts to create and format a BIDS compatible dataset from the original dataset's spreadsheet format and .csv files
-- a python script to create .json metadata files
-- images and html sample figures to be displayed by the README.md file
+  - a README.md file presenting the project
+  - a LICENSE file
+  - a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks
+  - python scripts to generate interactive graph figures
+  - two Jupyter Notebooks to be loaded using a Binder platform
+  - python scripts to create and format a BIDS compatible dataset from the original dataset's spreadsheet format and .csv files
+  - a python script to create .json metadata files
+  - images and html sample figures to be displayed by the README.md file
 
 We would like to thank the BrainHack School 2021 team of mentors for their availability and their help on this journey.
 We would also like to thank the members of the SIMEXP lab and Courtois NeuroMod project team for the occasional coding advices.
