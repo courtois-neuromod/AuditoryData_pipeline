@@ -247,9 +247,12 @@ If needed, a virtual environment setup procedure including all the required libr
 #### Initial setup
 
 To create a Python virtual environment already equiped with all the necessary libraries, follow these steps:
-  1. Open your terminal
-  2. Navigate to the AuditoryData_pipeline folder
-  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+
+<ol>
+    <li>Open your terminal</li>
+    <li>Navigate to the AuditoryData_pipeline folder</li>
+    <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter</li>
+</ol>
 
 ```
 $ python3 -m venv [name of your new virtual environment folder]
@@ -261,9 +264,12 @@ When the process is done, a new folder named in accord with what you specified i
 #### Environment activation and deactivation
 
 To activate your Python virtual environment, follow these steps:
-  1. Open your terminal
-  2. Navigate to the AuditoryData_pipeline folder
-  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter
+
+<ol>
+    <li>Open your terminal</li>
+    <li>Navigate to the AuditoryData_pipeline folder</li>
+    <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line in your terminal (don't forget to insert the name of your environment), then press enter</li>
+</ol>
 
 ```
 $ source [name of the virtual environment folder]/bin/activate
@@ -281,15 +287,14 @@ $ deactivate
 
 In order to run the pipeline, you will now have to install the dependencies and the pipeline's local package (in your virtual environment or your entire computer's system according to your needs).
 To do so, follow these steps:
-  1. Open your terminal
-  2. Navigate to the AuditoryData_pipeline folder
-  3. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter
 
-```
-$ pip install -r requirements.txt
-```
-
-  4. At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter
+<ol>
+    <li>Open your terminal</li>
+    <li>Navigate to the AuditoryData_pipeline folder</li>
+    <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter</li>
+    <code>$ pip install -r requirements.txt</code>
+    <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter</li>
+</ol>
 
 ```
 $ pip install .
