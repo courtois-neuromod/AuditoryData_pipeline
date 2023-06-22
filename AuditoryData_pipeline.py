@@ -40,9 +40,9 @@ prompt_instruction = (color.Style.BRIGHT
 prompt_options = ""
 
 for i in range(0, len(ls_fct)):
-    prompt_options += ("\n " + str(i+1) + "-" + ls_fct[i])
+    prompt_options += f"\n {str(i+1)}-{ls_fct[i]}"
 
-prompt_options += ("\n " + str(len(ls_fct)+1) + "-Exit\n")
+prompt_options += f"\n {str(len(ls_fct)+1)}-Exit\n"
 
 prompt_txt = prompt_instruction + prompt_options
 
@@ -173,7 +173,7 @@ while loop_value:
                         print("This is just a test line:",
                               ls_fct[value - 1],
                               "\n")
-        
+
     ###########################################################################
 
             else:
