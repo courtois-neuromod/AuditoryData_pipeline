@@ -58,17 +58,17 @@ def report_df(ls_f2, ls_R, ls_L):
 
     ls2df = []
 
-    for i in range(0, len(ls_f2)):
+    for i, element_i in enumerate(ls_f2):
         row = []
-        row.append(ls_f2[i])
+        row.append(element_i)
 
         try:
-            float(ls_f2[i])
+            float(element_i)
         except ValueError:
-            if ls_f2[i] == "Mean":
+            if element_i == "Mean":
                 row.append(mean_L)
                 row.append(mean_R)
-            elif ls_f2[i] == "Standard Deviation":
+            elif element_i == "Standard Deviation":
                 row.append(stdev_L)
                 row.append(stdev_R)
         else:

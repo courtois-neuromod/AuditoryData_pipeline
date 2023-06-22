@@ -22,28 +22,12 @@ def report_df(ls_freq, ls_R, ls_L):
     -returns a report dataframe ready to be saved into .tsv format
     """
 
-#    ls_freq.append("Mean")
-#    ls_freq.append("Standard Deviation")
-
     columns = ["freq", "diff_L", "diff_R"]
     ls2df = []
 
-    for i in range(0, len(ls_freq)):
+    for i, element_i in enumerate(ls_freq):
         row = []
-        row.append(ls_freq[i])
-
-#        try:
-#            float(ls_freq[i])
-#        except ValueError:
-#            if ls_freq[i] == "Mean":
-#                row.append(stats.mean(ls_L))
-#                row.append(stats.mean(ls_R))
-#            elif ls_freq[i] == "Standard Deviation":
-#                row.append(stats.pstdev(ls_L))
-#                row.append(stats.pstdev(ls_R))
-#        else:
-#            row.append(ls_L[i])
-#            row.append(ls_R[i])
+        row.append(element_i)
         row.append(ls_L[i])
         row.append(ls_R[i])
 
@@ -96,20 +80,21 @@ def distrib_df(columns, ls_freq, ls_R, ls_L, test_type):
     ls_threshold.sort()
 
     data = []
-    for u in range(0, len(ls_threshold)):
+
+    while data < len(ls_threshold):
         data.append([])
 
     for k in range(0, len(data)):
         data[k].append(ls_threshold[k])
         data[k].append([])
         data[k].append([])
-        for a in range(0, len(ls_R)):
-            if ls_R[a] == ls_threshold[k]:
+        for a, element_a in enumerate(ls_R):
+            if element_a == ls_threshold[k]:
                 data[k][2].append(columns[a])
             else:
                 pass
-        for b in range(0, len(ls_L)):
-            if ls_L[b] == ls_threshold[k]:
+        for b, element_b in enumerate(ls_L):
+            if element_b == ls_threshold[k]:
                 data[k][1].append(columns[b])
             else:
                 pass
@@ -436,6 +421,7 @@ def master_run(result_path):
 
         print(color.Fore.GREEN
               + f"The PTA reports for {i} have been generated.\n")
+
 
 if __name__ == "__main__":
     root_path = ".."

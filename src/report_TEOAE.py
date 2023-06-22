@@ -58,7 +58,7 @@ def report_df(ls_f, ls_R, ls_L):
 
     ls2df = []
 
-    for i, element_i in enumerate(ls_f)):
+    for i, element_i in enumerate(ls_f):
         row = []
         row.append(element_i)
 
