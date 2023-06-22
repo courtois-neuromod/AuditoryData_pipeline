@@ -131,7 +131,9 @@ else:
                               == 1):
                             filename = os.path.join(data_path,
                                                     "test_database.xlsx")
-                            df = pd.read_excel(filename, na_filter=True)
+                            df = pd.read_excel(
+                                filename, engine="openpyxl", na_filter=True
+                            )
                             print(df)
                             return df
 
