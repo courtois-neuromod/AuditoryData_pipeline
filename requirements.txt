@@ -2,7 +2,7 @@ numpy
 pandas
 plotly
 matplotlib
-sklearn
+scikit-learn
 colorama
 seaborn
 notebook
