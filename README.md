@@ -97,56 +97,72 @@ In the current state of this repository, it is possible to find a serie of Pytho
 
 #### User interface script (master script)
 
-  - main.py ("[repo_root]/"):
+<ul>
+    <li>main.py ("[repo_root]/"):</li>
+</ul>
 
 #### Virtual environment setup required scripts
 
-  - setup.py ("[repo_root]/"):
-  - requirements.txt ("[repo_root]/"):
-  - \__init__.py ("[repo_root]/src/"):
+<ul>
+    <li>setup.py ("[repo_root]/"):</li>
+    <li>requirements.txt ("[repo_root]/"):</li>
+    <li>\__init__.py ("[repo_root]/src/"):</li>
+</ul>
 
 #### Multi-purposes script
 
-  - common_functions.py ("[repo_root]/src/"):
+<ul>
+    <li>common_functions.py ("[repo_root]/src/"):</li>
+</ul>
 
 #### Data format transformation (BIDS format) scripts
 
-  - BIDS_formater.py: takes as input a spreadsheet containing the tests data and returns .tsv files for each of the tests in a file structure compatible with the BIDS standards.
-  - BIDS_utils.py:
-  - json_sidecar_generator.py: an early draft of a .json file generator for the BIDS format's metadata files.
+<ul>
+    <li>BIDS_formater.py: takes as input a spreadsheet containing the tests data and returns .tsv files for each of the tests in a file structure compatible with the BIDS standards.</li>
+    <li>BIDS_utils.py:</li>
+    <li>json_sidecar_generator.py: an early draft of a .json file generator for the BIDS format's metadata files.</li>
+</ul>
 
 #### Graph generation scripts (test results)
 
-  - graph_generator_BIDS.py ("[repo_root]/src/"): a first iteration of a master script to process data and generate interactive graphs (single test and test overview).
-  - graph_functions.py ("[repo_root]/src/"): a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.
-  - graph_DPGrowth_BIDS.py ("[repo_root]/src/"):
-  - graph_DPOAE_BIDS.py ("[repo_root]/src/"):
-  - graph_MTX_BIDS.py ("[repo_root]/src/"):
-  - graph_PTA_BIDS.py ("[repo_root]/src/"):
-  - graph_TEOAE_BIDS.py ("[repo_root]/src/"):
+<ul>
+    <li>graph_generator_BIDS.py ("[repo_root]/src/"): a first iteration of a master script to process data and generate interactive graphs (single test and test overview).</li>
+    <li>graph_functions.py ("[repo_root]/src/"): a slave script to be used with graph_generator.py. Contains all the subfunctions that are necessary to plot and save the graphs.</li>
+    <li>graph_DPGrowth_BIDS.py ("[repo_root]/src/"):</li>
+    <li>graph_DPOAE_BIDS.py ("[repo_root]/src/"):</li>
+    <li>graph_MTX_BIDS.py ("[repo_root]/src/"):</li>
+    <li>graph_PTA_BIDS.py ("[repo_root]/src/"):</li>
+    <li>graph_TEOAE_BIDS.py ("[repo_root]/src/"):</li>
+</ul>
 
 #### Test-retest-differences comparison report scripts
 
-  - report_common.py ("[repo_root]/src/"):
-  - report_DPGrowth.py ("[repo_root]/src/"):
-  - report_DPOAE.py ("[repo_root]/src/"):
-  - report_MTX.py ("[repo_root]/src/"):
-  - report_PTA.py ("[repo_root]/src/"):
-  - report_TEOAE.py ("[repo_root]/src/"):
+<ul>
+    <li>report_common.py ("[repo_root]/src/"):</li>
+    <li>report_DPGrowth.py ("[repo_root]/src/"):</li>
+    <li>report_DPOAE.py ("[repo_root]/src/"):</li>
+    <li>report_MTX.py ("[repo_root]/src/"):</li>
+    <li>report_PTA.py ("[repo_root]/src/"):</li>
+    <li>report_TEOAE.py ("[repo_root]/src/"):</li>
+</ul>
 
 #### Test-retest-differences graphs generation scripts (in development)
 
-  - graph_delta_DPGrowth.py ("[repo_root]/src/"):
-  - graph_delta_DPOAE.py ("[repo_root]/src/"):
-  - graph_delta_MTX.py ("[repo_root]/src/"):
-  - graph_delta_PTA.py ("[repo_root]/src/"):
-  - graph_delta_TEOAE.py ("[repo_root]/src/"):
+<ul>
+    <li>graph_delta_DPGrowth.py ("[repo_root]/src/"):</li>
+    <li>graph_delta_DPOAE.py ("[repo_root]/src/"):</li>
+    <li>graph_delta_MTX.py ("[repo_root]/src/"):</li>
+    <li>graph_delta_PTA.py ("[repo_root]/src/"):</li>
+    <li>graph_delta_TEOAE.py ("[repo_root]/src/"):</li>
+</ul>
 
 #### An MRI pure-tone detection task's required file generator (in development)
 
 This functionality is in development and not yet fully functional.
 The goal is to generate the design files needed for the pure_tones.py task from the [task_stimuli repository](https://github.com/courtois-neuromod/task_stimuli).
-  - MRI_session_design_generator.py ("[repo_root]/src/"):
+
+<ul>
+    <li>MRI_session_design_generator.py ("[repo_root]/src/"):</li>
 
 Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
 
@@ -155,37 +171,55 @@ Two jupyter notebooks are also available to be used in a Binder platform to demo
 ### Raw data format
 
 To be able to be processed by this pipeline, data from different types of auditory tests must be regrouped in a spreadsheet ([a Google spreadsheet template is available here](https://docs.google.com/spreadsheets/d/1aKakQJvJnvPUouTUciGm3FMlnNAGIX8NXhulbhjq9d4/edit?usp=sharing): PLEASE START BY MAKING YOUR OWN COPY / DO NOT EDIT THIS TEMPLATE!!!). The pipeline supports the use of a link to a Google spreadsheet (manually input when prompted or stored in the cell right below "test_database" in a .tsv file: "[repo_root]/data/URL.tsv") or the use of an Office Excel spreadsheet file version of the template: "[repo_root]/data/test_database.xlsx". This spreadsheet covers the following tests:
-  - Tympanometry
-  - Stapedial reflex test
-  - Pure-tone audiometry
-      - Regular/clinical frequency range (250 and 500 Hz, 1, 2, 3, 4, 6 and 8 kHz)
-      - Extended/Ultra-high frequency range (9, 10, 11.2, 12.5, 14, 16, 18 and 20 kHz)
-  - Matrix speech-in-noise perception test
-      - Primary language (French or English)
-      - Secondary language (French or English)
-      - Conditions:
-          - Practice sequence (Stimulus: bilateral, Noise: bilateral)
-          - Sequence #1 (Stimulus: bilateral, Noise: bilateral)
-          - Sequence #2 (Stimulus: left, Noise: bilateral)
-          - Sequence #3 (Stimulus: right, Noise: bilateral)
-          - Sequence #4 (Stimulus: left, Noise: left)
-          - Sequence #5 (Stimulus: right, Noise: right)
+
+<ul>
+    <li>Tympanometry</li>
+    <li>Stapedial reflex test</li>
+    <li>Pure-tone audiometry</li>
+    <ul>
+        <li>Regular/clinical frequency range (250 and 500 Hz, 1, 2, 3, 4, 6 and 8 kHz)</li>
+        <li>Extended/Ultra-high frequency range (9, 10, 11.2, 12.5, 14, 16, 18 and 20 kHz)</li>
+    </ul>
+    <li>Matrix speech-in-noise perception test</li>
+    <ul>
+        <li>Primary language (French or English)</li>
+        <li>Secondary language (French or English)</li>
+        <li>Conditions:</li>
+        <ul>
+            <li>Practice sequence (Stimulus: bilateral, Noise: bilateral)</li>
+            <li>Sequence #1 (Stimulus: bilateral, Noise: bilateral)</li>
+            <li>Sequence #2 (Stimulus: left, Noise: bilateral)</li>
+            <li>Sequence #3 (Stimulus: right, Noise: bilateral)</li>
+            <li>Sequence #4 (Stimulus: left, Noise: left)</li>
+            <li>Sequence #5 (Stimulus: right, Noise: right)</li>
+        </ul>
+    </ul>
+</ul>
 
 The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported as .csv files from the acquisition software (i.e., ILOv6) and saved in the "[repo_root]/data/auditory_tests/OAE/" folder. Each file name should include the following informations (separated by underscores):
-  - The participant's ID: sub-XX (01 to 06)
-  - The test date and condition:
-      - Baseline: YYYY-MM-DD-Baseline
-      - Pre-scan condition: YYYY-MM-DD-PreScan
-      - Post-scan condition: YYYY-MM-DD-PostScan
-      - Delayed condition: YYYY-MM-DD-2POST
-  - The type of test:
-      - TEOAE: TE
-      - DPOAE: DPOAE6555
-      - DPOAE Growth function: DPGrowth-X000 (2000, 4000 or 6000)
-  - The tested ear:
-      - Left ear: L
-      - Right ear: R
-  - Finish with the file extension: .csv
+
+<ul>
+    <li>The participant's ID: sub-XX (01 to 06)</li>
+    <li>The test date and condition:</li>
+    <ul>
+        <li>Baseline: YYYY-MM-DD-Baseline</li>
+        <li>Pre-scan condition: YYYY-MM-DD-PreScan</li>
+        <li>Post-scan condition: YYYY-MM-DD-PostScan</li>
+        <li>Delayed condition: YYYY-MM-DD-2POST</li>
+    </ul>
+    <li>The type of test:</li>
+    <ul>
+        <li>TEOAE: TE</li>
+        <li>DPOAE: DPOAE6555</li>
+        <li>DPOAE Growth function: DPGrowth-X000 (2000, 4000 or 6000)</li>
+    </ul>
+    <li>The tested ear:</li>
+    <ul>
+        <li>Left ear: L</li>
+        <li>Right ear: R</li>
+    </ul>
+    <li>Finish with the file extension: .csv</li>
+</ul>
 
 **The overall filename should look like this: *sub-01_1900-01-01-Baseline_DPOAE_L.csv*.**
 
@@ -193,14 +227,17 @@ The OAE test (TEOAE, DPOAE and DPOAE growth function) results must be exported a
 
 In addition to Python 3, several free libraries are necessary for the pipeline to work.
 You will need the following libraries (and their dependencies):
-  - colorama
-  - matplotlib
-  - notebook
-  - numpy
-  - pandas
-  - plotly
-  - seaborn
-  - scikit-learn
+
+<ul>
+    <li>colorama</li>
+    <li>matplotlib</li>
+    <li>notebook</li>
+    <li>numpy</li>
+    <li>pandas</li>
+    <li>plotly</li>
+    <li>seaborn</li>
+    <li>scikit-learn</li>
+</ul>
 
 If needed, a virtual environment setup procedure including all the required libraries is available in the next section.
 
@@ -264,8 +301,10 @@ It will run the setup.py script and install the AuditoryData_pipeline as a local
 For the software to be able to properly retrieve the data, it has to be located at the right place.
 As mentionned in the "Raw data format" section, the AuditoryData_pipeline uses two types of raw data files: .csv files for the OAE tests and a spreadsheet for the other tests.
 
-  - The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.
-  - The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can be automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.
+<ul>
+    <li>The OAE .csv files (with properly formated file names) must be located inside the [repo_root]/auditory_tests/OAE/ folder.</li>
+    <li>The other tests' spreadsheet can be locally placed in the [repo_root]/data/ folder (named *test_database.xslx*) or a link to a Google Spreadsheet can be automatically (using the *URL.tsv* file located in the [repo_root]/data/ folder) or manually (copied/pasted in the terminal when prompted) input.</li>
+</ul>
 
 ### Run the AuditoryData_pipeline
 
@@ -314,14 +353,17 @@ She helped to jumpstart the pipeline's development during her time as a particip
 ## Conclusion
 
 This project includes:
-  - a README.md file presenting the project
-  - a LICENSE file
-  - a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks
-  - python scripts to generate interactive graph figures
-  - two Jupyter Notebooks to be loaded using a Binder platform
-  - python scripts to create and format a BIDS compatible dataset from the original dataset's spreadsheet format and .csv files
-  - a python script to create .json metadata files
-  - images and html sample figures to be displayed by the README.md file
+
+<ul>
+    <li>a README.md file presenting the project</li>
+    <li>a LICENSE file</li>
+    <li>a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks</li>
+    <li>python scripts to generate interactive graph figures</li>
+    <li>two Jupyter Notebooks to be loaded using a Binder platform</li>
+    <li>python scripts to create and format a BIDS compatible dataset from the original dataset's spreadsheet format and .csv files</li>
+    <li>a python script to create .json metadata files</li>
+    <li>images and html sample figures to be displayed by the README.md file</li>
+</ul>
 
 We would like to thank the BrainHack School 2021 team of mentors for their availability and their help on this journey.
 We would also like to thank the members of the SIMEXP lab and Courtois NeuroMod project team for the occasional coding advices.
