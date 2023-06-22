@@ -292,7 +292,13 @@ To do so, follow these steps:
     <li>Open your terminal</li>
     <li>Navigate to the AuditoryData_pipeline folder</li>
     <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line (dependency installation), and press enter</li>
-    <code>$ pip install -r requirements.txt</code>
+</ol>
+
+```
+$ pip install -r requirements.txt
+```
+
+<ol start="4">
     <li>At the root of the AuditoryData_pipeline folder, copy/paste the following code line (AuditoryData_pipeline software installation), and press enter</li>
 </ol>
 
