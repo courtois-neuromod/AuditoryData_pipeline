@@ -13,16 +13,16 @@ SCRIPT DESCRIPTION:
 
 This script transforms the auditory test data saved as .csv (OAE tests) or
 placed in a properly formatted spreadsheet (other tests).
-Template available here:
+Spreadsheet template available here (under CC BY-SA 4.0 license)
 [ https://docs.google.com/spreadsheets/d/
   1aKakQJvJnvPUouTUciGm3FMlnNAGIX8NXhulbhjq9d4/edit?usp=sharing ]
 
 This script uses the BIDS_formater.py and common_functions.py scripts to be
 able to process data and generate a BIDS-format compatible dataset out of
-auditory test data.
+auditory test data. It will also activate json_sidecar_generator.py if needed.
 
 It can either be used as a standalone script or be used through the UI master
-script, main.py.
+script, AuditoryData_pipeline.py.
 """
 
 
@@ -39,11 +39,11 @@ columns_conditions = ["Participant_ID", "Date",
 x_tymp = ["order", "side", 'type', 'tpp', 'ecv', 'sc', 'tw']
 x_reflex = ["order", "side",
             "500_hz", "1000_hz", "2000_hz", "4000_hz", 'noise']
-x_PTA = ["order", "side", "250_hz", "500_hz", "1000_hz",
+x_pta = ["order", "side", "250_hz", "500_hz", "1000_hz",
          "2000_hz", "3000_hz", "4000_hz", "6000_hz", "8000_hz",
          "9000_hz", "10000_hz", "11200_hz", "12500_hz",
          "14000_hz", "16000_hz", "18000_hz", "20000_hz"]
-x_MTX = ["order", "language", "practice", "sp_bin_no_bin",
+x_mtx = ["order", "language", "practice", "sp_bin_no_bin",
          "sp_l_no_bin", "sp_r_no_bin", "sp_l_no_l", "sp_r_no_r"]
 x_teoae = ["order", "side", "freq", "oae",
            "noise", "snr", "confidence"]
@@ -55,7 +55,7 @@ x_growth = ["order", "side", "freq1", "freq2", "l1",
             "2f2-f1", "3f1-2f2", "3f2-2f1", "4f1-3f2"]
 
 # Specify the protocol conditions including OAE tests
-condition_OAE = ["Baseline",
+condition_oae = ["Baseline",
                  "Condition 2 (2-7 days post-scan)",
                  "Condition 3A (OAEs right before the scan)",
                  "Condition 3B (OAEs right after the scan)"]
@@ -194,7 +194,7 @@ def master_run(data_path, result_path):
     utils.result_location(result_path)
 
     parent_path = os.path.join(result_path, "BIDS_data")
-    
+
     # Add the .json sidecar files in the BIDS_data folder
     json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
 
@@ -333,8 +333,8 @@ def master_run(data_path, result_path):
         # Replace PTA values "130" with "No response"
         for n in columns_PTA:
             for p in range(0, len(pta)):
-                if pta.iloc[p][n] == 130:
-                    pta.iloc[p][n] = "No response"
+                if pta.loc[p, n] == 130:
+                    pta.loc[p, n] = "No response"
                 else:
                     pass
 
@@ -346,10 +346,10 @@ def master_run(data_path, result_path):
                              columns_reflex_L, x_reflex,
                              result_path)
         utils.extract_pta(pta, columns_PTA_R,
-                          columns_PTA_L, x_PTA,
+                          columns_PTA_L, x_pta,
                           result_path)
         utils.extract_mtx(mtx, columns_MTX_L1,
-                          columns_MTX_L2, x_MTX,
+                          columns_MTX_L2, x_mtx,
                           result_path)
         utils.extract_teoae(oae, data_oae_sub, oae_file_list,
                             x_teoae, auditory_test_path, result_path)

@@ -39,8 +39,8 @@ prompt_instruction = (color.Style.BRIGHT
 
 prompt_options = ""
 
-for i in range(0, len(ls_fct)):
-    prompt_options += f"\n {str(i+1)}-{ls_fct[i]}"
+for i, element in enumerate(ls_fct):
+    prompt_options += f"\n {str(i+1)}-{element}"
 
 prompt_options += f"\n {str(len(ls_fct)+1)}-Exit\n"
 

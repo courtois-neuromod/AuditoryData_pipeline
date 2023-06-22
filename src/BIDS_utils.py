@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import colorama as color
 
-from shutil import copyfile
+#from shutil import copyfile
 
 from src import json_sidecar_generator as jsg
 
@@ -41,7 +41,6 @@ def result_location(result_path):
     #    "repository_root/results/BIDS_data/"
     if content_result_path.count("BIDS_data") == 1:
         print("The [repo_root]/results/BIDS_data folder is present.\n")
-        pass
     else:
         os.mkdir(os.path.join(result_path, "BIDS_data"))
         print("The [repo_root]/results/BIDS_data folder was created.\n")
@@ -452,7 +451,7 @@ def extract_mtx(single_test_df, ls_columns_1,
         y[0].append("1")
 
         for k in ls_columns_1:
-            value_1 = str(single_test_df[k][j].replace(",", "."))
+            value_1 = str(single_test_df[k][j]).replace(",", ".")
             try:
                 float(value_1)
             except ValueError:
@@ -463,7 +462,7 @@ def extract_mtx(single_test_df, ls_columns_1,
         y[1].append("2")
 
         for m in ls_columns_2:
-            value_2 = str(single_test_df[m][j].replace(",", "."))
+            value_2 = str(single_test_df[m][j]).replace(",", ".")
             try:
                 float(value_2)
             except ValueError:
@@ -548,15 +547,15 @@ def extract_teoae(data_sub, data_oae_sub, oae_file_list,
 
             if data_sub.iloc[j]["Protocol condition"] == post:
 
-                for k in range(0, len(oae_file_list)):
-                    if (oae_file_list[k].startswith(subject)
-                            and oae_file_list[k].find(date) != -1
-                            and oae_file_list[k].find("PostScan") != -1):
+                for k, element_k in enumerate(oae_file_list):
+                    if (element_k.startswith(subject)
+                            and element_k.find(date) != -1
+                            and element_k.find("PostScan") != -1):
 
-                        if oae_file_list[k].endswith("TE_R.csv"):
+                        if element_k.endswith("TE_R.csv"):
                             teoae_R_file = oae_file_list[k]
 
-                        elif oae_file_list[k].endswith("TE_L.csv"):
+                        elif element_k.endswith("TE_L.csv"):
                             teoae_L_file = oae_file_list[k]
 
                         else:
@@ -566,17 +565,17 @@ def extract_teoae(data_sub, data_oae_sub, oae_file_list,
                         pass
 
             else:
-                for m in range(0, len(oae_file_list)):
-                    if oae_file_list[m].find("PostScan") != -1:
+                for m, element_m in enumerate(oae_file_list):
+                    if element_m.find("PostScan") != -1:
                         continue
 
-                    elif (oae_file_list[m].startswith(subject) and
-                          oae_file_list[m].find(date) != -1):
+                    elif (element_m.startswith(subject) and
+                          element_m.find(date) != -1):
 
-                        if oae_file_list[m].endswith("TE_R.csv"):
+                        if element_m.endswith("TE_R.csv"):
                             teoae_R_file = oae_file_list[m]
 
-                        elif oae_file_list[m].endswith("TE_L.csv"):
+                        elif element_m.endswith("TE_L.csv"):
                             teoae_L_file = oae_file_list[m]
 
                         else:
@@ -867,38 +866,38 @@ def growth_prepost(data_sub, i, oae_file_list,
     g4k_L_file = None
     g6k_L_file = None
 
-    for n in range(0, len(oae_file_list)):
+    for n, element_n in enumerate(oae_file_list):
 
-        if oae_file_list[n].find(prepost) == -1:
+        if element_n.find(prepost) == -1:
             continue
 
-        elif (oae_file_list[n].startswith(subject) and
-              oae_file_list[n].find(date) != -1 and
-              oae_file_list[n].find(prepost) != -1):
+        elif (element_n.startswith(subject) and
+              element_n.find(date) != -1 and
+              element_n.find(prepost) != -1):
 
-            if oae_file_list[n].endswith("R.csv"):
+            if element_n.endswith("R.csv"):
 
-                if oae_file_list[n].find("2000") != -1:
+                if element_n.find("2000") != -1:
                     g2k_R_file = oae_file_list[n]
 
-                elif oae_file_list[n].find("4000") != -1:
+                elif element_n.find("4000") != -1:
                     g4k_R_file = oae_file_list[n]
 
-                elif oae_file_list[n].find("6000") != -1:
+                elif element_n.find("6000") != -1:
                     g6k_R_file = oae_file_list[n]
 
                 else:
                     pass
 
-            elif oae_file_list[n].endswith("L.csv"):
+            elif element_n.endswith("L.csv"):
 
-                if oae_file_list[n].find("2000") != -1:
+                if element_n.find("2000") != -1:
                     g2k_L_file = oae_file_list[n]
 
-                elif oae_file_list[n].find("4000") != -1:
+                elif element_n.find("4000") != -1:
                     g4k_L_file = oae_file_list[n]
 
-                elif oae_file_list[n].find("6000") != -1:
+                elif element_n.find("6000") != -1:
                     g6k_L_file = oae_file_list[n]
 
                 else:
