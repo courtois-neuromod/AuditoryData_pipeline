@@ -4,8 +4,8 @@ import pandas as pd
 import colorama as color
 import statistics as stats
 
-from scikit-learn.linear_model import LinearRegression
-from scikit-learn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 from src import report_common as report
 from src import common_functions as common
