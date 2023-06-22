@@ -73,7 +73,6 @@ def result_location(result_path):
             print("The json sidecars for:\n - tymp\n - reflex\n"
                   " - PTA\n - MTX\n - TEOAE\n - DPOAE\n - DP Growth\n"
                   " - sessions\nare present.\n")
-            pass
         else:
             # run json_sidecar_generator.py
             print("At least one of the target files is absent: we will "
@@ -698,15 +697,15 @@ def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
 
             if data_sub.iloc[j]["Protocol condition"] == post:
 
-                for k in range(0, len(oae_file_list)):
-                    if (oae_file_list[k].startswith(subject)
-                            and oae_file_list[k].find(date) != -1
-                            and oae_file_list[k].find("PostScan") != -1):
+                for k, element_k in enumerate(oae_file_list):
+                    if (element_k.startswith(subject)
+                            and element_k.find(date) != -1
+                            and element_k.find("PostScan") != -1):
 
-                        if oae_file_list[k].endswith("DPOAE6555_R.csv"):
+                        if element_k.endswith("DPOAE6555_R.csv"):
                             dpoae_R_file = oae_file_list[k]
 
-                        elif oae_file_list[k].endswith("DPOAE6555_L.csv"):
+                        elif element_k.endswith("DPOAE6555_L.csv"):
                             dpoae_L_file = oae_file_list[k]
 
                         else:
@@ -716,17 +715,17 @@ def extract_dpoae(data_sub, data_oae_sub, oae_file_list,
                         pass
 
             else:
-                for m in range(0, len(oae_file_list)):
-                    if oae_file_list[m].find("PostScan") != -1:
+                for m, element_m in enumerate(oae_file_list):
+                    if element_m.find("PostScan") != -1:
                         continue
 
-                    elif (oae_file_list[m].startswith(subject) and
-                          oae_file_list[m].find(date) != -1):
+                    elif (element_m.startswith(subject) and
+                          element_m.find(date) != -1):
 
-                        if oae_file_list[m].endswith("DPOAE6555_R.csv"):
+                        if element_m.endswith("DPOAE6555_R.csv"):
                             dpoae_R_file = oae_file_list[m]
 
-                        elif oae_file_list[m].endswith("DPOAE6555_L.csv"):
+                        elif element_m.endswith("DPOAE6555_L.csv"):
                             dpoae_L_file = oae_file_list[m]
 
                         else:
