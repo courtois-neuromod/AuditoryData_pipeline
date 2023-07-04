@@ -1060,7 +1060,6 @@ def growth_others(data_sub, i, oae_file_list,
         print(color.Fore.RED
               + (f"ERROR: At least one of {subject}'s DP-growth csv files "
                  f"for the {date} session ({condition}) is missing.\n"))
-        pass
 
     else:
         df_L = pd.read_csv(os.path.join(data_path, growth_L_file),
