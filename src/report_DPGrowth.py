@@ -29,11 +29,9 @@ def linreg_values(x_pre, y_pre, x_post, y_post):
     """
 
     ls2do = [x_pre, y_pre, x_post, y_post]
-    
-    for i in range(0, len(ls2do)):
-        ls2do[i] = ls2do[i][ls2do[i] != None]
 
-    #print(ls2do)
+    for i in range(0, len(ls2do)):
+        ls2do[i] = ls2do[i][ls2do[i] is not None]
 
     x_pre, y_pre, x_post, y_post = ls2do
     
@@ -99,8 +97,8 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
 
     #print("ls_diff", ls_diff)
     
-    ls_diff_no_none_0 = list(filter(lambda i: i != None, ls_diff[0]))
-    ls_diff_no_none_1 = list(filter(lambda i: i != None, ls_diff[1]))
+    ls_diff_no_none_0 = list(filter(lambda i: i is not None, ls_diff[0]))
+    ls_diff_no_none_1 = list(filter(lambda i: i is not None, ls_diff[1]))
 
     names_columns = ["l2_target", "diff_L", "diff_R"]
 
@@ -496,89 +494,101 @@ def master_run(result_path):
     path_reports = report.report_file_verif(result_path)
 
     for i in sub:
+        path_i = os.path.join(bids_path, i)
 
-        # Verification/Creation of the subjects' report folder
-        common.create_folder_subjects(i, path_reports)
+        if os.path.isdir(path_i):
 
-        # Path inside the subject's folder
-        path_ses = os.path.join(bids_path, i)
+            # Verification/Creation of the subjects' report folder
+            common.create_folder_subjects(i, path_reports)
 
-        # Content of the subject's folder (sessions + reference .tsv file)
-        ls_ses = os.listdir(path_ses)
-        ls_ses.sort()
+            # Path inside the subject's folder
+            path_ses = path_i
 
-        # Retrieve the reference .tsv file
-        filename_index = ls_ses.index(i + "_sessions.tsv")
-        ref_filename = ls_ses.pop(filename_index)
-        ses_ls_df = pd.read_csv(os.path.join(path_ses, ref_filename), sep="\t")
+            # Content of the subject's folder (sessions + reference .tsv file)
+            ls_ses = os.listdir(path_ses)
+            ls_ses.sort()
 
-        # Extract reference data
-        ses_baseline = ses_ls_df.at[bsl_index, "session_id"]
+            # Retrieve the reference .tsv file
+            filename_index = ls_ses.index(i + "_sessions.tsv")
+            ref_filename = ls_ses.pop(filename_index)
+            ses_ls_df = pd.read_csv(
+                            os.path.join(path_ses, ref_filename),
+                            sep="\t"
+                        )
 
-        # Path inside the Baseline folder
-        path_base_ses = os.path.join(path_ses, ses_baseline)
-        ls_folder_baseline = os.listdir(path_base_ses)
+            # Extract reference data
+            ses_baseline = ses_ls_df.at[bsl_index, "session_id"]
 
-        baseline_ref = None
-        stop_48 = False
-
-        for a in ls_folder_baseline:
-            if a.find("DPGrowth") != -1 and a.endswith(".tsv"):
-                baseline_ref = a
-            else:
-                pass
-
-        if baseline_ref is None:
-            ses_baseline_retry = ses_ls_df.at[1, "session_id"]
-
-            path_base_ses = os.path.join(path_ses, ses_baseline_retry)
+            # Path inside the Baseline folder
+            path_base_ses = os.path.join(path_ses, ses_baseline)
             ls_folder_baseline = os.listdir(path_base_ses)
 
-            for x in ls_folder_baseline:
-                if x.find("DPGrowth") != -1 and x.endswith(".tsv"):
-                    baseline_ref = x
-                    print(color.Fore.YELLOW
-                          + (f"WARNING: No DP-growth data file was found for "
-                             f"{i} in the {ses_baseline} folder.\nThe "
-                             f"DP-growth data file found in "
-                             f"{ses_baseline_retry} was used as a "
-                             f"replacement.\n"))
+            baseline_ref = None
+            stop_48 = False
+
+            for a in ls_folder_baseline:
+                if a.find("DPGrowth") != -1 and a.endswith(".tsv"):
+                    baseline_ref = a
                 else:
                     pass
 
             if baseline_ref is None:
-                print(color.Fore.RED
-                      + (f"ERROR: No DP-growth baseline file was found for "
-                         f"{i} in the {ses_baseline} or the "
-                         f"{ses_baseline_retry} folders.\nThe DP-growth "
-                         f"data for the chronic phase of {i} will not be "
-                         f"processed.\n"))
-                stop_48 = True
+                ses_baseline_retry = ses_ls_df.at[1, "session_id"]
+
+                path_base_ses = os.path.join(path_ses, ses_baseline_retry)
+                ls_folder_baseline = os.listdir(path_base_ses)
+
+                for x in ls_folder_baseline:
+                    if x.find("DPGrowth") != -1 and x.endswith(".tsv"):
+                        baseline_ref = x
+                        print(color.Fore.YELLOW
+                              + (f"WARNING: No DP-growth data file was found "
+                                 f"for {i} in the {ses_baseline} folder.\nThe "
+                                 f"DP-growth data file found in "
+                                 f"{ses_baseline_retry} was used as a "
+                                 f"replacement.\n"))
+                    else:
+                        pass
+
+                if baseline_ref is None:
+                    print(color.Fore.RED
+                          + (f"ERROR: No DP-growth baseline file was found "
+                             f"for {i} in the {ses_baseline} or the "
+                             f"{ses_baseline_retry} folders.\nThe DP-growth "
+                             f"data for the chronic phase of {i} will not be "
+                             f"processed.\n"))
+                    stop_48 = True
+
+            else:
+                pass
+
+            # Extract list of pre/post and 48h post scan session IDs
+            ls_prepost, ls_48 = report.extract_ses_ls(ses_ls_df, i, "OAE")
+
+            # Production of the report regarding the accute phase effects
+            report_prepost(ls_prepost, i, path_ses, path_reports)
+
+            if stop_48 is True:
+                pass
+
+            else:
+
+                # Path to the Baseline DPGrowth data file
+                filepath_ref = os.path.join(path_base_ses, baseline_ref)
+                df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
+
+                # Production of the report regarding the chronic phase effects
+                report_48(
+                    ls_48, ses_baseline, i, df_ref, path_ses, path_reports
+                )
+
+            print(color.Fore.GREEN
+                  + (f"The DP Growth function reports for {i} have been "
+                     f"generated.\n"))
 
         else:
-            pass
+            continue
 
-        # Extract list of pre/post and 48h post scan session IDs
-        ls_prepost, ls_48 = report.extract_ses_ls(ses_ls_df, i, "OAE")
-
-        # Production of the report regarding the accute phase effects
-        report_prepost(ls_prepost, i, path_ses, path_reports)
-
-        if stop_48 is True:
-            pass
-
-        else:
-
-            # Path to the Baseline DPGrowth data file
-            filepath_ref = os.path.join(path_base_ses, baseline_ref)
-            df_ref = pd.read_csv(filepath_ref, sep="\t", na_filter=False)
-
-            # Production of the report regarding the chronic phase effects
-            report_48(ls_48, ses_baseline, i, df_ref, path_ses, path_reports)
-
-        print(color.Fore.GREEN
-              + (f"The DP Growth function reports for {i} have been "
-                 f"generated.\n"))
 
 if __name__ == "__main__":
     root_path = ".."
