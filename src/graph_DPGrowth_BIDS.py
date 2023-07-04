@@ -121,7 +121,7 @@ else:
                          y1=y_1sd,
                          y2=y_floor,
                          color="orangered")
-        
+
         sub = "sub-" + ID
         frequency = frequency.replace(" ", "_")
         folder = os.path.join(path, "graphs", sub)

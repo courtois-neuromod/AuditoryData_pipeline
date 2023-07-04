@@ -78,6 +78,7 @@ else:
         y_floor = [-25, -25, -25, -25, -25, -25, -25, -25]
 
         fig, ax = plt.subplots(figsize=(11, 8.5), dpi=250)
+
         plt.plot(x_data,
                  y_data,
                  label="DPOAE response",
@@ -119,5 +120,5 @@ else:
 
         plt.savefig(save_path)
         plt.close()
-        
+
         return True
