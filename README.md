@@ -79,17 +79,9 @@ The second task to be done is to build python scripts to generate the interactiv
 
 ![PTA_sample_graph.png](data/PTA_sample_graph.png)
 
-#### Exemple of interactive HTML audiogram (obtained with this pipeline)
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FPTA_sample_figure_generator.ipynb)
-
 #### Exemple of Matrix test results graph (manually obtained)
 
 ![MTX_sample_graph.png](data/MTX_sample_graph.png)
-
-#### Exemple of Matrix test interactive HTML graph (obtained with this pipeline)
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PSY6983-2021/fortier_project/HEAD?filepath=code%2FMTX_sample_figure_generator.ipynb)
 
 ## Current capabilities
 
@@ -164,8 +156,6 @@ The goal is to generate the design files needed for the pure_tones.py task from 
 <ul>
     <li>MRI_session_design_generator.py ("[repo_root]/src/"):</li>
 </ul>
-
-Two jupyter notebooks are also available to be used in a Binder platform to demonstrate examples of the graph plotting capabilities.
 
 ## How to use the AuditoryData_pipeline
 
@@ -369,9 +359,8 @@ This project includes:
 <ul>
     <li>a README.md file presenting the project</li>
     <li>a LICENSE file</li>
-    <li>a requirements.txt file to be used by a Binder platform to run Jupyter Notebooks</li>
+    <li>a requirements.txt file to be used to setup a virtual environment</li>
     <li>python scripts to generate interactive graph figures</li>
-    <li>two Jupyter Notebooks to be loaded using a Binder platform</li>
     <li>python scripts to create and format a BIDS compatible dataset from the original dataset's spreadsheet format and .csv files</li>
     <li>a python script to create .json metadata files</li>
     <li>images and html sample figures to be displayed by the README.md file</li>
