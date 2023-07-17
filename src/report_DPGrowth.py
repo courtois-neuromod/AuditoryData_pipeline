@@ -34,9 +34,9 @@ def linreg_values(x_pre, y_pre, x_post, y_post):
         ls2do[i] = ls2do[i][ls2do[i] is not None]
 
     x_pre, y_pre, x_post, y_post = ls2do
-    
+
     #print(y_pre)
-    
+
     # Linear regression values computation (a, b and mean errors)
     model_pre = LinearRegression()
     model_post = LinearRegression()
@@ -68,7 +68,7 @@ def linreg_values(x_pre, y_pre, x_post, y_post):
     ls_post = [a_post, b_post, mse_post, mae_post]
 
     ls_of_ls = [ls_pre, ls_post]
-    
+
     #print(ls_of_ls)
 
     return ls_of_ls
@@ -96,9 +96,11 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
     """
 
     #print("ls_diff", ls_diff)
-    
+
     ls_diff_no_none_0 = list(filter(lambda i: i is not None, ls_diff[0]))
     ls_diff_no_none_1 = list(filter(lambda i: i is not None, ls_diff[1]))
+
+    print(ls_xpre)
 
     names_columns = ["l2_target", "diff_L", "diff_R"]
 
@@ -129,7 +131,7 @@ def report_df(ls_diff, ls_xpre, ls_ypre, ls_xpost, ls_ypost):
     for i in range(0, len(intensity_column)):
         row = []
         row.append(intensity_column[i])
-        
+
         try:
             float(intensity_column[i])
         except ValueError:
@@ -226,7 +228,7 @@ def list_builder(df_1, df_2):
         noise_pre = df_1.at[i, "noise+2sd"]
         value_post = df_2.at[i, "dp"]
         noise_post = df_2.at[i, "noise+2sd"]
-        
+
         if (value_pre > noise_pre and value_post > noise_post):
             value = value_post - value_pre
         else:
@@ -234,7 +236,7 @@ def list_builder(df_1, df_2):
 
         if df_1.at[i, "side"] == "L":
             diff_L.append(value)
-            
+
             if value_pre > noise_pre:
                 xpre_L.append(df_1.at[i, "l2"])
                 ypre_L.append(df_1.at[i, "dp"])
@@ -364,7 +366,7 @@ def report_prepost(ls, sub, path_ses, path_reports):
                    [ls_4[0], ls_4[5]],
                    [ls_6[0], ls_6[5]]]
 
-        #print(ls_diff)
+        print("ls_diff", ls_diff)
 
         # Test data formating for the linear regression models
         ls_xpre = [[np.array(ls_2[1]), np.array(ls_2[6])],
@@ -480,7 +482,7 @@ def master_run(result_path):
         os.listdir(bids_path)
     except FileNotFoundError:
         print(color.Fore.RED
-              + ("\nERROR: The BIDS dataset folder is missing.\n"
+              + ("\nCRITICAL ERROR: The BIDS dataset folder is missing.\n"
                  "Please verify that the folder is correctly located "
                  "([repo_root]/results/BIDS_data/) or use the BIDS dataset "
                  "formating function to regenerate the dataset.\n"))
@@ -582,9 +584,9 @@ def master_run(result_path):
                     ls_48, ses_baseline, i, df_ref, path_ses, path_reports
                 )
 
-            print(color.Fore.GREEN
-                  + (f"The DP Growth function reports for {i} have been "
-                     f"generated.\n"))
+                print(color.Fore.GREEN
+                      + (f"The DP Growth function reports for {i} have been "
+                         f"generated.\n"))
 
         else:
             continue
