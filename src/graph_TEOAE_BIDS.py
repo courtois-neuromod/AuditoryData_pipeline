@@ -1,6 +1,8 @@
 import os
 import matplotlib.pyplot as plt
 
+from src import graph_functions as gf
+
 
 if __name__ == "__main__":
     print("This script is not designed to be used as a standalone script. "
@@ -29,25 +31,6 @@ else:
 
         return title, ls_sub[1], ls_ses[1]
 
-    def data_to_plot(df, column):
-        """
-        INPUTS
-        -df: one line dataframe from which this function extract the data
-             to plot
-        -column: name of the column containing the relevant data
-        OUTPUTS
-        -returns two lists of data containing the x and y values to plot
-        """
-
-        x = []
-        y = []
-
-        for i in range(0, len(df)):
-            x.append(df["freq"][i])
-            y.append(df[column][i])
-
-        return x, y
-
     def plot_teoae(path, df, side, filename):
         """
         INPUTS
@@ -69,16 +52,17 @@ else:
                   "x": "Frequency (Hz)",
                   "y": "OAE response (dB SPL)"}
 
-        x_data, y_data = data_to_plot(df, "oae")
-        x_noise, y_noise = data_to_plot(df, "noise")
+        x_data, y_data = gf.data_to_plot_oae(df, "freq", "oae")
+        x_noise, y_noise = gf.data_to_plot_oae(df, "freq", "noise")
         y_floor = [-25, -25, -25, -25, -25]
 
         plt.figure(figsize=(11, 8.5), dpi=250)
         plt.plot(x_data, y_data, label="TEOAE response", color="c")
         plt.plot(x_noise, y_noise, label="Noise level", color="r")
 
-        plt.axis([0, 5000, -20, 20])
+        plt.axis([900, 5000, -20, 20])
         plt.grid()
+        plt.xscale("log")
         plt.title(labels["title"])
         plt.xlabel(labels["x"])
         plt.ylabel(labels["y"])

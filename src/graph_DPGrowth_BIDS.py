@@ -1,6 +1,8 @@
 import os
 import matplotlib.pyplot as plt
 
+from src import graph_functions as gf
+
 
 if __name__ == "__main__":
     print("This script is not designed to be used as a standalone script. "
@@ -42,25 +44,6 @@ else:
 
         return title, ls_sub[1], ls_ses[1], frequency
 
-    def data_to_plot(df, column):
-        """
-        INPUTS
-        -df: one line dataframe from which this function extract the data
-             to plot
-        -column: name of the column containing the relevant data
-        OUTPUTS
-        -returns two lists of data containing the x and y values to plot
-        """
-
-        x = []
-        y = []
-
-        for i in range(0, len(df)):
-            x.append(df["l2"][i])
-            y.append(df[column][i])
-
-        return x, y
-
     def plot_growth(path, df, side, filename):
         """
         INPUTS
@@ -86,9 +69,9 @@ else:
                   "x": "F2 frequency presentation level (dB SPL)",
                   "y": "OAE response (dB SPL)"}
 
-        x_data, y_data = data_to_plot(df, "dp")
-        x_2sd, y_2sd = data_to_plot(df, "noise+2sd")
-        x_1sd, y_1sd = data_to_plot(df, "noise+1sd")
+        x_data, y_data = gf.data_to_plot_oae(df, "l2", "dp")
+        x_2sd, y_2sd = gf.data_to_plot_oae(df, "l2", "noise+2sd")
+        x_1sd, y_1sd = gf.data_to_plot_oae(df, "l2", "noise+1sd")
         y_floor = [-25, -25, -25, -25, -25, -25, -25]
 
         plt.figure(figsize=(11, 8.5), dpi=250)

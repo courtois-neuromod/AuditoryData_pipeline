@@ -1,6 +1,7 @@
 import os
 
 from src import common_functions as common
+from src import graph_functions as gf
 
 
 if __name__ == "__main__":
@@ -125,6 +126,26 @@ else:
                 continue
 
         return to_drop
+
+    def data_to_plot_oae(df, column_x, column):
+        """
+        INPUTS
+        -df: one line dataframe from which this function extract the data
+             to plot
+        -column_x: label of the df column containing the x values
+        -column: name of the column containing the relevant data
+        OUTPUTS
+        -returns two lists of data containing the x and y values to plot
+        """
+
+        x = []
+        y = []
+
+        for i in range(0, len(df)):
+            x.append(df[column_x][i])
+            y.append(df[column][i])
+
+        return x, y
 
     def generate_title_graph(df, test):
         """

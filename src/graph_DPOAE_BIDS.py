@@ -30,25 +30,6 @@ else:
 
         return title, ls_sub[1], ls_ses[1]
 
-    def data_to_plot(df, column):
-        """
-        INPUTS
-        -df: one line dataframe from which this function extract the data
-             to plot
-        -column: name of the column containing the relevant data
-        OUTPUTS
-        -returns two lists of data containing the x and y values to plot
-        """
-
-        x = []
-        y = []
-
-        for i in range(0, len(df)):
-            x.append(df["freq2"][i])
-            y.append(df[column][i])
-
-        return x, y
-
     def plot_dpoae(path, df, side, filename):
         """
         INPUTS
@@ -72,9 +53,9 @@ else:
                   "x": "F2 frequency (Hz)",
                   "y": "OAE response (dB SPL)"}
 
-        x_data, y_data = data_to_plot(df, "dp")
-        x_2sd, y_2sd = data_to_plot(df, "noise+2sd")
-        x_1sd, y_1sd = data_to_plot(df, "noise+1sd")
+        x_data, y_data = gf.data_to_plot_oae(df, "freq2", "dp")
+        x_2sd, y_2sd = gf.data_to_plot_oae(df, "freq2", "noise+2sd")
+        x_1sd, y_1sd = gf.data_to_plot_oae(df, "freq2", "noise+1sd")
         y_floor = [-25, -25, -25, -25, -25, -25, -25, -25]
 
         fig, ax = plt.subplots(figsize=(11, 8.5), dpi=250)
