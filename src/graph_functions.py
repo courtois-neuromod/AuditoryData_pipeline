@@ -1,7 +1,6 @@
 import os
 
 from src import common_functions as common
-from src import graph_functions as gf
 
 
 if __name__ == "__main__":
