@@ -2,6 +2,8 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
+from src import graph_functions as gf
+
 
 if __name__ == "__main__":
     print("This script is not designed to be used as a standalone script. "
