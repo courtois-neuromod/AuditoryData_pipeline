@@ -490,6 +490,8 @@ def master_run(result_path):
     else:
         sub = os.listdir(bids_path)
 
+    sub = [x for x in sub if not x.endswith(".json")]
+
     sub.sort()
 
     # Verification/Creation of the reports folder
