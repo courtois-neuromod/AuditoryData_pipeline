@@ -136,7 +136,7 @@ def copy_json(parent_path, json_origin):
     OUTPUTS:
     -NO specific return to the script
     """
-    
+
     copyfile(os.path.join(json_origin, "sessions.json"),
              os.path.join(parent_path, "sessions.json"))
     copyfile(os.path.join(json_origin, "task-Tymp_beh.json"),
@@ -159,7 +159,7 @@ def add_postscan_oae(data_sub):
     """
     This function
     INPUTS:
-    -data_sub: 
+    -data_sub:
     OUTPUTS:
     -
     """
@@ -200,7 +200,7 @@ def add_postscan_oae(data_sub):
             pass
 
         k += 1
-        
+
     return data_sub
 
 def subject_extractor(df, subject_ID):
@@ -284,8 +284,9 @@ def master_run(data_path, result_path):
                   + (f"WARNING: The following path does not exist "
                      f"\"{oae_folder_path}\".\n"))
         else:
-            skip_oae = False
             raise
+    else:
+        skip_oae = False
 
     # Verifications:
     # - existence of the "BIDS_data" folder
