@@ -3,6 +3,7 @@ import colorama as color
 
 from src import report_PTA
 from src import report_MTX
+from src import report_TEOAE as report_TE
 from src import report_DPOAE as report_DP
 from src import report_DPGrowth as report_DPGr
 
@@ -25,6 +26,7 @@ ls_fct = ["BIDS format's json sidecars creation",
           "Distortion product growth function test graph generator",
           "Pure Tone Audiometry report generator",
           "Matrix Speech-in-Noise Test report generator",
+          "Transient-evoked OAE report generator",
           "Distortion product OAE report generator",
           "Distortion product growth function report generator",
           "MRI session design files generator (in development)",
@@ -143,6 +145,11 @@ while loop_value:
                         # MTX report generation
                         elif ls_fct[value - 1].count("Matrix") == 1:
                             report_MTX.master_run(os.path.join(".", "results"))
+                            print("\n")
+
+                        # Transient-evoked OAEs (TEOAE)
+                        elif ls_fct[value - 1].count("Transient") == 1:
+                            report_TE.master_run(os.path.join(".", "results"))
                             print("\n")
 
                         # Distortion product (DPOAE and DP Growth) OAEs

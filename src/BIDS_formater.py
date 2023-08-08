@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import colorama as color
 # import glob
 
 from datetime import datetime as date
@@ -100,7 +101,13 @@ def fetch_oae_data(data_path):
     """
 
     path = os.path.join(data_path, "OAE")
-    ls_file = os.listdir(path)
+    try:
+        ls_file = os.listdir(path)
+    except FileNotFoundError as error:
+        if error.args[0] == 2 and error.args[1] == "No such file or directory":
+            raise RuntimeError("The OAE data folder is missing.")
+        else:
+            pass
 
     ls_of_ls = []
 
@@ -114,8 +121,87 @@ def fetch_oae_data(data_path):
                                "Test",
                                "Ear"])
 
-    return ls_file, df
+    return path, ls_file, df
 
+
+def copy_json(parent_path, json_origin):
+    """
+    This function makes copies of the original json files in the created
+    database.
+    INPUTS:
+    -parent_path: path to the destination folder
+                  ([repo_root]/results/BIDS_data/)
+    -json_origin: path to the original json files location
+                  ([repo_root]/results/BIDS_sidecars_originals/)
+    OUTPUTS:
+    -NO specific return to the script
+    """
+    
+    copyfile(os.path.join(json_origin, "sessions.json"),
+             os.path.join(parent_path, "sessions.json"))
+    copyfile(os.path.join(json_origin, "task-Tymp_beh.json"),
+             os.path.join(parent_path, "task-Tymp_beh.json"))
+    copyfile(os.path.join(json_origin, "task-Reflex_beh.json"),
+             os.path.join(parent_path, "task-Reflex_beh.json"))
+    copyfile(os.path.join(json_origin, "task-PTA_beh.json"),
+             os.path.join(parent_path, "task-PTA_beh.json"))
+    copyfile(os.path.join(json_origin, "task-MTX_beh.json"),
+             os.path.join(parent_path, "task-MTX_beh.json"))
+    copyfile(os.path.join(json_origin, "task-TEOAE_beh.json"),
+             os.path.join(parent_path, "task-TEOAE_beh.json"))
+    copyfile(os.path.join(json_origin, "task-DPOAE_beh.json"),
+             os.path.join(parent_path, "task-DPOAE_beh.json"))
+    copyfile(os.path.join(json_origin, "task-DPGrowth_beh.json"),
+             os.path.join(parent_path, "task-DPGrowth_beh.json"))
+
+
+def add_postscan_oae(data_sub):
+    """
+    This function
+    INPUTS:
+    -data_sub: 
+    OUTPUTS:
+    -
+    """
+
+    k = 0
+    while k < len(data_sub):
+
+        data_sub["Session_ID"][k] = f"{k+1:02d}"
+
+        if data_sub["Protocol condition"][k] == ("Condition 3A "
+                                                 "(OAEs right before "
+                                                 "the scan)"):
+            sub_df_A = data_sub.iloc[:k+1]
+            sub_df_B = data_sub.iloc[k+1:]
+
+            sub_df_C = data_sub.copy()
+            sub_df_C.drop(sub_df_C.index[k+1:], inplace=True)
+            sub_df_C.drop(sub_df_C.index[0:k], inplace=True)
+
+            sub_df_C.loc[k, "Protocol condition"] = ("Condition 3B (OAEs "
+                                                     "right after the "
+                                                     "scan)")
+            sub_df_C.loc[k, "Session_ID"] = f"{k+2:02d}"
+
+            ls_columns = sub_df_C.columns.tolist()
+            index_tests = ls_columns.index("Tymp_RE")
+            del ls_columns[0:index_tests]
+
+            for m in ls_columns:
+                sub_df_C[m][k] = "n/a"
+
+            data_sub = pd.concat([sub_df_A, sub_df_C, sub_df_B])
+            data_sub.reset_index(inplace=True, drop=True)
+
+            k += 1
+
+        else:
+            pass
+
+        k += 1
+        
+    return data_sub
 
 def subject_extractor(df, subject_ID):
     """
@@ -184,7 +270,22 @@ def master_run(data_path, result_path):
     # retrieve a database
     df = fetch_db(data_path)
     auditory_test_path = os.path.join(data_path, "auditory_tests")
-    oae_file_list, oae_tests_df = fetch_oae_data(auditory_test_path)
+
+    try:
+        (oae_folder_path,
+         oae_file_list,
+         oae_tests_df) = fetch_oae_data(auditory_test_path)
+
+    except RuntimeError as error:
+        if error.args[0] == "The OAE data folder is missing.":
+            oae_folder_path = os.path.join(auditory_test_path, "OAE")
+            skip_oae = True
+            print(color.Fore.YELLOW
+                  + (f"WARNING: The following path does not exist "
+                     f"\"{oae_folder_path}\".\n"))
+        else:
+            skip_oae = False
+            raise
 
     # Verifications:
     # - existence of the "BIDS_data" folder
@@ -197,23 +298,7 @@ def master_run(data_path, result_path):
 
     # Add the .json sidecar files in the BIDS_data folder
     json_origin = os.path.join(result_path, "BIDS_sidecars_originals")
-
-    copyfile(os.path.join(json_origin, "sessions.json"),
-             os.path.join(parent_path, "sessions.json"))
-    copyfile(os.path.join(json_origin, "task-Tymp_beh.json"),
-             os.path.join(parent_path, "task-Tymp_beh.json"))
-    copyfile(os.path.join(json_origin, "task-Reflex_beh.json"),
-             os.path.join(parent_path, "task-Reflex_beh.json"))
-    copyfile(os.path.join(json_origin, "task-PTA_beh.json"),
-             os.path.join(parent_path, "task-PTA_beh.json"))
-    copyfile(os.path.join(json_origin, "task-MTX_beh.json"),
-             os.path.join(parent_path, "task-MTX_beh.json"))
-    copyfile(os.path.join(json_origin, "task-TEOAE_beh.json"),
-             os.path.join(parent_path, "task-TEOAE_beh.json"))
-    copyfile(os.path.join(json_origin, "task-DPOAE_beh.json"),
-             os.path.join(parent_path, "task-DPOAE_beh.json"))
-    copyfile(os.path.join(json_origin, "task-DPGrowth_beh.json"),
-             os.path.join(parent_path, "task-DPGrowth_beh.json"))
+    copy_json(parent_path, json_origin)
 
     # Initialize empty lists to be filled with the proper column titles
     # for each test
@@ -271,44 +356,11 @@ def master_run(data_path, result_path):
         data_oae_sub = subject_extractor(oae_tests_df, i)
 
         data_sub.insert(loc=3, column="Session_ID", value=None)
+        print(data_sub)
+        exit()
 
         # Add a session line for the post-scan OAE condition
-        k = 0
-        while k < len(data_sub):
-
-            data_sub["Session_ID"][k] = f"{k+1:02d}"
-
-            if data_sub["Protocol condition"][k] == ("Condition 3A "
-                                                     "(OAEs right before "
-                                                     "the scan)"):
-                sub_df_A = data_sub.iloc[:k+1]
-                sub_df_B = data_sub.iloc[k+1:]
-
-                sub_df_C = data_sub.copy()
-                sub_df_C.drop(sub_df_C.index[k+1:], inplace=True)
-                sub_df_C.drop(sub_df_C.index[0:k], inplace=True)
-
-                sub_df_C.loc[k, "Protocol condition"] = ("Condition 3B (OAEs "
-                                                         "right after the "
-                                                         "scan)")
-                sub_df_C.loc[k, "Session_ID"] = f"{k+2:02d}"
-
-                ls_columns = sub_df_C.columns.tolist()
-                index_tests = ls_columns.index("Tymp_RE")
-                del ls_columns[0:index_tests]
-
-                for m in ls_columns:
-                    sub_df_C[m][k] = "n/a"
-
-                data_sub = pd.concat([sub_df_A, sub_df_C, sub_df_B])
-                data_sub.reset_index(inplace=True, drop=True)
-
-                k += 1
-
-            else:
-                pass
-
-            k += 1
+        data_sub = add_postscan_oae(data_sub)
 
         # Creation of a folder for each session
         ls_ses, subject_folder_path = create_folder_session(i,
