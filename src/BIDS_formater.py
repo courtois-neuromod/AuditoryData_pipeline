@@ -352,14 +352,93 @@ def delay_baseline(i, data_sub):
     date_bsl = date.strptime(str_date_bsl[0], "%Y-%m-%d")
 
     str_date_ses = str(data_sub.at[i, "Date"]).split(" ")
-    date_ses = date.strptime(str_date_ses.at[0], "%Y-%m-%d")
+    date_ses = date.strptime(str_date_ses[0], "%Y-%m-%d")
 
     value_delay = date_ses - date_bsl
 
     return value_delay
 
 
-def subject_bidsifier(i, df, oae_tests_df, oae_file_list, column_titles, result_path, parent_path, auditory_test_path, skip_oae):
+def ref_df_generator(index_reference, column_reference,
+                     dict_of_ls, subject_folder_path):
+    """
+    This function...
+    INPUTS:
+    -index_reference:
+    -column_reference:
+    -dict_of_ls: dictionary containing lists of values classified per type
+                 of parameter
+    -subject_folder_path: path inside the currently processed subject's
+                          result folder
+                          ([repo_root]/results/BIDS_data/sub-XXXX/)
+    OUTPUTS:
+    -
+    """
+
+    ref = pd.DataFrame(index=index_reference, columns=column_reference)
+
+    for a in ref.index:
+        ref.at[a, "session_id"] = dict_of_ls["ls_ses"][a]
+        ref.at[a, "session_name"] = dict_of_ls["ls_name"][a]
+        ref.at[a, "condition"] = dict_of_ls["ls_condition"][a]
+        ref.at[a, "delay"] = dict_of_ls["ls_delay"][a]
+        ref.at[a, "scan_type"] = dict_of_ls["ls_scan"][a]
+
+        ls_data = utils.retrieve_tests(subject_folder_path,
+                                       dict_of_ls["ls_ses"][a])
+
+        if "Tymp" in ls_data:
+            ref.at[a, "Tymp"] = "X"
+        else:
+            ref.at[a, "Tymp"] = ""
+
+        if "Reflex" in ls_data:
+            ref.at[a, "Reflex"] = "X"
+        else:
+            ref.at[a, "Reflex"] = ""
+
+        if "PTA" in ls_data:
+            ref.at[a, "PTA"] = "X"
+        else:
+            ref.at[a, "PTA"] = ""
+
+        if "MTX" in ls_data:
+            ref.at[a, "MTX"] = "X"
+        else:
+            ref.at[a, "MTX"] = ""
+
+        if "TEOAE" in ls_data:
+            ref.at[a, "TEOAE"] = "X"
+        else:
+            ref.at[a, "TEOAE"] = ""
+
+        if "DPOAE" in ls_data:
+            ref.at[a, "DPOAE"] = "X"
+        else:
+            ref.at[a, "DPOAE"] = ""
+
+        if "Growth_2" in ls_data:
+            ref.at[a, "DPGrowth_2kHz"] = "X"
+        else:
+            ref.at[a, "DPGrowth_2kHz"] = ""
+
+        if "Growth_4" in ls_data:
+            ref.at[a, "DPGrowth_4kHz"] = "X"
+        else:
+            ref.at[a, "DPGrowth_4kHz"] = ""
+
+        if "Growth_6" in ls_data:
+            ref.at[a, "DPGrowth_6kHz"] = "X"
+        else:
+            ref.at[a, "DPGrowth_6kHz"] = ""
+
+    ref.set_index("session_id", inplace=True)
+
+    return ref
+
+
+def subject_bidsifier(i, df, oae_tests_df, oae_file_list, column_titles,
+                      result_path, parent_path, auditory_test_path, skip_oae):
     """
     This function...
     INPUTS:
@@ -489,73 +568,23 @@ def subject_bidsifier(i, df, oae_tests_df, oae_file_list, column_titles, result_
         ls_delay.append(value_delay.days)
         ls_scan.append(data_sub.at[y, "Scan type"])
 
-##############################################################################################################
+    dict_of_ls = {
+        "ls_ses": ls_ses,
+        "ls_name": ls_name,
+        "ls_condition": ls_condition,
+        "ls_delay": ls_delay,
+        "ls_scan": ls_scan
+    }
 
-    ref = pd.DataFrame(index=index_reference, columns=column_reference)
-
-    for a in ref.index:
-        ref.at[a, "session_id"] = ls_ses[a]
-        ref.at[a, "session_name"] = ls_name[a]
-        ref.at[a, "condition"] = ls_condition[a]
-        ref.at[a, "delay"] = ls_delay[a]
-        ref.at[a, "scan_type"] = ls_scan[a]
-
-        ls_data = utils.retrieve_tests(subject_folder_path, ls_ses[a])
-
-        if "Tymp" in ls_data:
-            ref.at[a, "Tymp"] = "X"
-        else:
-            ref.at[a, "Tymp"] = ""
-
-        if "Reflex" in ls_data:
-            ref.at[a, "Reflex"] = "X"
-        else:
-            ref.at[a, "Reflex"] = ""
-
-        if "PTA" in ls_data:
-            ref.at[a, "PTA"] = "X"
-        else:
-            ref.at[a, "PTA"] = ""
-
-        if "MTX" in ls_data:
-            ref.at[a, "MTX"] = "X"
-        else:
-            ref.at[a, "MTX"] = ""
-
-        if "TEOAE" in ls_data:
-            ref.at[a, "TEOAE"] = "X"
-        else:
-            ref.at[a, "TEOAE"] = ""
-
-        if "DPOAE" in ls_data:
-            ref.at[a, "DPOAE"] = "X"
-        else:
-            ref.at[a, "DPOAE"] = ""
-
-        if "Growth_2" in ls_data:
-            ref.at[a, "DPGrowth_2kHz"] = "X"
-        else:
-            ref.at[a, "DPGrowth_2kHz"] = ""
-
-        if "Growth_4" in ls_data:
-            ref.at[a, "DPGrowth_4kHz"] = "X"
-        else:
-            ref.at[a, "DPGrowth_4kHz"] = ""
-
-        if "Growth_6" in ls_data:
-            ref.at[a, "DPGrowth_6kHz"] = "X"
-        else:
-            ref.at[a, "DPGrowth_6kHz"] = ""
-
-    ref.set_index("session_id", inplace=True)
+    # sessions.tsv file construction
+    ref = ref_df_generator(index_reference, column_reference,
+                           dict_of_ls, subject_folder_path)
 
     ref_name = i + "_sessions"
     ref_save_path = os.path.join(subject_folder_path, ref_name + ".tsv")
     ref.to_csv(ref_save_path, sep="\t")
 
     print(f"The tsv and json files for {i} have been created.\n")
-
-################################################################################################################
 
 
 def bidsify(df, oae_file_list, oae_tests_df, result_path, auditory_test_path, skip_oae):
@@ -599,24 +628,18 @@ def bidsify(df, oae_file_list, oae_tests_df, result_path, auditory_test_path, sk
             auditory_test_path, skip_oae
         )
 
-##################################################################################################################
-
-
-
-    # This code section is present if, for any reason, the .tsv files are not
-    # properly saved. You will first need to activate the "import glob" line
-    # (line 3). It is then possible to replace the variable "ext"'s value in
-    # the save_df function (BIDS_utils.py) with ".csv" and rerun the script
-    # with this section to rename all the files with the correct ".tsv" file
-    # extension.
+    # The following lines of code are present if, for any reason, the
+    # .tsv files are not properly saved. You will first need to activate
+    # the "import glob" line (line 3). It is then possible to replace the
+    # variable "ext"'s value in the save_df function (BIDS_utils.py) with
+    # ".csv" and rerun the script with this section to rename all the files
+    # with the correct ".tsv" file extension.
 
     # file_list = glob.glob(os.path.join(parent_path, "sub-*/ses-*/*.csv"))
 
     # for path in file_list:
     #     new_path = os.path.splitext(path)[0]+".tsv"
     #     os.system(f"mv {path} {new_path}")
-
-##################################################################################################################
 
 
 def master_run(data_path, result_path):
