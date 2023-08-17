@@ -14,7 +14,7 @@ SCRIPT DESCRIPTION:
 
 This script transforms the auditory test data saved as .csv (OAE tests) or
 placed in a properly formatted spreadsheet (other tests).
-Spreadsheet template available here (under CC BY-SA 4.0 license)
+Spreadsheet template available here (under CC0 license)
 [ https://docs.google.com/spreadsheets/d/
   1aKakQJvJnvPUouTUciGm3FMlnNAGIX8NXhulbhjq9d4/edit?usp=sharing ]
 
@@ -264,7 +264,7 @@ def initialize_column_titles(df):
     -returns a dictionary containing the database's column titles relevant
      for each of the auditory test types
      """
- 
+
     column_titles = {
         "columns_tymp": [],
         "columns_tymp_R": [],
@@ -359,24 +359,26 @@ def delay_baseline(i, data_sub):
     return value_delay
 
 
-def subject_bidsifier(i, column_titles, result_path, skip_oae):
+def subject_bidsifier(i, df, oae_tests_df, oae_file_list, column_titles, result_path, parent_path, auditory_test_path, skip_oae):
     """
     This function...
     INPUTS:
     -i: currently processed subject's ID as defined in the variables.json
         file or in the database
-                -df: database in a pandas dataframe format
-                -oae_tests_df: dataframe with the OAE test files' names
-                -oae_file_list:
+    -df: database in a pandas dataframe format
+    -oae_tests_df: dataframe with the OAE test files' names
+    -oae_file_list:
     -column_titles: dictionary containing the database's column titles relevant
                     for each of the auditory test types
                 -var_json: frequent-variables dictionary
                 -ls_id_og: list of the subjects IDs as defined in the variables.json file
-               or in the database
+                           or in the database
                 -ls_id_bids: list of the bidsified subject IDs
-    -result_path: path inside the BIDS_data folder
+    -result_path: path inside the results folder
                   ([repo_root]/results/)
-                -auditory_test_path:
+    -parent_path: path inside the BIDS_data folder
+                  ([repo_root]/results/BIDS_data/)
+    -auditory_test_path:
     -skip_oae: boolean specifiying if the OAE data should be processed
                depending on the type of experimental condition
     OUTPUTS:
@@ -423,28 +425,42 @@ def subject_bidsifier(i, column_titles, result_path, skip_oae):
     pta = replace_130(pta, column_titles)
 
     # Dataframe reconstruction
-    utils.extract_tymp(tymp, columns_tymp_R,
-                       columns_tymp_L, x_tymp,
-                       result_path)
-    utils.extract_reflex(reflex, columns_reflex_R,
-                         columns_reflex_L, x_reflex,
-                         result_path)
-    utils.extract_pta(pta, columns_PTA_R,
-                      columns_PTA_L, x_pta,
-                      result_path)
-    utils.extract_mtx(mtx, columns_MTX_L1,
-                      columns_MTX_L2, x_mtx,
-                      result_path)
+    utils.extract_tymp(
+        tymp, column_titles["columns_tymp_R"],
+        column_titles["columns_tymp_L"], x_tymp,
+        result_path
+    )
+    utils.extract_reflex(
+        reflex, column_titles["columns_reflex_R"],
+        column_titles["columns_reflex_L"], x_reflex,
+        result_path
+    )
+    utils.extract_pta(
+        pta, column_titles["columns_PTA_R"],
+        column_titles["columns_PTA_L"], x_pta,
+        result_path
+    )
+    utils.extract_mtx(
+        mtx, column_titles["columns_MTX_L1"],
+        column_titles["columns_MTX_L2"], x_mtx,
+        result_path
+    )
 
     if skip_oae:
         pass
     else:
-        utils.extract_teoae(oae, data_oae_sub, oae_file_list,
-                            x_teoae, auditory_test_path, result_path)
-        utils.extract_dpoae(oae, data_oae_sub, oae_file_list,
-                            x_dpoae, auditory_test_path, result_path)
-        utils.extract_growth(oae, data_oae_sub, oae_file_list,
-                             x_growth, auditory_test_path, result_path)
+        utils.extract_teoae(
+            oae, data_oae_sub, oae_file_list,
+            x_teoae, auditory_test_path, result_path
+        )
+        utils.extract_dpoae(
+            oae, data_oae_sub, oae_file_list,
+            x_dpoae, auditory_test_path, result_path
+        )
+        utils.extract_growth(
+            oae, data_oae_sub, oae_file_list,
+            x_growth, auditory_test_path, result_path
+        )
 
     # .tsv session-level reference file creation
     column_reference = ["session_id", "session_name",
@@ -542,14 +558,14 @@ def subject_bidsifier(i, column_titles, result_path, skip_oae):
 ################################################################################################################
 
 
-def bidsify(df, result_path, skip_oae):
+def bidsify(df, oae_file_list, oae_tests_df, result_path, auditory_test_path, skip_oae):
     """
     This function creates a BIDS compatible dataset
     INPUTS:
     -df: database in a pandas dataframe format
     -oae_file_list:
     -oae_tests_df: dataframe with the OAE test files' names
-    -var_json: frequent-variables dictionary
+                -var_json: frequent-variables dictionary
     -result_path: path inside the result folder ([repo_root]/results/)
     -auditory_test_path:
     -skip_oae: boolean specifiying if the OAE data should be processed
@@ -577,7 +593,11 @@ def bidsify(df, result_path, skip_oae):
 
     # BIDSify each of the subjects' data
     for i in subjects:
-        subject_bidsifier(i, column_titles, result_path, skip_oae)
+        subject_bidsifier(
+            i, df, oae_tests_df, oae_file_list,
+            column_titles, result_path, parent_path,
+            auditory_test_path, skip_oae
+        )
 
 ##################################################################################################################
 
@@ -623,15 +643,19 @@ def master_run(data_path, result_path):
         if error.args[0] == "The OAE data folder is missing.":
             oae_folder_path = os.path.join(auditory_test_path, "OAE")
             skip_oae = True
+            oae_file_list = None
+            oae_tests_df = None
             print(color.Fore.YELLOW
                   + (f"WARNING: The following path does not exist "
-                     f"\"{oae_folder_path}\".\n"))
+                     f"\"{oae_folder_path}\".\n"
+                     "\t    --> Therefore, the OAE tests' data will not be "
+                     "processed.\n"))
         else:
             raise
     else:
         skip_oae = False
 
-    bidsify(df, oae_file_list, oae_tests_df, var_json,
+    bidsify(df, oae_file_list, oae_tests_df,
             result_path, auditory_test_path, skip_oae)
 
 
